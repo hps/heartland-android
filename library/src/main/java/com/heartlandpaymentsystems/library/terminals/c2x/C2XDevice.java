@@ -187,7 +187,8 @@ public class C2XDevice implements IDevice {
 
             if (deviceListener != null) {
                 deviceListener.onConnected(
-                        (com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
+                        //(com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
+                        terminalInfo
                 );
             }
         }
@@ -231,7 +232,8 @@ public class C2XDevice implements IDevice {
         public void onTerminalInfoReceived(TerminalInfo terminalInfo) {
             if (deviceListener != null) {
                 deviceListener.onTerminalInfoReceived(
-                        (com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
+                        //(com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
+                        terminalInfo
                 );
             }
         }
