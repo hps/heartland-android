@@ -24,6 +24,8 @@ public enum TransactionStatus {
     SEE_PHONE;
 
     public static TransactionStatus fromVitalSdk(com.tsys.payments.library.enums.TransactionStatus status) {
+        if (status == null) return NONE;
+
         switch (status) {
             case WAITING_FOR_CARD: return WAITING_FOR_CARD;
             case BAD_READ: return BAD_READ;
