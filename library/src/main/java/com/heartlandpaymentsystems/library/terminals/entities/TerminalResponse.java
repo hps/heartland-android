@@ -69,8 +69,12 @@ public class TerminalResponse implements IDeviceResponse {
 
     public static TerminalResponse fromTransactionResponse(TransactionResponse transactionResponse) {
         TerminalResponse response = new TerminalResponse();
-
-        response.setApprovedAmount(new BigDecimal(transactionResponse.getApprovedAmount()));
+        
+        Long approvedAmount = transactionResponse.getApprovedAmount();
+        if (approvedAmount == null) {
+            approvedAmount = 0L;
+        }
+        response.setApprovedAmount(new BigDecimal(approvedAmount));
         response.setEntryMode(EntryMode.fromCardDataSourceType(transactionResponse.getCardDataSourceType()));
 //        transactionResponse.getCardType();
         response.setApprovalCode(transactionResponse.getGatewayAuthCode());
