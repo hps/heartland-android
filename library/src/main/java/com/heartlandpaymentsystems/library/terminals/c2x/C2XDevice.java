@@ -186,10 +186,7 @@ public class C2XDevice implements IDevice {
             connectedTerminalInfo = terminalInfo;
 
             if (deviceListener != null) {
-                deviceListener.onConnected(
-                        //(com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
-                        terminalInfo
-                );
+                deviceListener.onConnected(map(terminalInfo));
             }
         }
 
@@ -232,10 +229,7 @@ public class C2XDevice implements IDevice {
         @Override
         public void onTerminalInfoReceived(TerminalInfo terminalInfo) {
             if (deviceListener != null) {
-                deviceListener.onTerminalInfoReceived(
-                        //(com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
-                        terminalInfo
-                );
+                deviceListener.onTerminalInfoReceived(map(terminalInfo));
             }
         }
 
@@ -282,5 +276,17 @@ public class C2XDevice implements IDevice {
                 transactionListener.onError(err);
             }
         }
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo map(TerminalInfo info) {
+        final com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo ti =
+                new com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo();
+        ti.setAppName(info.getAppName());
+        ti.setAppVersion(info.getAppVersion());
+        ti.setBatteryLevel(info.getBatteryLevel());
+        ti.setFirmwareVersion(info.getFirmwareVersion());
+        ti.setSerialNumber(info.getSerialNumber());
+        ti.setTerminalType(info.getTerminalType());
+        return ti;
     }
 }
