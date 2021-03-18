@@ -219,7 +219,8 @@ public class C2XDevice implements IDevice {
                 return;
             }
 
-            if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_DUAL) {
+            if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC &&
+                    foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_DUAL) {
                 return;
             }
 
