@@ -255,9 +255,7 @@ public class C2XDevice implements IDevice {
         @Override
         public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
             if (transactionListener != null) {
-                transactionListener.onCardholderInteractionRequested(
-                        (com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest) cardholderInteractionRequest
-                );
+                transactionListener.onCardholderInteractionRequested(map(cardholderInteractionRequest));
             }
         }
 
@@ -288,5 +286,15 @@ public class C2XDevice implements IDevice {
         ti.setSerialNumber(info.getSerialNumber());
         ti.setTerminalType(info.getTerminalType());
         return ti;
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest map(CardholderInteractionRequest info) {
+        final com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest cr =
+                new com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest();
+        cr.setCardholderInteractionType(info.getCardholderInteractionType());
+        cr.setCommercialCardDataFields(info.getCommercialCardDataFields());
+        cr.setFinalTransactionAmount(info.getFinalTransactionAmount());
+        cr.setSupportedApplications(info.getSupportedApplications());
+        return cr;
     }
 }
