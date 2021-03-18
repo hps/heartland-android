@@ -69,7 +69,7 @@ public class TerminalResponse implements IDeviceResponse {
 
     public static TerminalResponse fromTransactionResponse(TransactionResponse transactionResponse) {
         TerminalResponse response = new TerminalResponse();
-        
+
         Long approvedAmount = transactionResponse.getApprovedAmount();
         if (approvedAmount == null) {
             approvedAmount = 0L;
@@ -471,7 +471,7 @@ public class TerminalResponse implements IDeviceResponse {
     public void setLastResponseTransactionId(String lastResponseTransactionId) {
         this.lastResponseTransactionId = lastResponseTransactionId;
     }
-    
+
     @Override
     public String toString() {
         return "TerminalResponse{" +
@@ -519,4 +519,5 @@ public class TerminalResponse implements IDeviceResponse {
                 ", storedResponse=" + storedResponse +
                 ", lastResponseTransactionId='" + lastResponseTransactionId + '\'' +
                 '}';
+    }
 }
