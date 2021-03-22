@@ -100,8 +100,8 @@ public class C2XDevice implements IDevice {
         scan();
     }
 
-    public void connect(BluetoothDevice device) {
-        terminalConfig.setHost(device.getName());
+    public void connect(String address) {
+        terminalConfig.setHost(address);
 
         if (isTransactionManagerConnected()) {
             return;
