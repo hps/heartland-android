@@ -100,6 +100,10 @@ public class C2XDevice implements IDevice {
         scan();
     }
 
+    public void connect(BluetoothDevice device) {
+        connect(device.getAddress());
+    }
+
     public void connect(String address) {
         terminalConfig.setHost(address);
 
