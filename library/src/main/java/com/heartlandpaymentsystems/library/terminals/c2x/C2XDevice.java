@@ -123,6 +123,7 @@ public class C2XDevice implements IDevice {
 
             if (transactionManager.isInitialized()) {
                 transactionManager.connect(new ConnectionListenerImpl());
+                transactionManager.updateTransactionListener(new TransactionListenerImpl());
             }
         }
     }
