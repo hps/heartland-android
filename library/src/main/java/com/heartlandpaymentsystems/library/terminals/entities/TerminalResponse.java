@@ -70,7 +70,11 @@ public class TerminalResponse implements IDeviceResponse {
     public static TerminalResponse fromTransactionResponse(TransactionResponse transactionResponse) {
         TerminalResponse response = new TerminalResponse();
 
-        response.setApprovedAmount(new BigDecimal(transactionResponse.getApprovedAmount()));
+        Long approvedAmount = transactionResponse.getApprovedAmount();
+        if (approvedAmount == null) {
+            approvedAmount = 0L;
+        }
+        response.setApprovedAmount(new BigDecimal(approvedAmount));
         response.setEntryMode(EntryMode.fromCardDataSourceType(transactionResponse.getCardDataSourceType()));
 //        transactionResponse.getCardType();
         response.setApprovalCode(transactionResponse.getGatewayAuthCode());
@@ -466,5 +470,54 @@ public class TerminalResponse implements IDeviceResponse {
 
     public void setLastResponseTransactionId(String lastResponseTransactionId) {
         this.lastResponseTransactionId = lastResponseTransactionId;
+    }
+
+    @Override
+    public String toString() {
+        return "TerminalResponse{" +
+                "status='" + status + '\'' +
+                ", command='" + command + '\'' +
+                ", version='" + version + '\'' +
+                ", deviceResponseCode='" + deviceResponseCode + '\'' +
+                ", deviceResponseMessage='" + deviceResponseMessage + '\'' +
+                ", responseText='" + responseText + '\'' +
+                ", transactionId='" + transactionId + '\'' +
+                ", terminalRefNumber='" + terminalRefNumber + '\'' +
+                ", token='" + token + '\'' +
+                ", signatureStatus='" + signatureStatus + '\'' +
+                ", transactionType='" + transactionType + '\'' +
+                ", entryMethod='" + entryMethod + '\'' +
+                ", maskedCardNumber='" + maskedCardNumber + '\'' +
+                ", entryMode=" + entryMode +
+                ", approvalCode='" + approvalCode + '\'' +
+                ", transactionAmount=" + transactionAmount +
+                ", amountDue=" + amountDue +
+                ", balanceAmount=" + balanceAmount +
+                ", cardholderName='" + cardholderName + '\'' +
+                ", cardBin='" + cardBin + '\'' +
+                ", cardPresent=" + cardPresent +
+                ", expirationDate='" + expirationDate + '\'' +
+                ", tipAmount=" + tipAmount +
+                ", cashBackAmount=" + cashBackAmount +
+                ", avsResultCode='" + avsResultCode + '\'' +
+                ", avsResultText='" + avsResultText + '\'' +
+                ", cvvResponseCode='" + cvvResponseCode + '\'' +
+                ", cvvResponseText='" + cvvResponseText + '\'' +
+                ", taxExempt=" + taxExempt +
+                ", taxExemptId='" + taxExemptId + '\'' +
+                ", paymentType='" + paymentType + '\'' +
+                ", approvedAmount=" + approvedAmount +
+                ", applicationPreferredName='" + applicationPreferredName + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                ", applicationId='" + applicationId + '\'' +
+                ", applicationCryptogram='" + applicationCryptogram + '\'' +
+                ", applicationCryptogramType=" + applicationCryptogramType +
+                ", applicationCryptogramTypeS='" + applicationCryptogramTypeS + '\'' +
+                ", cardHolderVerificationMethod='" + cardHolderVerificationMethod + '\'' +
+                ", terminalVerificationResult='" + terminalVerificationResult + '\'' +
+                ", terminalSerialNumber='" + terminalSerialNumber + '\'' +
+                ", storedResponse=" + storedResponse +
+                ", lastResponseTransactionId='" + lastResponseTransactionId + '\'' +
+                '}';
     }
 }

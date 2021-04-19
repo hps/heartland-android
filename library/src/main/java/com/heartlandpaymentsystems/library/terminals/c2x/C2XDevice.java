@@ -101,7 +101,11 @@ public class C2XDevice implements IDevice {
     }
 
     public void connect(BluetoothDevice device) {
-        terminalConfig.setHost(device.getName());
+        connect(device.getAddress());
+    }
+
+    public void connect(String address) {
+        terminalConfig.setHost(address);
 
         if (isTransactionManagerConnected()) {
             return;
@@ -115,10 +119,13 @@ public class C2XDevice implements IDevice {
 
             terminalConfig.setConnectionType(connectionTypes[0]);
 
-            initializeTransactionManager();
+            if (!transactionManager.isInitialized()) {
+                initializeTransactionManager();
+            }
 
             if (transactionManager.isInitialized()) {
                 transactionManager.connect(new ConnectionListenerImpl());
+                transactionManager.updateTransactionListener(new TransactionListenerImpl());
             }
         }
     }
@@ -186,9 +193,7 @@ public class C2XDevice implements IDevice {
             connectedTerminalInfo = terminalInfo;
 
             if (deviceListener != null) {
-                deviceListener.onConnected(
-                        (com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
-                );
+                deviceListener.onConnected(map(terminalInfo));
             }
         }
 
@@ -218,7 +223,8 @@ public class C2XDevice implements IDevice {
                 return;
             }
 
-            if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC) {
+            if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC &&
+                    foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_DUAL) {
                 return;
             }
 
@@ -230,9 +236,7 @@ public class C2XDevice implements IDevice {
         @Override
         public void onTerminalInfoReceived(TerminalInfo terminalInfo) {
             if (deviceListener != null) {
-                deviceListener.onTerminalInfoReceived(
-                        (com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo) terminalInfo
-                );
+                deviceListener.onTerminalInfoReceived(map(terminalInfo));
             }
         }
 
@@ -258,9 +262,7 @@ public class C2XDevice implements IDevice {
         @Override
         public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
             if (transactionListener != null) {
-                transactionListener.onCardholderInteractionRequested(
-                        (com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest) cardholderInteractionRequest
-                );
+                transactionListener.onCardholderInteractionRequested(map(cardholderInteractionRequest));
             }
         }
 
@@ -279,5 +281,27 @@ public class C2XDevice implements IDevice {
                 transactionListener.onError(err);
             }
         }
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo map(TerminalInfo info) {
+        final com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo ti =
+                new com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo();
+        ti.setAppName(info.getAppName());
+        ti.setAppVersion(info.getAppVersion());
+        ti.setBatteryLevel(info.getBatteryLevel());
+        ti.setFirmwareVersion(info.getFirmwareVersion());
+        ti.setSerialNumber(info.getSerialNumber());
+        ti.setTerminalType(info.getTerminalType());
+        return ti;
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest map(CardholderInteractionRequest info) {
+        final com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest cr =
+                new com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest();
+        cr.setCardholderInteractionType(info.getCardholderInteractionType());
+        cr.setCommercialCardDataFields(info.getCommercialCardDataFields());
+        cr.setFinalTransactionAmount(info.getFinalTransactionAmount());
+        cr.setSupportedApplications(info.getSupportedApplications());
+        return cr;
     }
 }
