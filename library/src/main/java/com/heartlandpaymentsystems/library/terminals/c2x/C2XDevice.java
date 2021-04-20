@@ -142,6 +142,7 @@ public class C2XDevice implements IDevice {
         }
     }
 
+    @Override
     public void doTransaction(TransactionRequest transactionRequest) {
         if (transactionManager == null) {
             transactionManager = TransactionManager.getInstance();
