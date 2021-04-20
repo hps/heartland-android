@@ -136,6 +136,12 @@ public class C2XDevice implements IDevice {
         }
     }
 
+    public void unregisterBluetoothReceiver() {
+        if (applicationContext != null) {
+            applicationContext.unregisterReceiver(bluetoothReceiver);
+        }
+    }
+
     public void getDeviceInfo() {
         if (isTransactionManagerConnected()) {
             transactionManager.getDeviceInfo(new TerminalInfoListenerImpl());
