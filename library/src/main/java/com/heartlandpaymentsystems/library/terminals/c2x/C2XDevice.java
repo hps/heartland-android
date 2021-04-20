@@ -230,6 +230,8 @@ public class C2XDevice implements IDevice {
             }
 
             bluetoothDevices.add(foundDevice);
+
+            if (deviceListener != null) deviceListener.onBluetoothDeviceFound(foundDevice);
         }
     }
 
