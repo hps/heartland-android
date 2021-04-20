@@ -225,6 +225,7 @@ public class C2XDevice implements IDevice {
 
         @Override
         public void onDiscoveryFinished() {
+            if (deviceListener == null) return;
             deviceListener.onBluetoothDeviceList(bluetoothDevices);
         }
 
