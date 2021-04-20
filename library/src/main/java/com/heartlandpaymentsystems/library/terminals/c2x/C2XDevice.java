@@ -136,12 +136,19 @@ public class C2XDevice implements IDevice {
         }
     }
 
+    public void unregisterBluetoothReceiver() {
+        if (applicationContext != null) {
+            applicationContext.unregisterReceiver(bluetoothReceiver);
+        }
+    }
+
     public void getDeviceInfo() {
         if (isTransactionManagerConnected()) {
             transactionManager.getDeviceInfo(new TerminalInfoListenerImpl());
         }
     }
 
+    @Override
     public void doTransaction(TransactionRequest transactionRequest) {
         if (transactionManager == null) {
             transactionManager = TransactionManager.getInstance();
@@ -165,6 +172,10 @@ public class C2XDevice implements IDevice {
         } catch (InitializationException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public boolean isConnected() {
+        return isTransactionManagerConnected();
     }
 
     protected boolean isTransactionManagerConnected() {
@@ -214,6 +225,7 @@ public class C2XDevice implements IDevice {
 
         @Override
         public void onDiscoveryFinished() {
+            if (deviceListener == null) return;
             deviceListener.onBluetoothDeviceList(bluetoothDevices);
         }
 
@@ -229,6 +241,8 @@ public class C2XDevice implements IDevice {
             }
 
             bluetoothDevices.add(foundDevice);
+
+            if (deviceListener != null) deviceListener.onBluetoothDeviceFound(foundDevice);
         }
     }
 
