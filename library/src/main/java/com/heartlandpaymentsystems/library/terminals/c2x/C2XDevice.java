@@ -168,6 +168,10 @@ public class C2XDevice implements IDevice {
         }
     }
 
+    public boolean isConnected() {
+        return isTransactionManagerConnected();
+    }
+
     protected boolean isTransactionManagerConnected() {
         return transactionManager != null && transactionManager.isConnected();
     }
