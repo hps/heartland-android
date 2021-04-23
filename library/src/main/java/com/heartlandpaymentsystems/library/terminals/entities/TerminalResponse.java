@@ -87,7 +87,9 @@ public class TerminalResponse implements IDeviceResponse {
         if (transactionResponse.getTipAmount() != null) {
             response.setTipAmount(new BigDecimal(transactionResponse.getTipAmount()));
         }
-        response.setTransactionType(transactionResponse.getTransactionType().toString());
+        if (transactionResponse.getTransactionType() != null) {
+            response.setTransactionType(transactionResponse.getTransactionType().toString());
+        }
 
         if (transactionResponse.getReceipt() != null) {
             Receipt receipt = transactionResponse.getReceipt();
