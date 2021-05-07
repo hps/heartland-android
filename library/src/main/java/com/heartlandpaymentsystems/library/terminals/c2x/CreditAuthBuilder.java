@@ -30,7 +30,7 @@ public class CreditAuthBuilder extends BaseBuilder {
     protected TransactionRequest buildRequest() {
         TransactionRequest request = super.buildRequest();
 
-        request.setTransactionType(TransactionType.SALE);
+        request.setTransactionType(TransactionType.AUTH);
 
         if (amount != null) {
             request.setTotal(amount.longValue());
