@@ -5,6 +5,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.heartlandpaymentsystems.library.entities.Card;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
+import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
 import com.heartlandpaymentsystems.library.terminals.c2x.BaseBuilder;
@@ -107,7 +108,27 @@ public class CreditTest {
 
             @Override
             public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
+                CardholderInteractionResult result;
+                switch (cardholderInteractionRequest.getCardholderInteractionType()) {
+                    case EMV_APPLICATION_SELECTION:
+                        String[] applications = cardholderInteractionRequest.getSupportedApplications();
 
+                        // prompt user to select desired application
+
+                        // send result
+                        result = new CardholderInteractionResult(cardholderInteractionRequest.getCardholderInteractionType());
+                        result.setSelectedAidIndex(0);
+                        device.sendCardholderInteractionResult(result);
+                        break;
+                    case FINAL_AMOUNT_CONFIRMATION:
+                        // prompt user to confirm final amount
+                        result = new CardholderInteractionResult(cardholderInteractionRequest.getCardholderInteractionType());
+                        result.setFinalAmountConfirmed(true);
+                        device.sendCardholderInteractionResult(result);
+                        break;
+                    default:
+                        break;
+                }
             }
 
             @Override
