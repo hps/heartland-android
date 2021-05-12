@@ -27,11 +27,11 @@ public class CreditAdjustBuilder extends BaseBuilder {
         request.setGatewayTransactionId(transactionId);
 
         if (amount != null) {
-            request.setTotal(amount.longValue());
+            request.setTotal(amount.movePointRight(2).longValue());
         }
 
         if (gratuity != null) {
-            request.setTip(gratuity.longValue());
+            request.setTip(gratuity.movePointRight(2).longValue());
         }
 
         request.setPosReferenceNumber(referenceNumber);

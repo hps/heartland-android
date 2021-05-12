@@ -1,6 +1,7 @@
 # Built application files
 *.apk
 *.aar
+!vital-sdk/vital-sdk.aar
 *.ap_
 *.aab
 
