@@ -1,6 +1,7 @@
 # Built application files
 *.apk
 *.aar
+!vital-sdk/vital-sdk.aar
 *.ap_
 *.aab
 
@@ -84,3 +85,6 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 .DS_Store
+.project
+.settings/
+.idea/

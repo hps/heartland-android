@@ -23,7 +23,7 @@ public class CreditReturnBuilder extends BaseBuilder {
         request.setTransactionType(TransactionType.REFUND);
 
         if (amount != null) {
-            request.setTotal(amount.longValue());
+            request.setTotal(amount.movePointRight(2).longValue());
         }
 
         request.setGatewayTransactionId(transactionId);

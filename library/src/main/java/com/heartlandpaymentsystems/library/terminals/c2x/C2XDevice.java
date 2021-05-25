@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
 
+import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
 import com.tsys.payments.library.connection.ConnectionListener;
 import com.tsys.payments.library.domain.CardholderInteractionRequest;
@@ -159,6 +160,12 @@ public class C2XDevice implements IDevice {
         }
 
         transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl());
+    }
+
+    public void sendCardholderInteractionResult(CardholderInteractionResult cardholderInteractionResult) {
+        if (isTransactionManagerConnected()) {
+            transactionManager.sendCardholderInteractionResult(map(cardholderInteractionResult));
+        }
     }
 
     protected void initializeTransactionManager() {
@@ -321,5 +328,14 @@ public class C2XDevice implements IDevice {
         cr.setFinalTransactionAmount(info.getFinalTransactionAmount());
         cr.setSupportedApplications(info.getSupportedApplications());
         return cr;
+    }
+
+    private com.tsys.payments.library.domain.CardholderInteractionResult map(CardholderInteractionResult info) {
+        final com.tsys.payments.library.domain.CardholderInteractionResult result =
+                new com.tsys.payments.library.domain.CardholderInteractionResult(info.getCardholderInteractionType());
+        result.setCommercialCardData(info.getCommercialCardData());
+        result.setFinalAmountConfirmed(info.getFinalAmountConfirmed());
+        result.setSelectedAidIndex(info.getSelectedAidIndex());
+        return result;
     }
 }
