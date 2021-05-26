@@ -205,6 +205,10 @@ public class C2XDevice implements IDevice {
         }
     }
 
+    public void cancelTransaction() {
+        transactionManager.cancel();
+    }
+
     protected class ConnectionListenerImpl implements ConnectionListener {
         @Override
         public void onConnected(TerminalInfo terminalInfo) {
