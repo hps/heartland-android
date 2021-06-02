@@ -74,7 +74,7 @@ public class TerminalResponse implements IDeviceResponse {
         if (approvedAmount == null) {
             approvedAmount = 0L;
         }
-        response.setApprovedAmount(new BigDecimal(approvedAmount));
+        response.setApprovedAmount((new BigDecimal(approvedAmount)).movePointLeft(2));
         response.setEntryMode(EntryMode.fromCardDataSourceType(transactionResponse.getCardDataSourceType()));
 //        transactionResponse.getCardType();
         response.setApprovalCode(transactionResponse.getGatewayAuthCode());
@@ -85,7 +85,7 @@ public class TerminalResponse implements IDeviceResponse {
 //        transactionResponse.getTenderType();
         response.setDeviceResponseCode(transactionResponse.getTransactionResult().toString());
         if (transactionResponse.getTipAmount() != null) {
-            response.setTipAmount(new BigDecimal(transactionResponse.getTipAmount()));
+            response.setTipAmount((new BigDecimal(transactionResponse.getTipAmount())).movePointLeft(2));
         }
         if (transactionResponse.getTransactionType() != null) {
             response.setTransactionType(transactionResponse.getTransactionType().toString());
@@ -104,7 +104,7 @@ public class TerminalResponse implements IDeviceResponse {
             response.setCardholderName(receipt.getCardholderName());
 //            receipt.getCardType();
             if (receipt.getCashBackAmount() != null) {
-                response.setCashBackAmount(new BigDecimal(receipt.getCashBackAmount()));
+                response.setCashBackAmount((new BigDecimal(receipt.getCashBackAmount())).movePointLeft(2));
             }
             response.setApplicationCryptogram(receipt.getCryptogram());
 //            receipt.getCryptogramInformationData();
@@ -120,7 +120,7 @@ public class TerminalResponse implements IDeviceResponse {
 //            receipt.getTerminalCountryCode();
 //            receipt.getTerminalType();
             response.setTerminalVerificationResult(receipt.getTerminalVerificationResult());
-            response.setTransactionAmount(new BigDecimal(receipt.getTransactionAmount()));
+            response.setTransactionAmount((new BigDecimal(receipt.getTransactionAmount())).movePointLeft(2));
 //            receipt.getTransactionDateTime();
             response.setTransactionId(receipt.getTransactionId());
             response.setTransactionType(receipt.getTransactionType().toString());
