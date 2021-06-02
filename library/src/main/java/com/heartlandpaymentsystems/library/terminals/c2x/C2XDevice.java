@@ -185,11 +185,7 @@ public class C2XDevice implements IDevice {
         return isTransactionManagerConnected();
     }
 
-    protected boolean isTransactionManagerConnected() {
-        return transactionManager != null && transactionManager.isConnected();
-    }
-
-    protected void scan() {
+    public void scan() {
         IntentFilter bluetoothFilter = new IntentFilter();
         bluetoothFilter.addAction(BluetoothDevice.ACTION_FOUND);
         bluetoothFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -203,6 +199,16 @@ public class C2XDevice implements IDevice {
         if (applicationContext != null) {
             applicationContext.registerReceiver(bluetoothReceiver, bluetoothFilter);
         }
+
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter != null) {
+            bluetoothAdapter.startDiscovery();
+        }
+    }
+
+    protected boolean isTransactionManagerConnected() {
+        return transactionManager != null && transactionManager.isConnected();
     }
 
     public void cancelTransaction() {
