@@ -54,39 +54,13 @@ public class C2XDevice implements IDevice {
     private HashSet<BluetoothDevice> bluetoothDevices;
     private BluetoothReceiver bluetoothReceiver;
 
+    public C2XDevice(Context applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
     public C2XDevice(Context applicationContext, ConnectionConfig connectionConfig) {
         this.applicationContext = applicationContext;
-        this.connectionConfig = connectionConfig;
-
-        LibraryConfigHelper.setDebugMode(connectionConfig.getEnvironment().equals(Environment.TEST));
-
-        transactionConfig = new TransactionConfiguration();
-        transactionConfig.setChipEnabled(true);
-        transactionConfig.setContactlessEnabled(false);
-        transactionConfig.setCurrencyCode(CurrencyCode.USD);
-        transactionConfig.setMagStripeEnabled(true);
-
-        terminalConfig = new TerminalConfiguration();
-        terminalConfig.setTerminalType(TerminalType.BBPOS_C2X);
-        terminalConfig.setCapability(TerminalInputCapability.MAGSTRIPE_ICC_KEYED_ENTRY_ONLY);
-        terminalConfig.setOutputCapability(TerminalOutputCapability.PRINT_AND_DISPLAY);
-        terminalConfig.setAuthenticationCapability(TerminalAuthenticationCapability.NO_CAPABILITY);
-        terminalConfig.setOperatingEnvironment(TerminalOperatingEnvironment.ON_MERCHANT_PREMISES_ATTENDED);
-//        terminalConfig.setTimeout(Long.getLong(connectionConfig.getTimeout()));
-
-        HashMap<String, String> credentials = new HashMap<>();
-//        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
-        credentials.put("version_number", "3409");
-        credentials.put("developer_id", "002914");
-        credentials.put("user_name", connectionConfig.getUsername());
-        credentials.put("license_id", connectionConfig.getLicenseId());
-        credentials.put("site_id", connectionConfig.getSiteId());
-        credentials.put("password", connectionConfig.getPassword());
-        credentials.put("terminal_id", connectionConfig.getDeviceId());
-
-        gatewayConfig = new GatewayConfiguration();
-        gatewayConfig.setGatewayType(GatewayType.PORTICO);
-        gatewayConfig.setCredentials(credentials);
+        this.setConnectionConfig(connectionConfig);
     }
 
     public void setDeviceListener(DeviceListener deviceListener) {
@@ -185,11 +159,7 @@ public class C2XDevice implements IDevice {
         return isTransactionManagerConnected();
     }
 
-    protected boolean isTransactionManagerConnected() {
-        return transactionManager != null && transactionManager.isConnected();
-    }
-
-    protected void scan() {
+    public void scan() {
         IntentFilter bluetoothFilter = new IntentFilter();
         bluetoothFilter.addAction(BluetoothDevice.ACTION_FOUND);
         bluetoothFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
@@ -203,6 +173,50 @@ public class C2XDevice implements IDevice {
         if (applicationContext != null) {
             applicationContext.registerReceiver(bluetoothReceiver, bluetoothFilter);
         }
+
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter != null) {
+            bluetoothAdapter.startDiscovery();
+        }
+    }
+
+    public void setConnectionConfig(ConnectionConfig connectionConfig) {
+        this.connectionConfig = connectionConfig;
+
+        LibraryConfigHelper.setDebugMode(connectionConfig.getEnvironment().equals(Environment.TEST));
+
+        transactionConfig = new TransactionConfiguration();
+        transactionConfig.setChipEnabled(true);
+        transactionConfig.setContactlessEnabled(false);
+        transactionConfig.setCurrencyCode(CurrencyCode.USD);
+        transactionConfig.setMagStripeEnabled(true);
+
+        terminalConfig = new TerminalConfiguration();
+        terminalConfig.setTerminalType(TerminalType.BBPOS_C2X);
+        terminalConfig.setCapability(TerminalInputCapability.MAGSTRIPE_ICC_KEYED_ENTRY_ONLY);
+        terminalConfig.setOutputCapability(TerminalOutputCapability.PRINT_AND_DISPLAY);
+        terminalConfig.setAuthenticationCapability(TerminalAuthenticationCapability.NO_CAPABILITY);
+        terminalConfig.setOperatingEnvironment(TerminalOperatingEnvironment.ON_MERCHANT_PREMISES_ATTENDED);
+//        terminalConfig.setTimeout(Long.getLong(connectionConfig.getTimeout()));
+
+        HashMap<String, String> credentials = new HashMap<>();
+//        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
+        credentials.put("version_number", "3409");
+        credentials.put("developer_id", "002914");
+        credentials.put("user_name", connectionConfig.getUsername());
+        credentials.put("license_id", connectionConfig.getLicenseId());
+        credentials.put("site_id", connectionConfig.getSiteId());
+        credentials.put("password", connectionConfig.getPassword());
+        credentials.put("terminal_id", connectionConfig.getDeviceId());
+
+        gatewayConfig = new GatewayConfiguration();
+        gatewayConfig.setGatewayType(GatewayType.PORTICO);
+        gatewayConfig.setCredentials(credentials);
+    }
+
+    protected boolean isTransactionManagerConnected() {
+        return transactionManager != null && transactionManager.isConnected();
     }
 
     public void cancelTransaction() {
