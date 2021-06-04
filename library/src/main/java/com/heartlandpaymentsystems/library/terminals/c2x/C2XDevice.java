@@ -176,8 +176,16 @@ public class C2XDevice implements IDevice {
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (bluetoothAdapter != null) {
+        if (bluetoothAdapter != null && !bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.startDiscovery();
+        }
+    }
+
+    public void cancelScan(){
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter != null && bluetoothAdapter.isDiscovering()) {
+            bluetoothAdapter.cancelDiscovery();
         }
     }
 
