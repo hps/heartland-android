@@ -123,7 +123,9 @@ public class TerminalResponse implements IDeviceResponse {
             response.setTransactionAmount((new BigDecimal(receipt.getTransactionAmount())).movePointLeft(2));
 //            receipt.getTransactionDateTime();
             response.setTransactionId(receipt.getTransactionId());
-            response.setTransactionType(receipt.getTransactionType().toString());
+            if (receipt.getTransactionType() != null) {
+                response.setTransactionType(receipt.getTransactionType().toString());
+            }
 //            receipt.getUnpredictableNumber();
         }
 
