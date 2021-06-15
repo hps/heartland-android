@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">GPApp</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="submit">SUBMIT</string>
+    <string name="card_no">Card Number</string>
+    <string name="card_exp_date">Expiration Month</string>
+    <string name="card_exp_yr">Expiration Year</string>
+    <string name="card_cvv">CVV</string>
+
+    <string name="loading_msg">Please wait</string>
+    <string name="tokenizing">Tokenizing&#8230;</string>
+</resources>
