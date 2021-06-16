@@ -160,24 +160,32 @@ public class C2XDevice implements IDevice {
     }
 
     public void scan() {
-        IntentFilter bluetoothFilter = new IntentFilter();
-        bluetoothFilter.addAction(BluetoothDevice.ACTION_FOUND);
-        bluetoothFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        bluetoothFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
         if (bluetoothReceiver == null) {
             bluetoothReceiver = new BluetoothReceiver();
             bluetoothReceiver.setListener(new BluetoothListenerImpl());
         }
 
         if (applicationContext != null) {
+            IntentFilter bluetoothFilter = new IntentFilter();
+            bluetoothFilter.addAction(BluetoothDevice.ACTION_FOUND);
+            bluetoothFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+            bluetoothFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
             applicationContext.registerReceiver(bluetoothReceiver, bluetoothFilter);
         }
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (bluetoothAdapter != null) {
+        if (bluetoothAdapter != null && !bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.startDiscovery();
+        }
+    }
+
+    public void cancelScan(){
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (bluetoothAdapter != null && bluetoothAdapter.isDiscovering()) {
+            bluetoothAdapter.cancelDiscovery();
         }
     }
 
