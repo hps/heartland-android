@@ -196,7 +196,7 @@ public class C2XDevice implements IDevice {
 
         transactionConfig = new TransactionConfiguration();
         transactionConfig.setChipEnabled(true);
-        transactionConfig.setContactlessEnabled(false);
+        transactionConfig.setContactlessEnabled(true);
         transactionConfig.setCurrencyCode(CurrencyCode.USD);
         transactionConfig.setMagStripeEnabled(true);
 
@@ -206,7 +206,7 @@ public class C2XDevice implements IDevice {
         terminalConfig.setOutputCapability(TerminalOutputCapability.PRINT_AND_DISPLAY);
         terminalConfig.setAuthenticationCapability(TerminalAuthenticationCapability.NO_CAPABILITY);
         terminalConfig.setOperatingEnvironment(TerminalOperatingEnvironment.ON_MERCHANT_PREMISES_ATTENDED);
-//        terminalConfig.setTimeout(Long.getLong(connectionConfig.getTimeout()));
+        terminalConfig.setTimeout(Long.getLong(connectionConfig.getTimeout()));
 
         HashMap<String, String> credentials = new HashMap<>();
 //        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
