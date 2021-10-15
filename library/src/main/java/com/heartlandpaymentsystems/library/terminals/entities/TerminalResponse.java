@@ -120,7 +120,9 @@ public class TerminalResponse implements IDeviceResponse {
 //            receipt.getTerminalCountryCode();
 //            receipt.getTerminalType();
             response.setTerminalVerificationResult(receipt.getTerminalVerificationResult());
-            response.setTransactionAmount((new BigDecimal(receipt.getTransactionAmount())).movePointLeft(2));
+            if (receipt.getTransactionAmount() != null) {
+                response.setTransactionAmount((new BigDecimal(receipt.getTransactionAmount())).movePointLeft(2));
+            }
 //            receipt.getTransactionDateTime();
             response.setTransactionId(receipt.getTransactionId());
             if (receipt.getTransactionType() != null) {
