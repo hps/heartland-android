@@ -206,7 +206,9 @@ public class C2XDevice implements IDevice {
         terminalConfig.setOutputCapability(TerminalOutputCapability.PRINT_AND_DISPLAY);
         terminalConfig.setAuthenticationCapability(TerminalAuthenticationCapability.NO_CAPABILITY);
         terminalConfig.setOperatingEnvironment(TerminalOperatingEnvironment.ON_MERCHANT_PREMISES_ATTENDED);
-        terminalConfig.setTimeout(Long.getLong(connectionConfig.getTimeout()));
+
+        final Long timeout = Long.getLong(connectionConfig.getTimeout());
+        terminalConfig.setTimeout(timeout != null ? timeout : 60000L);
 
         HashMap<String, String> credentials = new HashMap<>();
 //        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
