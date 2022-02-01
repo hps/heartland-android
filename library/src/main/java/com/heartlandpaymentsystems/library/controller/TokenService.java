@@ -87,6 +87,11 @@ public class TokenService {
                 try {
                     InputStreamReader responseStream = new InputStreamReader(conn.getInputStream());
                     tokenObject = gson.fromJson(responseStream, Token.class);
+                    if (taskInput.getCard() != null) {
+                        tokenObject.getCard().setCardType(Card.parseCardType(taskInput.getCard().getNumber()));
+                        tokenObject.getCard().setExpMonth(taskInput.getCard().getExpMonth());
+                        tokenObject.getCard().setExpYear(taskInput.getCard().getExpYear());
+                    }
                     responseStream.close();
                 } catch (IOException e) {
 
