@@ -5,19 +5,58 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/main_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tokenizeResult"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_container"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        android:layout_marginLeft="15dp"/>
+        android:layout_margin="@dimen/layout_margin_small"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:text="@string/description_bluetooth" />
+
+        <Button
+            android:id="@+id/connect_to_device_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/connect_to_device" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:text="@string/description_card" />
+
+        <Button
+            android:id="@+id/manual_card_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/card_entry" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:text="@string/description_transactions" />
+
+        <Button
+            android:id="@+id/transaction_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/c2x_transactions" />
+
+    </LinearLayout>
 
 </RelativeLayout>
