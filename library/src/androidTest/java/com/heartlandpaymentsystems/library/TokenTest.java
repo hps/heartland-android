@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -31,7 +32,7 @@ public class TokenTest {
 
         String cardNo = "4242424242424242";
         String cardExpMonth = "12";
-        String cardExpYear = "2015";
+        String cardExpYear = "2025";
         String cardCVV = "123";
 
         Espresso.onView(withId(R.id.card_no_edt)).perform(typeText(cardNo));
@@ -49,6 +50,19 @@ public class TokenTest {
         tokenService.getToken(card, new TokenService.TokenCallback() {
             @Override
             public Token onComplete(Token response) {
+                assertNotNull(response);
+                assertNotNull(response.getTokenValue());
+                assertNotEquals("", response.getTokenValue());
+                assertNotNull(response.getTokenExpire());
+                assertNotEquals("", response.getTokenExpire()); // 2022-02-01T17:04:06.1226822Z
+                assertNotNull(response.getTokenType());
+                assertNotEquals("", response.getTokenType()); // supt
+                assertNotNull(response.getCard());
+                Card card = response.getCard();
+                assertEquals((Integer)12, card.getExpMonth());
+                assertEquals((Integer)2025, card.getExpYear());
+                assertNotNull(card.getCardType());
+                assertEquals("visa", card.getCardType().toLowerCase());
                 return response;
             }
         });

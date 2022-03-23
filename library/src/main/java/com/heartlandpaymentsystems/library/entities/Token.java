@@ -14,6 +14,10 @@ public class Token {
         this.card = new Card(card.getNumber(), card.getCvv(), card.getExpMonth(), card.getExpYear());
     }
 
+    public Card getCard() {
+        return card;
+    }
+
     public Error getError() {
         return error;
     }

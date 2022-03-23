@@ -18,16 +18,10 @@ public class Card {
     public String cvv;
     private Integer expMonth;
     private Integer expYear;
+    private String cardType;
 
     public Card() {
-        regexMap = new HashMap<String, Pattern>();
-        regexMap.put("Amex", AmexRegex);
-        regexMap.put("MasterCard", MasterCardRegex);
-        regexMap.put("Visa", VisaRegex);
-        regexMap.put("DinersClub", DinersClubRegex);
-        regexMap.put("EnRoute", RouteClubRegex);
-        regexMap.put("Discover", DiscoverRegex);
-        regexMap.put("Jcb", JcbRegex);
+        regexMap = getRegexMap();
     }
 
     public Card(String number, String cvv, Integer expMonth, Integer expYear) {
@@ -70,10 +64,25 @@ public class Card {
     }
 
     public String getCardType() {
+        if (this.cardType != null) {
+            return this.cardType;
+        }
+
+        this.cardType = parseCardType(this.number);
+
+        return this.cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public static String parseCardType(String cardNumber) {
         String cardType = "Unknown";
+        HashMap<String, Pattern> regexMap = getRegexMap();
 
         try {
-            String cardNum = number.replace(" ", "").replace("-", "");
+            String cardNum = cardNumber.replace(" ", "").replace("-", "");
             for (Map.Entry<String, Pattern> kvp : regexMap.entrySet()) {
                 if (kvp.getValue().matcher(cardNum).find()) {
                     cardType = kvp.getKey();
@@ -86,6 +95,18 @@ public class Card {
         }
 
         return cardType;
+    }
+
+    public static HashMap<String, Pattern> getRegexMap() {
+        HashMap<String, Pattern> regexMap = new HashMap<String, Pattern>();
+        regexMap.put("Amex", AmexRegex);
+        regexMap.put("MasterCard", MasterCardRegex);
+        regexMap.put("Visa", VisaRegex);
+        regexMap.put("DinersClub", DinersClubRegex);
+        regexMap.put("EnRoute", RouteClubRegex);
+        regexMap.put("Discover", DiscoverRegex);
+        regexMap.put("Jcb", JcbRegex);
+        return regexMap;
     }
 
 }
