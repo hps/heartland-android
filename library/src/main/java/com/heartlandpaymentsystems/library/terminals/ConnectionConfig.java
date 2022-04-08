@@ -15,7 +15,7 @@ public class ConnectionConfig {
     private Parity parity;
     private StopBits stopBits;
     private DataBits dataBits;
-    private String timeout;
+    private long timeout;
 
     // credentials
     private String secretApiKey;
@@ -28,7 +28,7 @@ public class ConnectionConfig {
     private Environment environment;
 
     public ConnectionConfig() {
-        timeout = "60000";
+        timeout = 60000L;
         environment = Environment.TEST;
     }
 
@@ -88,11 +88,16 @@ public class ConnectionConfig {
         this.dataBits = dataBits;
     }
 
-    public String getTimeout() {
+    public long getTimeout() {
         return timeout;
     }
 
+    @Deprecated
     public void setTimeout(String timeout) {
+        this.timeout = Long.getLong(timeout);
+    }
+
+    public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
 

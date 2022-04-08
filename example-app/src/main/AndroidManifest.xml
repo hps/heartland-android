@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".OTAUpdateActivity"
+            android:exported="false" />
+        <activity
             android:name=".C2XTransactionActivity"
             android:exported="false" />
         <activity

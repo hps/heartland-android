@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
+import com.heartlandpaymentsystems.library.terminals.enums.ConnectionMode;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -32,12 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static C2XDevice c2XDevice;
 
-    public static final String PUBLIC_KEY = "YOUR_KEY_GOES_HERE";
-    private static final String USERNAME = "YOUR_USERNAME_GOES_HERE";
-    private static final String PASSWORD = "YOUR_PASSWORD_GOES_HERE";
-    private static final String SITE_ID = "YOUR_SITEID_GOES_HERE";
-    private static final String DEVICE_ID = "YOUR_DEVICEID_GOES_HERE";
-    private static final String LICENSE_ID = "YOUR_LICENSEID_GOES_HERE";
+    public static final String PUBLIC_KEY = "pkapi_cert_P6dRqs1LzfWJ6HgGVZ";
+    private static final String USERNAME = "703674727";
+    private static final String PASSWORD = "$Test1234";
+    private static final String SITE_ID = "372882";
+    private static final String DEVICE_ID = "90915914";
+    private static final String LICENSE_ID = "372713";
 
     private AlertDialog mAlertDialog;
 
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.connect_to_device_button).setOnClickListener(this);
         findViewById(R.id.manual_card_button).setOnClickListener(this);
         findViewById(R.id.transaction_button).setOnClickListener(this);
-
+        findViewById(R.id.ota_update_button).setOnClickListener(this);
 
         if (PUBLIC_KEY.length() == 0) {
             Toast.makeText(this, "Please provide public key", Toast.LENGTH_SHORT).show();
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         connectionConfig.setSiteId(SITE_ID);
         connectionConfig.setDeviceId(DEVICE_ID);
         connectionConfig.setLicenseId(LICENSE_ID);
+        connectionConfig.setConnectionMode(ConnectionMode.BLUETOOTH);
         connectionConfig.setEnvironment(Environment.TEST);
 
         c2XDevice = new C2XDevice(getApplicationContext(), connectionConfig);
@@ -135,6 +137,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.transaction_button:
                 Intent transactionIntent = new Intent(this, C2XTransactionActivity.class);
                 startActivity(transactionIntent);
+                break;
+            case R.id.ota_update_button:
+                Intent updateIntent = new Intent(this, OTAUpdateActivity.class);
+                startActivity(updateIntent);
                 break;
         }
     }

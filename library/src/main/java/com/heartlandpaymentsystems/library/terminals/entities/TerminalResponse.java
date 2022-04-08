@@ -58,6 +58,8 @@ public class TerminalResponse implements IDeviceResponse {
     private String applicationCryptogram;
     private ApplicationCryptogramType applicationCryptogramType;
     private String applicationCryptogramTypeS;
+    private String authorizationResponse;
+    private String issuerAuthenticationData;
 
     private String cardHolderVerificationMethod;
     private String terminalVerificationResult;
@@ -89,6 +91,10 @@ public class TerminalResponse implements IDeviceResponse {
         }
         if (transactionResponse.getTransactionType() != null) {
             response.setTransactionType(transactionResponse.getTransactionType().toString());
+        }
+
+        if(transactionResponse.getResponseCodes() != null && transactionResponse.getTransactionType() != null) {
+            response.setAuthorizationResponse(transactionResponse.getResponseCodes().get(transactionResponse.getTransactionType()));
         }
 
         if (transactionResponse.getReceipt() != null) {
@@ -129,6 +135,7 @@ public class TerminalResponse implements IDeviceResponse {
                 response.setTransactionType(receipt.getTransactionType().toString());
             }
 //            receipt.getUnpredictableNumber();
+            response.setIssuerAuthenticationData(receipt.getIssuerAuthenticationData());
         }
 
         return response;
@@ -462,6 +469,23 @@ public class TerminalResponse implements IDeviceResponse {
         this.terminalSerialNumber = terminalSerialNumber;
     }
 
+    public String getAuthorizationResponse() {
+        return authorizationResponse;
+    }
+
+    public void setAuthorizationResponse(String authorizationResponse) {
+        this.authorizationResponse = authorizationResponse;
+    }
+
+    public String getIssuerAuthenticationData() {
+        return issuerAuthenticationData;
+    }
+
+    public void setIssuerAuthenticationData(String issuerAuthenticationData) {
+        this.issuerAuthenticationData = issuerAuthenticationData;
+    }
+
+
     public boolean isStoredResponse() {
         return storedResponse;
     }
@@ -521,6 +545,8 @@ public class TerminalResponse implements IDeviceResponse {
                 ", applicationCryptogramTypeS='" + applicationCryptogramTypeS + '\'' +
                 ", cardHolderVerificationMethod='" + cardHolderVerificationMethod + '\'' +
                 ", terminalVerificationResult='" + terminalVerificationResult + '\'' +
+                ", authorizationResponse='" + authorizationResponse + '\'' +
+                ", issuerAuthenticationData='" + issuerAuthenticationData + '\'' +
                 ", terminalSerialNumber='" + terminalSerialNumber + '\'' +
                 ", storedResponse=" + storedResponse +
                 ", lastResponseTransactionId='" + lastResponseTransactionId + '\'' +

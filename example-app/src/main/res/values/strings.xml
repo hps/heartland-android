@@ -8,6 +8,8 @@
     <string name="card_entry">Manual Card Entry and Transaction</string>
     <string name="description_transactions">Test various transaction types using a connected C2X device. Use the top button, "Connect to C2X Device", to make sure you are connected first.</string>
     <string name="c2x_transactions">C2X Transactions</string>
+    <string name="description_ota_update">Check for and update firmware and kernel for the C2X device.</string>
+    <string name="ota_update">OTA Update</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -22,6 +24,7 @@
     <string name="error_enter_valid_expiration">Make sure to enter a valid number for the expiration month and year.</string>
     <string name="error_enter_valid_card">Make sure to enter valid credit card information.</string>
     <string name="error_device_not_connected">You must connect to your C2X device before using this transaction.</string>
+    <string name="error_device_not_connected_ota">You must connect to your C2X device before using OTA updates.</string>
     <string name="error_no_transaction_id">You must have a valid transaction ID (from CreditSale) to perform this transaction.</string>
     <string name="error_no_amount">You must enter a valid Transaction Amount.</string>
     <string name="error_no_gratuity">You must enter a valid Gratuity Amount.</string>
@@ -50,4 +53,10 @@
     <string name="tipadjust">Tip Adjust</string>
     <string name="creditreturn">Credit Return</string>
     <string name="creditvoid">Credit Void</string>
+
+    <string name="checking">Checking</string>
+    <string name="check_firmware">Check for firmware updates</string>
+    <string name="check_kernel">Check for kernel updates</string>
+    <string name="checking_firmware">Checking for available firmware updates</string>
+    <string name="checking_kernel">Checking for available kernel updates</string>
 </resources>

@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
@@ -23,7 +21,7 @@ public class Dialogs {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
-        builder.setCancelable(false);
+        builder.setCancelable(true);
         builder.setItems(list, onClickListener);
         return builder.show();
     }
@@ -53,6 +51,29 @@ public class Dialogs {
         pd.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
     }
 
+    public static void showProgress(Context context, String title, String message, int percent) {
+        TextView pdtext;
+        ProgressBar progressBar;
+        if(pd == null) {
+            pd = ProgressDialog.show(context, title, message.replace("_", " "));
+            pd.setContentView(R.layout.progress_dialog_horizontal);
+            pd.setCancelable(false);
+        }
+        pdtext = pd.findViewById(R.id.progress_Dialog_txt);
+        pdtext.setText(message.replace("_", " "));
+        progressBar = pd.findViewById(R.id.progress_bar);
+        progressBar.setProgress(percent);
+        pd.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+    }
+
+    public static void updateProgress(double percent) {
+        if (pd == null) {
+            return;
+        }
+        ProgressBar progressBar = pd.findViewById(R.id.progress_bar);
+        progressBar.setProgress((int) percent);
+    }
+
     public static void hideProgress(){
         if(pd != null){
             pd.dismiss();
@@ -66,6 +87,19 @@ public class Dialogs {
 
         message += "Device Response Code: " + terminalResponse.getDeviceResponseCode() + "\n";
         message += "Response Text: " + terminalResponse.getResponseText() + "\n";
+        message += "Authorization Response: " + terminalResponse.getAuthorizationResponse() +"\n";
+        if(terminalResponse.getEntryMode() != null) {
+            switch (terminalResponse.getEntryMode()) {
+                case CHIP:
+                case CONTACTLESS:{
+                    message += "Issuer Authentication Data: " + terminalResponse.getIssuerAuthenticationData() +"\n";
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
         message += "Transaction ID: " + terminalResponse.getTransactionId() + "\n";
         message += "Transaction Type: " + terminalResponse.getTransactionType() + "\n";
         message += "Entry Mode: " + terminalResponse.getEntryMode() + "\n";

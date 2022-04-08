@@ -1,15 +1,23 @@
 package com.heartlandpaymentsystems.library.terminals.c2x;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
+import com.heartlandpaymentsystems.library.terminals.DeviceListener;
+import com.heartlandpaymentsystems.library.terminals.IDevice;
+import com.heartlandpaymentsystems.library.terminals.TransactionListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
+import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
+import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothDiscoveryListener;
+import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothReceiver;
 import com.tsys.payments.library.connection.ConnectionListener;
 import com.tsys.payments.library.domain.CardholderInteractionRequest;
 import com.tsys.payments.library.domain.GatewayConfiguration;
@@ -25,23 +33,27 @@ import com.tsys.payments.library.enums.TerminalInputCapability;
 import com.tsys.payments.library.enums.TerminalOperatingEnvironment;
 import com.tsys.payments.library.enums.TerminalOutputCapability;
 import com.tsys.payments.library.enums.TerminalType;
+import com.tsys.payments.library.enums.TerminalUpdateType;
 import com.tsys.payments.library.enums.TransactionStatus;
-import com.tsys.payments.library.exceptions.Error;
 import com.tsys.payments.library.exceptions.InitializationException;
+import com.tsys.payments.library.exceptions.Error;
 import com.tsys.payments.library.gateway.enums.GatewayType;
+import com.tsys.payments.library.terminal.AvailableTerminalVersionsListener;
+import com.tsys.payments.library.terminal.AvailableVersionsListener;
 import com.tsys.payments.library.terminal.TerminalInfoListener;
+import com.tsys.payments.library.terminal.UpdateListener;
+import com.tsys.payments.library.terminal.UpdateTerminalListener;
 import com.tsys.payments.library.utils.LibraryConfigHelper;
 import com.tsys.payments.transaction.TransactionManager;
 
-import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
-import com.heartlandpaymentsystems.library.terminals.DeviceListener;
-import com.heartlandpaymentsystems.library.terminals.IDevice;
-import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
-import com.heartlandpaymentsystems.library.terminals.TransactionListener;
-import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothDiscoveryListener;
-import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothReceiver;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 public class C2XDevice implements IDevice {
+
+    private static final String TAG = C2XDevice.class.getSimpleName();
+
     private Context applicationContext;
     private ConnectionConfig connectionConfig;
     private TransactionConfiguration transactionConfig;
@@ -51,6 +63,8 @@ public class C2XDevice implements IDevice {
     private TerminalInfo connectedTerminalInfo;
     private DeviceListener deviceListener;
     private TransactionListener transactionListener;
+    private AvailableTerminalVersionsListener availableTerminalVersionsListener;
+    private UpdateTerminalListener updateTerminalListener;
     private HashSet<BluetoothDevice> bluetoothDevices;
     private BluetoothReceiver bluetoothReceiver;
 
@@ -69,6 +83,14 @@ public class C2XDevice implements IDevice {
 
     public void setTransactionListener(TransactionListener transactionListener) {
         this.transactionListener = transactionListener;
+    }
+
+    public void setAvailableTerminalVersionsListener(AvailableTerminalVersionsListener availableTerminalVersionsListener) {
+        this.availableTerminalVersionsListener = availableTerminalVersionsListener;
+    }
+
+    public void setUpdateTerminalListener(UpdateTerminalListener updateTerminalListener) {
+        this.updateTerminalListener = updateTerminalListener;
     }
 
     public void initialize() {
@@ -207,8 +229,8 @@ public class C2XDevice implements IDevice {
         terminalConfig.setAuthenticationCapability(TerminalAuthenticationCapability.NO_CAPABILITY);
         terminalConfig.setOperatingEnvironment(TerminalOperatingEnvironment.ON_MERCHANT_PREMISES_ATTENDED);
 
-        final Long timeout = Long.getLong(connectionConfig.getTimeout());
-        terminalConfig.setTimeout(timeout != null ? timeout : 60000L);
+        final Long timeout = connectionConfig.getTimeout();
+        terminalConfig.setTimeout(timeout != 0 ? timeout : 60000L);
 
         HashMap<String, String> credentials = new HashMap<>();
 //        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
@@ -231,6 +253,34 @@ public class C2XDevice implements IDevice {
 
     public void cancelTransaction() {
         transactionManager.cancel();
+    }
+
+    //OTA methods
+    public void getAvailableTerminalVersions(TerminalUpdateType terminalUpdateType) {
+        if (!transactionManager.isInitialized()) {
+            Log.e(TAG, "TransactionManager not initialized, please connect to device first.");
+            return;
+        }
+        if (availableTerminalVersionsListener == null) {
+            Log.e(TAG, "AvailableTerminalVersionsListener is null, please set a valid listener.");
+            return;
+        }
+
+        transactionManager.getAvailableTerminalVersions(terminalUpdateType, null, availableTerminalVersionsListener);
+    }
+
+    public void updateTerminal(@NonNull TerminalUpdateType terminalUpdateType,
+                               @Nullable String version) {
+        if (!transactionManager.isInitialized()) {
+            Log.e(TAG, "TransactionManager not initialized, please connect to device first.");
+            return;
+        }
+        if (updateTerminalListener == null) {
+            Log.e(TAG, "UpdateTerminalListener is null, please set a valid listener.");
+            return;
+        }
+
+        transactionManager.updateTerminal(terminalUpdateType, null, version, updateTerminalListener);
     }
 
     protected class ConnectionListenerImpl implements ConnectionListener {
