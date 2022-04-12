@@ -33,12 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public static C2XDevice c2XDevice;
 
-    public static final String PUBLIC_KEY = "pkapi_cert_P6dRqs1LzfWJ6HgGVZ";
-    private static final String USERNAME = "703674727";
-    private static final String PASSWORD = "$Test1234";
-    private static final String SITE_ID = "372882";
-    private static final String DEVICE_ID = "90915914";
-    private static final String LICENSE_ID = "372713";
+    public static final String PUBLIC_KEY = "YOUR_KEY_GOES_HERE";
+    private static final String USERNAME = "YOUR_USERNAME_GOES_HERE";
+    private static final String PASSWORD = "YOUR_PASSWORD_GOES_HERE";
+    private static final String SITE_ID = "YOUR_SITEID_GOES_HERE";
+    private static final String DEVICE_ID = "YOUR_DEVICEID_GOES_HERE";
+    private static final String LICENSE_ID = "YOUR_LICENSEID_GOES_HERE";
 
     private AlertDialog mAlertDialog;
 
