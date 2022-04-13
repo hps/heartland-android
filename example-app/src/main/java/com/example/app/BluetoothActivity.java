@@ -90,6 +90,8 @@ public class BluetoothActivity extends AppCompatActivity implements View.OnClick
                 for (BluetoothDevice dev : list) {
                     if(dev.getName() != null) {
                         btList.add(dev.getName().trim());
+                    } else {
+                        btList.add(dev.getAddress());
                     }
                 }
 
