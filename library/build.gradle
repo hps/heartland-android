@@ -6,7 +6,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -29,14 +29,17 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.material:material:1.2.0-alpha06'
 
+    // Global payments SDK
+    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:6.1.22'
+
     /** Vital SDK dependencies - Start **/
-    implementation project(':vital-sdk')
+    //api project(path: ':vital-sdk')
 
     // Apache Commons
     implementation 'commons-codec:commons-codec:1.13'

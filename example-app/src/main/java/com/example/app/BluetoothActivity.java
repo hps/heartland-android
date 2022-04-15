@@ -90,6 +90,8 @@ public class BluetoothActivity extends AppCompatActivity implements View.OnClick
                 for (BluetoothDevice dev : list) {
                     if(dev.getName() != null) {
                         btList.add(dev.getName().trim());
+                    } else {
+                        btList.add(dev.getAddress());
                     }
                 }
 
@@ -133,7 +135,9 @@ public class BluetoothActivity extends AppCompatActivity implements View.OnClick
                 //save the bluetooth data
                 SharedPreferences.Editor editor = getSharedPreferences(MainActivity.SAVED_PREFS, MODE_PRIVATE).edit();
                 editor.putString(MainActivity.BLUETOOTH_NAME, bluetoothDeviceName);
-                editor.putString(MainActivity.BLUETOOTH_ADDRESS, bluetoothDeviceAddress);
+                if (bluetoothDeviceAddress != null) {
+                    editor.putString(MainActivity.BLUETOOTH_ADDRESS, bluetoothDeviceAddress);
+                }
                 editor.commit();
             }
 

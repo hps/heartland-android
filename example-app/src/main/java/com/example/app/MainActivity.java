@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
+import com.heartlandpaymentsystems.library.terminals.enums.ConnectionMode;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.connect_to_device_button).setOnClickListener(this);
         findViewById(R.id.manual_card_button).setOnClickListener(this);
         findViewById(R.id.transaction_button).setOnClickListener(this);
-
+        findViewById(R.id.ota_update_button).setOnClickListener(this);
 
         if (PUBLIC_KEY.length() == 0) {
             Toast.makeText(this, "Please provide public key", Toast.LENGTH_SHORT).show();
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         connectionConfig.setSiteId(SITE_ID);
         connectionConfig.setDeviceId(DEVICE_ID);
         connectionConfig.setLicenseId(LICENSE_ID);
+        connectionConfig.setConnectionMode(ConnectionMode.BLUETOOTH);
         connectionConfig.setEnvironment(Environment.TEST);
 
         c2XDevice = new C2XDevice(getApplicationContext(), connectionConfig);
@@ -135,6 +137,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.transaction_button:
                 Intent transactionIntent = new Intent(this, C2XTransactionActivity.class);
                 startActivity(transactionIntent);
+                break;
+            case R.id.ota_update_button:
+                Intent updateIntent = new Intent(this, OTAUpdateActivity.class);
+                startActivity(updateIntent);
                 break;
         }
     }
