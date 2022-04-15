@@ -14,8 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.heartlandpaymentsystems.library.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
+import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.enums.TerminalUpdateType;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.heartlandpaymentsystems.library;
+package com.heartlandpaymentsystems.library.terminals;
 
 import androidx.annotation.Nullable;
 

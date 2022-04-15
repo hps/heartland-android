@@ -9,7 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.heartlandpaymentsystems.library.UpdateTerminalListener;
+import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
