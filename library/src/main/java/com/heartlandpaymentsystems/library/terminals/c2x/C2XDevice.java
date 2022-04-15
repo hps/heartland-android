@@ -9,6 +9,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.heartlandpaymentsystems.library.UpdateTerminalListener;
+import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
 import com.heartlandpaymentsystems.library.terminals.IDevice;
@@ -16,6 +18,7 @@ import com.heartlandpaymentsystems.library.terminals.TransactionListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
+import com.heartlandpaymentsystems.library.terminals.enums.TerminalUpdateType;
 import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothDiscoveryListener;
 import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothReceiver;
 import com.tsys.payments.library.connection.ConnectionListener;
@@ -33,21 +36,19 @@ import com.tsys.payments.library.enums.TerminalInputCapability;
 import com.tsys.payments.library.enums.TerminalOperatingEnvironment;
 import com.tsys.payments.library.enums.TerminalOutputCapability;
 import com.tsys.payments.library.enums.TerminalType;
-import com.tsys.payments.library.enums.TerminalUpdateType;
 import com.tsys.payments.library.enums.TransactionStatus;
 import com.tsys.payments.library.exceptions.InitializationException;
 import com.tsys.payments.library.exceptions.Error;
 import com.tsys.payments.library.gateway.enums.GatewayType;
-import com.tsys.payments.library.terminal.AvailableTerminalVersionsListener;
 import com.tsys.payments.library.terminal.AvailableVersionsListener;
 import com.tsys.payments.library.terminal.TerminalInfoListener;
 import com.tsys.payments.library.terminal.UpdateListener;
-import com.tsys.payments.library.terminal.UpdateTerminalListener;
 import com.tsys.payments.library.utils.LibraryConfigHelper;
 import com.tsys.payments.transaction.TransactionManager;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class C2XDevice implements IDevice {
@@ -266,7 +267,12 @@ public class C2XDevice implements IDevice {
             return;
         }
 
-        transactionManager.getAvailableTerminalVersions(terminalUpdateType, null, availableTerminalVersionsListener);
+        com.tsys.payments.library.enums.TerminalUpdateType updateType = com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
+        if (terminalUpdateType == TerminalUpdateType.CONFIG) {
+            updateType = com.tsys.payments.library.enums.TerminalUpdateType.KERNEL;
+        }
+
+        transactionManager.getAvailableTerminalVersions(updateType, null, new AvailableTerminalVersionsListenerImpl());
     }
 
     public void updateTerminal(@NonNull TerminalUpdateType terminalUpdateType,
@@ -280,7 +286,12 @@ public class C2XDevice implements IDevice {
             return;
         }
 
-        transactionManager.updateTerminal(terminalUpdateType, null, version, updateTerminalListener);
+        com.tsys.payments.library.enums.TerminalUpdateType updateType = com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
+        if (terminalUpdateType == TerminalUpdateType.CONFIG) {
+            updateType = com.tsys.payments.library.enums.TerminalUpdateType.KERNEL;
+        }
+
+        transactionManager.updateTerminal(updateType, null, version, new UpdateTerminalListenerImpl());
     }
 
     protected class ConnectionListenerImpl implements ConnectionListener {
@@ -378,6 +389,53 @@ public class C2XDevice implements IDevice {
             if (transactionListener != null) {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
                 transactionListener.onError(err);
+            }
+        }
+    }
+
+    protected class AvailableTerminalVersionsListenerImpl implements com.tsys.payments.library.terminal.AvailableTerminalVersionsListener {
+
+        @Override
+        public void onAvailableTerminalVersionsReceived(com.tsys.payments.library.enums.TerminalUpdateType type, List<String> versions) {
+            if (availableTerminalVersionsListener != null) {
+                TerminalUpdateType updateType = TerminalUpdateType.FIRMWARE;
+                if (type == com.tsys.payments.library.enums.TerminalUpdateType.KERNEL) {
+                    updateType = TerminalUpdateType.CONFIG;
+                }
+                availableTerminalVersionsListener.onAvailableTerminalVersionsReceived(updateType, versions);
+            }
+        }
+
+        @Override
+        public void onTerminalVersionInfoError(Error error) {
+            if (availableTerminalVersionsListener != null) {
+                java.lang.Error err = new java.lang.Error(error.getMessage());
+                availableTerminalVersionsListener.onTerminalVersionInfoError(err);
+            }
+        }
+    }
+
+    protected class UpdateTerminalListenerImpl implements com.tsys.payments.library.terminal.UpdateTerminalListener {
+
+        @Override
+        public void onProgress(@Nullable Double completionPercentage, @Nullable String progressMessage) {
+            if (updateTerminalListener != null) {
+                updateTerminalListener.onProgress(completionPercentage, progressMessage);
+            }
+        }
+
+        @Override
+        public void onTerminalUpdateSuccess() {
+            if (updateTerminalListener != null) {
+                updateTerminalListener.onTerminalUpdateSuccess();
+            }
+        }
+
+        @Override
+        public void onTerminalUpdateError(Error error) {
+            if (updateTerminalListener != null) {
+                java.lang.Error err = new java.lang.Error(error.getMessage());
+                updateTerminalListener.onTerminalUpdateError(err);
             }
         }
     }

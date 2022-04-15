@@ -14,10 +14,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.tsys.payments.library.enums.TerminalUpdateType;
-import com.tsys.payments.library.exceptions.Error;
-import com.tsys.payments.library.terminal.AvailableTerminalVersionsListener;
-import com.tsys.payments.library.terminal.UpdateTerminalListener;
+import com.heartlandpaymentsystems.library.UpdateTerminalListener;
+import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
+import com.heartlandpaymentsystems.library.terminals.enums.TerminalUpdateType;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class OTAUpdateActivity extends AppCompatActivity implements View.OnClick
                     showAlertDialog(getString(R.string.error), getString(R.string.error_device_not_connected_ota));
                     return;
                 }
-                MainActivity.c2XDevice.getAvailableTerminalVersions(TerminalUpdateType.KERNEL);
+                MainActivity.c2XDevice.getAvailableTerminalVersions(TerminalUpdateType.CONFIG);
                 showProgress(this, getString(R.string.checking), getString(R.string.checking_kernel));
                 break;
         }
@@ -82,7 +81,7 @@ public class OTAUpdateActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onClick(final DialogInterface dialogInterface, int i) {
                             showProgress(OTAUpdateActivity.this, "Updating", "Updating kernel...", 0);
-                            MainActivity.c2XDevice.updateTerminal(TerminalUpdateType.KERNEL, versions.get(i));
+                            MainActivity.c2XDevice.updateTerminal(TerminalUpdateType.CONFIG, versions.get(i));
                         }
                     });
         }
