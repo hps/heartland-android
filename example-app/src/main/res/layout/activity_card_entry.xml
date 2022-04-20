@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CardEntryActivity">
+
+    <LinearLayout
+        android:id="@+id/card_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        tools:context=".CardFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/card_no_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/card_no">
+
+            <EditText
+                android:id="@+id/card_no_edt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_action_name"
+                android:drawableLeft="@drawable/ic_action_name"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/card_exp_date_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:hint="@string/card_exp_date">
+
+                <EditText
+                    android:id="@+id/card_exp_date_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_date_name"
+                    android:drawableLeft="@drawable/ic_date_name"
+                    android:inputType="date"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/card_exp_yr_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:hint="@string/card_exp_yr">
+
+                <EditText
+                    android:id="@+id/card_exp_yr_edt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/card_cvv_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/card_cvv">
+
+            <EditText
+                android:id="@+id/card_cvv_edt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_cvv_name"
+                android:drawableLeft="@drawable/ic_cvv_name"
+                android:inputType="number"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/submit" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tokenizeResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_layout"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:layout_marginLeft="15dp"/>
+
+    <LinearLayout
+        android:id="@+id/purchase_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tokenizeResult"
+        android:layout_marginTop="@dimen/layout_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/transaction_status_label" />
+
+        <TextView
+            android:id="@+id/transaction_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/transaction_status_none" />
+
+        <Button
+            android:id="@+id/creditsale_manual_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/creditsale_manual" />
+
+    </LinearLayout>
+
+</RelativeLayout>
