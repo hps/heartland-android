@@ -67,6 +67,16 @@ public class TerminalResponse implements IDeviceResponse {
     private boolean storedResponse;
     private String lastResponseTransactionId;
 
+    // - DUPLICATE DATA
+    private String mOriginalGatewayTxnId;
+    private String mOriginalRspDT;
+    private String mOriginalClientTxnId;
+    private String mOriginalAuthCode;
+    private String mOriginalRefNbr;
+    private long mOriginalAuthAmt;
+    private String mOriginalCardType;
+    private String mOriginalCardNbrLast4;
+
     public TerminalResponse() {}
 
     public static TerminalResponse fromTransactionResponse(TransactionResponse transactionResponse) {
@@ -137,6 +147,15 @@ public class TerminalResponse implements IDeviceResponse {
 //            receipt.getUnpredictableNumber();
             response.setIssuerAuthenticationData(receipt.getIssuerAuthenticationData());
         }
+
+        response.setOriginalGatewayTxnId(transactionResponse.getOriginalGatewayTxnId());
+        response.setOriginalRspDT(transactionResponse.getOriginalRspDT());
+        response.setOriginalClientTxnId(transactionResponse.getOriginalClientTxnId());
+        response.setOriginalAuthCode(transactionResponse.getOriginalAuthCode());
+        response.setOriginalRefNbr(transactionResponse.getOriginalRefNbr());
+        response.setOriginalAuthAmt(transactionResponse.getOriginalAuthAmt());
+        response.setOriginalCardType(transactionResponse.getOriginalCardType());
+        response.setOriginalCardNbrLast4(transactionResponse.getOriginalCardNbrLast4());
 
         return response;
     }
@@ -485,7 +504,6 @@ public class TerminalResponse implements IDeviceResponse {
         this.issuerAuthenticationData = issuerAuthenticationData;
     }
 
-
     public boolean isStoredResponse() {
         return storedResponse;
     }
@@ -500,6 +518,70 @@ public class TerminalResponse implements IDeviceResponse {
 
     public void setLastResponseTransactionId(String lastResponseTransactionId) {
         this.lastResponseTransactionId = lastResponseTransactionId;
+    }
+
+    public String getOriginalGatewayTxnId() {
+        return mOriginalGatewayTxnId;
+    }
+
+    public void setOriginalGatewayTxnId(String originalGatewayTxnId) {
+        mOriginalGatewayTxnId = originalGatewayTxnId;
+    }
+
+    public String getOriginalRspDT() {
+        return mOriginalRspDT;
+    }
+
+    public void setOriginalRspDT(String originalRspDT) {
+        mOriginalRspDT = originalRspDT;
+    }
+
+    public String getOriginalClientTxnId() {
+        return mOriginalClientTxnId;
+    }
+
+    public void setOriginalClientTxnId(String originalClientTxnId) {
+        mOriginalClientTxnId = originalClientTxnId;
+    }
+
+    public String getOriginalAuthCode() {
+        return mOriginalAuthCode;
+    }
+
+    public void setOriginalAuthCode(String originalAuthCode) {
+        mOriginalAuthCode = originalAuthCode;
+    }
+
+    public String getOriginalRefNbr() {
+        return mOriginalRefNbr;
+    }
+
+    public void setOriginalRefNbr(String originalRefNbr) {
+        mOriginalRefNbr = originalRefNbr;
+    }
+
+    public long getOriginalAuthAmt() {
+        return mOriginalAuthAmt;
+    }
+
+    public void setOriginalAuthAmt(long originalAuthAmt) {
+        mOriginalAuthAmt = originalAuthAmt;
+    }
+
+    public String getOriginalCardType() {
+        return mOriginalCardType;
+    }
+
+    public void setOriginalCardType(String originalCardType) {
+        mOriginalCardType = originalCardType;
+    }
+
+    public String getOriginalCardNbrLast4() {
+        return mOriginalCardNbrLast4;
+    }
+
+    public void setOriginalCardNbrLast4(String originalCardNbrLast4) {
+        mOriginalCardNbrLast4 = originalCardNbrLast4;
     }
 
     @Override

@@ -18,7 +18,10 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        flatDir { //Add this code
+            dirs 'libs'
+            dirs project(':library').file('libs')
+        }
     }
 }
 
