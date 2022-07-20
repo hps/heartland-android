@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         connectionConfig.setLicenseId(LICENSE_ID);
         connectionConfig.setConnectionMode(ConnectionMode.BLUETOOTH);
         connectionConfig.setEnvironment(Environment.TEST);
-        connectionConfig.setAllowDupes(false);
 
         c2XDevice = new C2XDevice(getApplicationContext(), connectionConfig);
 

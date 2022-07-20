@@ -16,7 +16,6 @@ public class ConnectionConfig {
     private StopBits stopBits;
     private DataBits dataBits;
     private long timeout;
-    private boolean allowDupes;
 
     // credentials
     private String secretApiKey;
@@ -153,12 +152,4 @@ public class ConnectionConfig {
     public Environment getEnvironment() { return environment; }
 
     public void setEnvironment(Environment environment) { this.environment = environment; }
-
-    public boolean getAllowDupes() {
-        return allowDupes;
-    }
-
-    public void setAllowDupes(boolean allowDupes) {
-        this.allowDupes = allowDupes;
-    }
 }

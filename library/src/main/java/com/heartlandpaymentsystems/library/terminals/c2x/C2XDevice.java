@@ -216,7 +216,6 @@ public class C2XDevice implements IDevice {
         this.connectionConfig = connectionConfig;
 
         LibraryConfigHelper.setDebugMode(connectionConfig.getEnvironment().equals(Environment.TEST));
-        LibraryConfigHelper.setAllowDupes(connectionConfig.getAllowDupes());
 
         transactionConfig = new TransactionConfiguration();
         transactionConfig.setChipEnabled(true);
