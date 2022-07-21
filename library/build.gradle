@@ -10,7 +10,6 @@ android {
         targetSdkVersion 29
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -27,23 +26,27 @@ android {
 }
 
 dependencies {
-    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    api(name: 'bbpos-release', ext: 'aar')
+    api(name: 'core-release', ext: 'aar')
+    api(name: 'ingenico-release', ext: 'aar')
+    api(name: 'portico-release', ext: 'aar')
+    api(name: 'transaction-manager-portico-release', ext: 'aar')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    //implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.material:material:1.2.0-alpha06'
 
     // Global payments SDK
-    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:6.1.22'
+    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:7.0.5'
 
     /** Vital SDK dependencies - Start **/
     //api project(path: ':vital-sdk')
 
     // Apache Commons
-    implementation 'commons-codec:commons-codec:1.13'
+    //implementation 'commons-codec:commons-codec:1.13'
 
     // Dates & Times
-    implementation 'joda-time:joda-time:2.10'
+    //implementation 'joda-time:joda-time:2.10'
 
     // Timber Logging: https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
@@ -58,4 +61,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-rc01'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2-rc01'
+
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly "org.projectlombok:lombok:1.18.12"
+    testAnnotationProcessor "org.projectlombok:lombok:1.18.12"
 }
