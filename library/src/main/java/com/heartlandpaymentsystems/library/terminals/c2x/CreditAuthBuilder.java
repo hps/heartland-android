@@ -49,7 +49,8 @@ public class CreditAuthBuilder extends BaseBuilder {
         if (creditCard != null) {
             CardData card = new CardData();
             card.setPan(creditCard.getNumber());
-            card.setExpirationDate(creditCard.getExpMonth().toString() + creditCard.getExpYear().toString());
+            String expMonth = String.format("%02d", creditCard.getExpMonth());
+            card.setExpirationDate(expMonth + creditCard.getExpYear().toString());
             card.setCvv2(creditCard.getCvv());
             card.setCardDataSource(CardDataSourceType.KEYED);
 
