@@ -1,7 +1,9 @@
 package com.heartlandpaymentsystems.library.terminals.c2x;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 
+import com.tsys.payments.library.domain.AutoSubstantiation;
 import com.tsys.payments.library.domain.CardData;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.AvsType;
@@ -24,6 +26,19 @@ public class CreditSaleBuilder extends BaseBuilder {
 
     public CreditSaleBuilder(C2XDevice device) {
         super((IDevice) device);
+    }
+
+    @Override
+    public void execute() throws Exception {
+        //check if the healthcare total is larger than the transaction amount
+        if (getTotalHealthcareAmount() != null) {
+            BigDecimal healthcareAmount = getTotalHealthcareAmount().multiply(BigDecimal.valueOf(100));
+            if (healthcareAmount.compareTo(amount) == 1) {
+                //amount cannot be less than healthcare total
+                throw new Exception("Amount cannot be less than healthcare total");
+            }
+        }
+        super.execute();
     }
 
     @Override
@@ -93,6 +108,10 @@ public class CreditSaleBuilder extends BaseBuilder {
         return amount;
     }
 
+    /**
+     * Set the Amount for the transaction
+     * @param amount
+     */
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }

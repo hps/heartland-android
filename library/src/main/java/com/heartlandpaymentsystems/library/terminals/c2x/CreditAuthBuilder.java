@@ -27,6 +27,19 @@ public class CreditAuthBuilder extends BaseBuilder {
     }
 
     @Override
+    public void execute() throws Exception {
+        //check if the healthcare total is larger than the transaction amount
+        if (getTotalHealthcareAmount() != null) {
+            BigDecimal healthcareAmount = getTotalHealthcareAmount().multiply(BigDecimal.valueOf(100));
+            if (healthcareAmount.compareTo(amount) == 1) {
+                //amount cannot be less than healthcare total
+                throw new Exception("Amount cannot be less than healthcare total");
+            }
+        }
+        super.execute();
+    }
+
+    @Override
     protected TransactionRequest buildRequest() {
         TransactionRequest request = super.buildRequest();
 
