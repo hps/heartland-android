@@ -1,4 +1,4 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.TransactionType;

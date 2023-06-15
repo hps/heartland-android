@@ -1,7 +1,8 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import java.math.BigDecimal;
 
+import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.tsys.payments.library.domain.CardData;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.AvsType;
@@ -22,8 +23,12 @@ public class CreditAuthBuilder extends BaseBuilder {
     private BigDecimal gratuity;
     private String cardHolderName;
 
-    public CreditAuthBuilder(C2XDevice device) {
+    /*public CreditAuthBuilder(C2XDevice device) {
         super((IDevice) device);
+    }*/
+
+    public CreditAuthBuilder(IDevice device){
+        super(device);
     }
 
     @Override

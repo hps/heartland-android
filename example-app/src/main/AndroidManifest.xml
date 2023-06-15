@@ -2,34 +2,73 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.app">
 
-    <uses-permission-sdk-23 android:name="android.permission.INTERNET" />
-    <uses-permission-sdk-23 android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".OTAUpdateActivity"
+            android:name=".CredentialsActivity"
             android:exported="false" />
         <activity
-            android:name=".C2XTransactionActivity"
+            android:name=".BaseTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BaseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BatchCloseActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreditVoidActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreditReturnActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreditCaptureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreditAuthActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreditAdjustActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreditSaleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".OTAUpdateActivity"
             android:exported="false" />
         <activity
             android:name=".CardEntryActivity"
             android:exported="false" />
         <activity
+            android:name=".GiftCardActivity"
+            android:exported="false" />
+        <activity
             android:name=".BluetoothActivity"
             android:exported="false" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

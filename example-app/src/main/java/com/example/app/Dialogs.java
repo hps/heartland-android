@@ -5,15 +5,19 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 
 public class Dialogs {
-    static ProgressDialog pd;
+
+    static AlertDialog pd;
+
     public static AlertDialog showListDialog(final String title, final Context context,
                                              final String[] list,
                                              final DialogInterface.OnClickListener onClickListener) {
@@ -41,25 +45,56 @@ public class Dialogs {
         return builder.show();
     }
 
-    public static void showProgress(Context context, String title, String message) {
+    public static void showProgress(Activity context, String title, String message,
+            View.OnClickListener dialogClickListener) {
         TextView pdtext;
-        if(pd == null) {
-            pd = ProgressDialog.show(context, title, message.replace("_", " "));
-            pd.setContentView(R.layout.progress_dialog);
+        Button pdbutton;
+        if (pd != null) {
+            try {
+                pd.dismiss();
+            }catch(Throwable e) {
+                e.printStackTrace();
+            }
+            pd = null;
         }
-        pdtext = pd.findViewById(R.id.progress_Dialog_txt);
+
+        LayoutInflater inflater = context.getLayoutInflater();
+        View dialog = inflater.inflate(R.layout.progress_dialog, null, false);
+
+        pdtext = dialog.findViewById(R.id.progress_Dialog_txt);
         pdtext.setText(message.replace("_", " "));
+
+        pdbutton = dialog.findViewById(R.id.progress_button);
+        if (dialogClickListener != null) {
+            pdbutton.setOnClickListener(dialogClickListener);
+        } else {
+            pdbutton.setVisibility(View.INVISIBLE);
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(dialog);
+
+        pd = builder.create();
         pd.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        pd.show();
     }
 
     public static void showProgress(Context context, String title, String message, int percent) {
         TextView pdtext;
         ProgressBar progressBar;
-        if(pd == null) {
-            pd = ProgressDialog.show(context, title, message.replace("_", " "));
-            pd.setContentView(R.layout.progress_dialog_horizontal);
-            pd.setCancelable(false);
+        if (pd != null) {
+            try {
+                pd.dismiss();
+            }catch(Throwable e) {
+                e.printStackTrace();
+            }
+            pd = null;
         }
+
+        pd = ProgressDialog.show(context, title, message.replace("_", " "));
+        pd.setContentView(R.layout.progress_dialog_horizontal);
+        pd.setCancelable(false);
+
         pdtext = pd.findViewById(R.id.progress_Dialog_txt);
         pdtext.setText(message.replace("_", " "));
         progressBar = pd.findViewById(R.id.progress_bar);
@@ -106,7 +141,11 @@ public class Dialogs {
         message += "Entry Mode: " + terminalResponse.getEntryMode() + "\n";
         message += "Card Number: " + terminalResponse.getMaskedCardNumber() + "\n";
         message += "Cardholder Name: " + terminalResponse.getCardholderName();
+        if(terminalResponse.getTransactionType() == "SVA"){
+            message += "\nSVA PAN: " + terminalResponse.getSvaPan();
+            message += "\nExpiration: " + terminalResponse.getExpirationDate();
+        }
 
-        return message;
+        return message.replace("_", " ");
     }
 }

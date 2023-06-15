@@ -21,7 +21,8 @@ public enum TransactionStatus {
     RETRY_PIN,
     REMOVE_CARD,
     CONFIGURING,
-    SEE_PHONE;
+    SEE_PHONE,
+    PROCESSING;
 
     public static TransactionStatus fromVitalSdk(com.tsys.payments.library.enums.TransactionStatus status) {
         if (status == null) return NONE;
@@ -47,6 +48,7 @@ public enum TransactionStatus {
             case REMOVE_CARD: return REMOVE_CARD;
             case CONFIGURING: return CONFIGURING;
             case SEE_PHONE: return SEE_PHONE;
+            case PROCESSING: return PROCESSING;
         }
 
         return NONE;

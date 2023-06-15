@@ -1,1 +1,2 @@
-include ':example-app', ':library'
+include ':example-app', ':library', ':vital-sdk:bbpos', ':vital-sdk:core', ':vital-sdk:ingenico',
+        ':vital-sdk:portico', ':vital-sdk:roamreader', ':vital-sdk:transaction-manager'

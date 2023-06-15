@@ -1,37 +1,33 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
-import java.math.BigDecimal;
-
+import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.TransactionType;
 
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 
-public class CreditCaptureBuilder extends BaseBuilder {
+public class CreditVoidBuilder extends BaseBuilder {
     private String referenceNumber;
-    private BigDecimal amount;
-    private BigDecimal gratuity;
     private String transactionId;
 
-    public CreditCaptureBuilder(C2XDevice device) {
+   /* public CreditVoidBuilder(C2XDevice device) {
         super((IDevice) device);
+    }*/
+
+    /**
+     * Build Void Transaction
+     * @param device
+     */
+    public CreditVoidBuilder(IDevice device){
+        super(device);
     }
 
     @Override
     protected TransactionRequest buildRequest() {
         TransactionRequest request = super.buildRequest();
 
-        request.setTransactionType(TransactionType.CAPTURE);
+        request.setTransactionType(TransactionType.VOID);
         request.setGatewayTransactionId(transactionId);
-
-        if (amount != null) {
-            request.setTotal(amount.movePointRight(2).longValue());
-        }
-
-        if (gratuity != null) {
-            request.setTip(gratuity.movePointRight(2).longValue());
-        }
-
         request.setPosReferenceNumber(referenceNumber);
 
         return request;
@@ -43,22 +39,6 @@ public class CreditCaptureBuilder extends BaseBuilder {
 
     public void setReferenceNumber(String referenceNumber) {
         this.referenceNumber = referenceNumber;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public BigDecimal getGratuity() {
-        return gratuity;
-    }
-
-    public void setGratuity(BigDecimal gratuity) {
-        this.gratuity = gratuity;
     }
 
     public String getTransactionId() {

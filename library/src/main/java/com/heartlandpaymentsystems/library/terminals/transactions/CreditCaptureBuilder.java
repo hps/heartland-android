@@ -1,32 +1,42 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import java.math.BigDecimal;
 
+import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.TransactionType;
 
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 
-public class CreditReturnBuilder extends BaseBuilder {
+public class CreditCaptureBuilder extends BaseBuilder {
     private String referenceNumber;
-    private String transactionId;
     private BigDecimal amount;
+    private BigDecimal gratuity;
+    private String transactionId;
 
-    public CreditReturnBuilder(C2XDevice device) {
+  /*  public CreditCaptureBuilder(C2XDevice device) {
         super((IDevice) device);
+    }*/
+
+    public CreditCaptureBuilder(IDevice device){
+        super(device);
     }
 
     @Override
     protected TransactionRequest buildRequest() {
         TransactionRequest request = super.buildRequest();
 
-        request.setTransactionType(TransactionType.REFUND);
+        request.setTransactionType(TransactionType.CAPTURE);
+        request.setGatewayTransactionId(transactionId);
 
         if (amount != null) {
             request.setTotal(amount.movePointRight(2).longValue());
         }
 
-        request.setGatewayTransactionId(transactionId);
+        if (gratuity != null) {
+            request.setTip(gratuity.movePointRight(2).longValue());
+        }
+
         request.setPosReferenceNumber(referenceNumber);
 
         return request;
@@ -40,19 +50,27 @@ public class CreditReturnBuilder extends BaseBuilder {
         this.referenceNumber = referenceNumber;
     }
 
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
     public BigDecimal getAmount() {
         return amount;
     }
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public BigDecimal getGratuity() {
+        return gratuity;
+    }
+
+    public void setGratuity(BigDecimal gratuity) {
+        this.gratuity = gratuity;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

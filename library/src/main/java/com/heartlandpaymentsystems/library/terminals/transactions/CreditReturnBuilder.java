@@ -1,25 +1,36 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import java.math.BigDecimal;
 
+import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.TransactionType;
 
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 
-public class CreditVoidBuilder extends BaseBuilder {
+public class CreditReturnBuilder extends BaseBuilder {
     private String referenceNumber;
     private String transactionId;
+    private BigDecimal amount;
 
-    public CreditVoidBuilder(C2XDevice device) {
+   /* public CreditReturnBuilder(C2XDevice device) {
         super((IDevice) device);
+    }*/
+
+    public CreditReturnBuilder(IDevice device){
+        super(device);
     }
 
     @Override
     protected TransactionRequest buildRequest() {
         TransactionRequest request = super.buildRequest();
 
-        request.setTransactionType(TransactionType.VOID);
+        request.setTransactionType(TransactionType.REFUND);
+
+        if (amount != null) {
+            request.setTotal(amount.movePointRight(2).longValue());
+        }
+
         request.setGatewayTransactionId(transactionId);
         request.setPosReferenceNumber(referenceNumber);
 
@@ -40,5 +51,13 @@ public class CreditVoidBuilder extends BaseBuilder {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

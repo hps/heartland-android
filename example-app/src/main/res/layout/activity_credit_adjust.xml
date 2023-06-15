@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreditAdjustActivity">
+
+    <LinearLayout
+        android:id="@+id/status_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/layout_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/transaction_status_label" />
+
+        <TextView
+            android:id="@+id/transaction_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/transaction_status_none" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/creditadjust_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/creditadjust"
+        android:textSize="@dimen/title_size"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/status_layout"
+        android:layout_marginTop="@dimen/layout_margin"/>
+
+    <!-- Options go here -->
+    <LinearLayout
+        android:id="@+id/param_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/creditadjust_title"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/layout_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/transaction_id" />
+
+            <EditText
+                android:id="@+id/transaction_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/required"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/client_transaction_id" />
+
+            <EditText
+                android:id="@+id/client_transaction_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/optional" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/transaction_amount_label" />
+
+            <EditText
+                android:id="@+id/amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/required"
+                android:inputType="numberDecimal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/gratuity_amount" />
+
+            <EditText
+                android:id="@+id/gratuity_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/optional"
+                android:inputType="numberDecimal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/invoice_number" />
+
+            <EditText
+                android:id="@+id/invoice_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/optional" />
+
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/creditadjust_allowduplicates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/allow_duplicates"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/layout_margin_small"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/execute_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/param_layout"
+        android:layout_marginTop="@dimen/layout_margin"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/execute" />
+
+</RelativeLayout>

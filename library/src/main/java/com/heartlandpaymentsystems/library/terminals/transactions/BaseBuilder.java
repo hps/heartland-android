@@ -1,4 +1,4 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 import com.tsys.payments.library.domain.AutoSubstantiation;

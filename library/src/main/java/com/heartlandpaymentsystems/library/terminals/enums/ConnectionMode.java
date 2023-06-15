@@ -5,5 +5,6 @@ public enum ConnectionMode {
     TCP_IP,
     SSL_TCP,
     HTTP,
-    BLUETOOTH
+    BLUETOOTH,
+    USB
 }

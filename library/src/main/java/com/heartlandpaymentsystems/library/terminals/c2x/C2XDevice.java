@@ -1,5 +1,6 @@
 package com.heartlandpaymentsystems.library.terminals.c2x;
 
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.heartlandpaymentsystems.library.BuildConfig;
 import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
@@ -51,6 +53,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * C2X Device Implementation
+ * Device: BBPOS C2X
+ */
 public class C2XDevice implements IDevice {
 
     private static final String TAG = C2XDevice.class.getSimpleName();
@@ -216,9 +222,11 @@ public class C2XDevice implements IDevice {
         this.connectionConfig = connectionConfig;
 
         LibraryConfigHelper.setDebugMode(connectionConfig.getEnvironment().equals(Environment.TEST));
+        LibraryConfigHelper.setSdkNameVersion("android;version=" + BuildConfig.VERSION_NAME);
 
         transactionConfig = new TransactionConfiguration();
         transactionConfig.setChipEnabled(true);
+        transactionConfig.setQuickChipEnabled(true);
         transactionConfig.setContactlessEnabled(true);
         transactionConfig.setCurrencyCode(CurrencyCode.USD);
         transactionConfig.setMagStripeEnabled(true);
@@ -252,7 +260,13 @@ public class C2XDevice implements IDevice {
         return transactionManager != null && transactionManager.isConnected();
     }
 
+    /**
+     * Cancel the current transaction. No effect if there is no transaction active.
+     */
     public void cancelTransaction() {
+        if (transactionManager == null) {
+            transactionManager = TransactionManager.getInstance();
+        }
         transactionManager.cancel();
     }
 
@@ -305,10 +319,20 @@ public class C2XDevice implements IDevice {
         }
 
         @Override
+        public void onDisconnected() {
+            connectedTerminalInfo = null;
+
+            if (deviceListener != null) {
+                deviceListener.onDisconnected();
+            }
+        }
+
+        @Override
         public void onError(Error error) {
             if (deviceListener != null) {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
-                deviceListener.onError(err);
+                com.heartlandpaymentsystems.library.terminals.enums.ErrorType errorType = map(error.getType());
+                deviceListener.onError(err, errorType);
             }
         }
     }
@@ -336,9 +360,12 @@ public class C2XDevice implements IDevice {
                 return;
             }
 
-            bluetoothDevices.add(foundDevice);
-
-            if (deviceListener != null) deviceListener.onBluetoothDeviceFound(foundDevice);
+            if(foundDevice.getName() != null && foundDevice.getName().startsWith("CHB")) {
+                bluetoothDevices.add(foundDevice);
+                if (deviceListener != null) {
+                    deviceListener.onBluetoothDeviceFound(foundDevice);
+                }
+            }
         }
     }
 
@@ -354,7 +381,13 @@ public class C2XDevice implements IDevice {
         public void onError(Error error) {
             if (deviceListener != null) {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
-                deviceListener.onError(err);
+                com.heartlandpaymentsystems.library.terminals.enums.ErrorType errorType = map(error.getType());
+                deviceListener.onError(err, errorType);
+            }
+            if (transactionListener != null) {
+                java.lang.Error err = new java.lang.Error(error.getMessage());
+                com.heartlandpaymentsystems.library.terminals.enums.ErrorType errorType = map(error.getType());
+                transactionListener.onError(err, errorType);
             }
         }
     }
@@ -386,9 +419,10 @@ public class C2XDevice implements IDevice {
 
         @Override
         public void onError(Error error) {
-            if (transactionListener != null) {
+            if (deviceListener != null) {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
-                transactionListener.onError(err);
+                com.heartlandpaymentsystems.library.terminals.enums.ErrorType errorType = map(error.getType());
+                deviceListener.onError(err, errorType);
             }
         }
     }
@@ -450,6 +484,12 @@ public class C2XDevice implements IDevice {
         ti.setSerialNumber(info.getSerialNumber());
         ti.setTerminalType(info.getTerminalType());
         return ti;
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.enums.ErrorType map(com.tsys.payments.library.enums.ErrorType errorType) {
+        com.heartlandpaymentsystems.library.terminals.enums.ErrorType result =
+                com.heartlandpaymentsystems.library.terminals.enums.ErrorType.values()[errorType.ordinal()];
+        return result;
     }
 
     private com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest map(CardholderInteractionRequest info) {

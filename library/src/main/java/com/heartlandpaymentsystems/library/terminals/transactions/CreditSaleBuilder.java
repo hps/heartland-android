@@ -1,4 +1,4 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -24,8 +24,16 @@ public class CreditSaleBuilder extends BaseBuilder {
     private BigDecimal gratuity;
     private String cardHolderName;
 
-    public CreditSaleBuilder(C2XDevice device) {
+   /* public CreditSaleBuilder(C2XDevice device) {
         super((IDevice) device);
+    }*/
+
+    /**
+     * Build Sale Transaction
+     * @param device
+     */
+    public CreditSaleBuilder(IDevice device){
+        super(device);
     }
 
     @Override

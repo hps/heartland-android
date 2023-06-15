@@ -1,0 +1,77 @@
+apply plugin: "maven-publish"
+apply plugin: 'signing'
+
+// Artifact parameters
+def sdkGroupId = 'com.heartlandpaymentsystems'
+def sdkArtifactId = 'heartland-android-sdk'
+def sdkVersion = '1.3.0'
+
+// publish.properties should contain signing properties and maven central credentials
+File publishPropertiesFile = file('../publish.properties')
+Properties publishProperties = new Properties()
+new FileInputStream(publishPropertiesFile).withCloseable { is -> publishProperties.load(is) }
+
+ext["signing.keyId"] = publishProperties["signing.keyId"]
+ext["signing.password"] = publishProperties["signing.password"]
+ext["signing.secretKeyRingFile"] = publishProperties["signing.secretKeyRingFile"]
+ext["mavenCentralRepoUsername"] = publishProperties["mavenCentralRepoUsername"]
+ext["mavenCentralRepoPassword"] = publishProperties["mavenCentralRepoPassword"]
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                artifact androidJavadocsJar
+                artifact androidSourcesJar
+
+                groupId = sdkGroupId
+                artifactId = sdkArtifactId
+                version = sdkVersion
+
+                pom {
+                    name = sdkArtifactId
+                    description = 'The official Heartland Android SDK.'
+                    url = 'https://developer.heartlandpaymentsystems.com/'
+
+                    licenses {
+                        license {
+                            name = 'The MIT License (MIT)'
+                            url = 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'heartland'
+                            name = 'Heartland Payment Systems'
+                            email = 'developers@heartland.us'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/hps/heartland-android.git'
+                        developerConnection = 'scm:git:ssh://github.com/hps/heartland-android.git'
+                        url = 'https://github.com/hps/heartland-android'
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "MavenCentral"
+                url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                credentials {
+                    username mavenCentralRepoUsername
+                    password mavenCentralRepoPassword
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications
+}

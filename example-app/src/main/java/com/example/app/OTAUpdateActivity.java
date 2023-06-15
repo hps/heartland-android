@@ -20,12 +20,10 @@ import com.heartlandpaymentsystems.library.terminals.enums.TerminalUpdateType;
 
 import java.util.List;
 
-public class OTAUpdateActivity extends AppCompatActivity implements View.OnClickListener,
+public class OTAUpdateActivity extends BaseActivity implements View.OnClickListener,
         AvailableTerminalVersionsListener, UpdateTerminalListener {
 
     private static final String TAG = OTAUpdateActivity.class.getSimpleName();
-
-    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,7 @@ public class OTAUpdateActivity extends AppCompatActivity implements View.OnClick
                     return;
                 }
                 MainActivity.c2XDevice.getAvailableTerminalVersions(TerminalUpdateType.FIRMWARE);
-                showProgress(this, getString(R.string.checking), getString(R.string.checking_firmware));
+                showProgress(this, getString(R.string.checking), getString(R.string.checking_firmware), null);
                 break;
             case R.id.check_kernel_button:
                 if (!MainActivity.c2XDevice.isConnected()) {
@@ -56,7 +54,7 @@ public class OTAUpdateActivity extends AppCompatActivity implements View.OnClick
                     return;
                 }
                 MainActivity.c2XDevice.getAvailableTerminalVersions(TerminalUpdateType.CONFIG);
-                showProgress(this, getString(R.string.checking), getString(R.string.checking_kernel));
+                showProgress(this, getString(R.string.checking), getString(R.string.checking_kernel), null);
                 break;
         }
     }
@@ -110,31 +108,5 @@ public class OTAUpdateActivity extends AppCompatActivity implements View.OnClick
     public void onTerminalUpdateError(Error error) {
         hideProgress();
         showAlertDialog("Update Error", "Terminal failed to update - " + error.getMessage());
-    }
-
-    private void showAlertDialog(String title, String message) {
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            Log.e(TAG, "showAlertDialog - dialog is already showing");
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                mAlertDialog.dismiss();
-            }
-        });
-        mAlertDialog = builder.create();
-        mAlertDialog.setCancelable(false);
-        mAlertDialog.show();
-    }
-
-    private void hideAlertDialog() {
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.hide();
-        }
     }
 }

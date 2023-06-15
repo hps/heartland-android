@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,8 +26,10 @@ import com.heartlandpaymentsystems.library.CardFragmentInteractionListener;
 import com.heartlandpaymentsystems.library.controller.TokenService;
 import com.heartlandpaymentsystems.library.entities.Card;
 import com.heartlandpaymentsystems.library.entities.Token;
+import com.heartlandpaymentsystems.library.terminals.IDevice;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
-import com.heartlandpaymentsystems.library.terminals.c2x.CreditSaleBuilder;
+import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
+import com.heartlandpaymentsystems.library.terminals.transactions.CreditSaleBuilder;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
@@ -34,7 +37,7 @@ import com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus;
 
 import java.math.BigDecimal;
 
-public class CardEntryActivity extends AppCompatActivity implements CardFragmentInteractionListener, View.OnClickListener {
+public class CardEntryActivity extends BaseActivity implements CardFragmentInteractionListener, View.OnClickListener {
 
     private static final String TAG = "CardEntryActivity";
 
@@ -44,14 +47,17 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
     private static MainActivity.TransactionState transactionState = MainActivity.TransactionState.None;
     private static String transactionId;
     private static String transactionResult;
-    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_entry);
 
-        MainActivity.c2XDevice.setTransactionListener(transactionListener);
+        if (MainActivity.c2XDevice != null) {
+            MainActivity.c2XDevice.setTransactionListener(transactionListener);
+        } else if (MainActivity.mobyDevice != null) {
+            MainActivity.mobyDevice.setTransactionListener(transactionListener);
+        }
 
         creditSaleManualButton = findViewById(R.id.creditsale_manual_button);
         resultTextView = findViewById(R.id.tokenizeResult);
@@ -202,7 +208,8 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
                 card.setExpMonth(expMonth);
                 card.setExpYear(expYear);
                 card.setCvv(cvv);
-                CreditSaleBuilder builder = new CreditSaleBuilder(MainActivity.c2XDevice);
+                IDevice device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
+                CreditSaleBuilder builder = new CreditSaleBuilder(device);
                 builder.setAmount(new BigDecimal("10.00"));
                 builder.setCreditCard(card);
                 try {
@@ -222,13 +229,13 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
             transactionState = MainActivity.TransactionState.Processing;
             updateTransactionStatus();
             if(!transactionStatus.name().equals(TransactionStatus.NONE.name())) {
-                showProgress(CardEntryActivity.this, "Status", transactionStatus.name());
+                showProgress(CardEntryActivity.this, "Status", transactionStatus.name(), null);
             }
         }
 
         @Override
         public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
-            showProgress(CardEntryActivity.this, "Status", "Processing...");
+            showProgress(CardEntryActivity.this, "Status", "Processing...", null);
             Log.d(TAG, "onCardholderInteractionRequested");
             // prompt user for action
             CardholderInteractionResult result;
@@ -242,7 +249,11 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
                             cardholderInteractionRequest.getCardholderInteractionType()
                     );
                     result.setSelectedAidIndex(0);
-                    MainActivity.c2XDevice.sendCardholderInteractionResult(result);
+                    if (MainActivity.c2XDevice != null) {
+                        MainActivity.c2XDevice.sendCardholderInteractionResult(result);
+                    } else if (MainActivity.mobyDevice != null) {
+                        MainActivity.mobyDevice.sendCardholderInteractionResult(result);
+                    }
                     break;
                 case FINAL_AMOUNT_CONFIRMATION:
                     // prompt user to confirm final amount
@@ -250,7 +261,11 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
                             cardholderInteractionRequest.getCardholderInteractionType()
                     );
                     result.setFinalAmountConfirmed(true);
-                    MainActivity.c2XDevice.sendCardholderInteractionResult(result);
+                    if (MainActivity.c2XDevice != null) {
+                        MainActivity.c2XDevice.sendCardholderInteractionResult(result);
+                    } else if (MainActivity.mobyDevice != null) {
+                        MainActivity.mobyDevice.sendCardholderInteractionResult(result);
+                    }
                     break;
                 default:
                     break;
@@ -271,8 +286,8 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
         }
 
         @Override
-        public void onError(Error error) {
-            Log.e(TAG, "onError - " + error.getMessage());
+        public void onError(Error error, ErrorType errorType) {
+            Log.e(TAG, "onError - " + error.getMessage() + ", " + errorType);
             hideProgress();
             transactionResult = error.getMessage();
             transactionState = MainActivity.TransactionState.Complete;
@@ -281,30 +296,4 @@ public class CardEntryActivity extends AppCompatActivity implements CardFragment
             showAlertDialog(getString(R.string.transaction_error), error.getMessage());
         }
     };
-
-    private void showAlertDialog(String title, String message) {
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            Log.e(TAG, "showAlertDialog - dialog is already showing");
-            return;
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                mAlertDialog.dismiss();
-            }
-        });
-        mAlertDialog = builder.create();
-        mAlertDialog.setCancelable(false);
-        mAlertDialog.show();
-    }
-
-    private void hideAlertDialog() {
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.hide();
-        }
-    }
 }

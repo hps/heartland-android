@@ -2,13 +2,17 @@
     <string name="app_name">GPApp</string>
     <string name="title_activity_main">MainActivity</string>
 
-    <string name="description_bluetooth">This option allows you to scan and connect to a C2X device and monitor the current connection status.</string>
-    <string name="connect_to_device">Connect to C2X Device</string>
+    <string name="description_credentials">Select this button to set your Portico credentials.</string>
+    <string name="enter_credentials">Enter Credentials</string>
+    <string name="description_bluetooth">These options allow you to connect to a C2X or Moby5500 device.</string>
+    <string name="connect_to_device">Connect to C2X (Bluetooth)</string>
+    <string name="connect_to_moby_device">Connect to Moby5500 (Bluetooth)</string>
+    <string name="connect_to_usbmoby_device">Connect to Moby5500 (USB)</string>
     <string name="description_card">This option is for testing manual card entry and performing a simple CreditSale transaction with it.</string>
     <string name="card_entry">Manual Card Entry and Transaction</string>
-    <string name="description_transactions">Test various transaction types using a connected C2X device. Use the top button, "Connect to C2X Device", to make sure you are connected first.</string>
-    <string name="c2x_transactions">C2X Transactions</string>
-    <string name="description_ota_update">Check for and update firmware and kernel for the C2X device.</string>
+    <string name="description_transactions">Test various transaction types using a connected device. Use one of the top buttons to connect to a device first.</string>
+    <string name="c2x_transactions">Transactions</string>
+    <string name="description_ota_update">Check for and update firmware and kernel for the C2X device (Moby5500 not yet supported).</string>
     <string name="ota_update">OTA Update</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -21,23 +25,36 @@
 
     <string name="ok">OK</string>
     <string name="error">Error</string>
+    <string name="cancel">Cancel</string>
+    <string name="email_receipt">Email Receipt</string>
     <string name="error_enter_valid_expiration">Make sure to enter a valid number for the expiration month and year.</string>
     <string name="error_enter_valid_card">Make sure to enter valid credit card information.</string>
-    <string name="error_device_not_connected">You must connect to your C2X device before using this transaction.</string>
+    <string name="error_device_not_connected">You must connect to your device before using this transaction.</string>
     <string name="error_device_not_connected_ota">You must connect to your C2X device before using OTA updates.</string>
     <string name="error_no_transaction_id">You must have a valid transaction ID (from CreditSale) to perform this transaction.</string>
     <string name="error_no_amount">You must enter a valid Transaction Amount.</string>
     <string name="error_no_gratuity">You must enter a valid Gratuity Amount.</string>
+    <string name="error_credentials_null">You need to enter in your credentials before connecting to a device.</string>
 
     <string name="loading_msg">Please wait</string>
     <string name="tokenizing">Tokenizing&#8230;</string>
 
     <string name="location_permission_necessary">Location permission is required for bluetooth connections.</string>
 
-    <string name="c2x_connection_label">C2X Connection Status:</string>
+    <string name="credentials">Credentials</string>
+    <string name="public_key">Public Key:</string>
+    <string name="username">Username:</string>
+    <string name="password">Password:</string>
+    <string name="site_id">Site ID:</string>
+    <string name="device_id">Device ID:</string>
+    <string name="license_id">License ID:</string>
+    <string name="save">Save</string>
+
+    <string name="c2x_connection_label">Bluetooth Connection Status:</string>
     <string name="bluetooth_status_not_connected">Not Connected</string>
     <string name="bluetooth_scan">Scan</string>
     <string name="bluetooth_reconnect">Reconnect</string>
+    <string name="usb_connect">USB Connect</string>
     <string name="bluetooth_improved_accuracy">Bluetooth - Improved Accuracy</string>
     <string name="bluetooth_accuracy_message">If you have trouble finding your C2X device when scanning, you might want to enable improved accuracy for bluetooth. This can be found in Settings->Location->Improve Accuracy->Bluetooth scanning.</string>
 
@@ -45,18 +62,32 @@
     <string name="transaction_complete">Transaction Complete</string>
     <string name="transaction_status_label">Transaction Status:</string>
     <string name="transaction_status_none">None</string>
-    <string name="transaction_amount_label">Transaction Amount:</string>
+    <string name="transaction_amount_label">Total Transaction Amount:</string>
     <string name="transaction_amount">Transaction amount (total including gratuity)</string>
     <string name="gratuity_amount">Gratuity amount</string>
     <string name="creditsale_manual">CreditSale - $10 - Manual Entry</string>
+    <string name="transaction_list_title">Select a transaction type:</string>
     <string name="creditsale">CreditSale</string>
     <string name="tipadjust">Tip Adjust</string>
     <string name="creditreturn">Credit Return</string>
     <string name="creditvoid">Credit Void</string>
+    <string name="creditadjust">Credit Adjust</string>
+    <string name="creditauth">Credit Auth</string>
+    <string name="creditcapture">Credit Capture</string>
+    <string name="batchclose">Batch Close</string>
+    <string name="giftcard">Gift Card</string>
 
     <string name="checking">Checking</string>
     <string name="check_firmware">Check for firmware updates</string>
     <string name="check_kernel">Check for kernel updates</string>
     <string name="checking_firmware">Checking for available firmware updates</string>
     <string name="checking_kernel">Checking for available kernel updates</string>
+
+    <string name="execute">Execute</string>
+    <string name="allow_duplicates">Allow Duplicates</string>
+    <string name="client_transaction_id">Client Transaction ID:</string>
+    <string name="invoice_number">Invoice Number:</string>
+    <string name="optional">Optional</string>
+    <string name="required">Required</string>
+    <string name="transaction_id">Transaction ID:</string>
 </resources>

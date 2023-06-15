@@ -8,13 +8,13 @@ import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
-import com.heartlandpaymentsystems.library.terminals.c2x.BaseBuilder;
 import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
-import com.heartlandpaymentsystems.library.terminals.c2x.CreditAuthBuilder;
-import com.heartlandpaymentsystems.library.terminals.c2x.CreditSaleBuilder;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
 import com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus;
+import com.heartlandpaymentsystems.library.terminals.transactions.BaseBuilder;
+import com.heartlandpaymentsystems.library.terminals.transactions.CreditAuthBuilder;
+import com.heartlandpaymentsystems.library.terminals.transactions.CreditSaleBuilder;
 
 import org.junit.Before;
 import org.junit.Test;

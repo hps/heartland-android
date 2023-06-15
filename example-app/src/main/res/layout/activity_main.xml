@@ -18,6 +18,21 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:layout_marginTop="@dimen/layout_margin"
+            android:text="@string/description_credentials" />
+
+        <Button
+            android:id="@+id/credentials_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/enter_credentials" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="@dimen/layout_margin"
             android:text="@string/description_bluetooth" />
 
         <Button
@@ -26,6 +41,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/connect_to_device" />
+
+        <Button
+            android:id="@+id/connect_to_moby_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/connect_to_moby_device" />
+
+        <Button
+            android:id="@+id/connect_to_mobyUSB_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/connect_to_usbmoby_device" />
 
         <TextView
             android:layout_width="wrap_content"

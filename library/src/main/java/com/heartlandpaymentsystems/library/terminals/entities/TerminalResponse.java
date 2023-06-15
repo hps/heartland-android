@@ -5,8 +5,10 @@ import com.heartlandpaymentsystems.library.terminals.enums.ApplicationCryptogram
 import com.heartlandpaymentsystems.library.terminals.enums.EntryMode;
 import com.tsys.payments.library.domain.Receipt;
 import com.tsys.payments.library.domain.TransactionResponse;
-
+import com.tsys.payments.library.enums.TransactionResultType;
+import com.tsys.payments.library.enums.TransactionType;
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class TerminalResponse implements IDeviceResponse {
     // - INTERNAL
@@ -24,10 +26,12 @@ public class TerminalResponse implements IDeviceResponse {
     private String signatureStatus;
 
     // - TRANSACTIONAL
+    private Date rspDT;
     private String transactionType;
     private String entryMethod;
 
     private String maskedCardNumber;
+    private String cardType;
     private EntryMode entryMode;
     private String approvalCode;
 
@@ -38,6 +42,7 @@ public class TerminalResponse implements IDeviceResponse {
     private String cardholderName;
     private String cardBin;
     private boolean cardPresent;
+    private String svaPan;
     private String expirationDate;
     private BigDecimal tipAmount;
     private BigDecimal cashBackAmount;
@@ -77,25 +82,40 @@ public class TerminalResponse implements IDeviceResponse {
     private String mOriginalCardType;
     private String mOriginalCardNbrLast4;
 
-    public TerminalResponse() {}
+    public TerminalResponse() {
+    }
 
     public static TerminalResponse fromTransactionResponse(TransactionResponse transactionResponse) {
         TerminalResponse response = new TerminalResponse();
 
+        if (transactionResponse.getTransactionType() == TransactionType.SVA
+                && transactionResponse.getSvaData() != null) {
+            response.setTransactionType(transactionResponse.getTransactionType().toString());
+            response.setSvaPan(transactionResponse.getSvaData().get("SVA"));
+            response.setExpirationDate(transactionResponse.getSvaData().get("Expiration"));
+            return response;
+        }
         Long approvedAmount = transactionResponse.getApprovedAmount();
         if (approvedAmount == null) {
             approvedAmount = 0L;
         }
         response.setApprovedAmount((new BigDecimal(approvedAmount)).movePointLeft(2));
         response.setEntryMode(EntryMode.fromCardDataSourceType(transactionResponse.getCardDataSourceType()));
-//        transactionResponse.getCardType();
+        //        transactionResponse.getCardType();
         response.setApprovalCode(transactionResponse.getGatewayAuthCode());
         response.setTransactionId(transactionResponse.getGatewayTransactionId());
         response.setMaskedCardNumber(transactionResponse.getMaskedPan());
-//        transactionResponse.getPosReferenceNumber();
-        response.setResponseText(transactionResponse.getResponseMessages().get(transactionResponse.getTransactionType()));
-//        transactionResponse.getTenderType();
-        response.setDeviceResponseCode(transactionResponse.getTransactionResult().toString());
+        //        transactionResponse.getPosReferenceNumber();
+        if (transactionResponse.getResponseMessages() != null) {
+            response.setResponseText(
+                    transactionResponse.getResponseMessages().get(transactionResponse.getTransactionType()));
+        }
+        //        transactionResponse.getTenderType();
+        if (transactionResponse.getTransactionResult() != null) {
+            response.setDeviceResponseCode(transactionResponse.getTransactionResult().toString());
+        } else {
+            response.setDeviceResponseCode(TransactionResultType.CANCELLED.name());
+        }
         if (transactionResponse.getTipAmount() != null) {
             response.setTipAmount((new BigDecimal(transactionResponse.getTipAmount())).movePointLeft(2));
         }
@@ -103,48 +123,53 @@ public class TerminalResponse implements IDeviceResponse {
             response.setTransactionType(transactionResponse.getTransactionType().toString());
         }
 
-        if(transactionResponse.getResponseCodes() != null && transactionResponse.getTransactionType() != null) {
-            response.setAuthorizationResponse(transactionResponse.getResponseCodes().get(transactionResponse.getTransactionType()));
+        if (transactionResponse.getResponseCodes() != null && transactionResponse.getTransactionType() != null) {
+            response.setAuthorizationResponse(
+                    transactionResponse.getResponseCodes().get(transactionResponse.getTransactionType()));
         }
 
         if (transactionResponse.getReceipt() != null) {
             Receipt receipt = transactionResponse.getReceipt();
+            response.setCardType(receipt.getCardType().toString());
+            response.setRspDT(receipt.getTransactionDateTime());
             response.setApplicationId(receipt.getAid());
-//            receipt.getApplicationEffectiveDate();
-//            receipt.getApplicationExpiryDate();
-//            receipt.getApplicationInterchangeProfile();
+            //            receipt.getApplicationEffectiveDate();
+            //            receipt.getApplicationExpiryDate();
+            //            receipt.getApplicationInterchangeProfile();
             response.setApplicationName(receipt.getApplicationLabel());
-//            receipt.getApplicationTransactionCounter();
-//            receipt.getApplicationVersionNumber();
+            //            receipt.getApplicationTransactionCounter();
+            //            receipt.getApplicationVersionNumber();
             response.setApprovalCode(receipt.getAuthorizationCode());
             response.setCardholderName(receipt.getCardholderName());
-//            receipt.getCardType();
+            //            receipt.getCardType();
             if (receipt.getCashBackAmount() != null) {
                 response.setCashBackAmount((new BigDecimal(receipt.getCashBackAmount())).movePointLeft(2));
             }
             response.setApplicationCryptogram(receipt.getCryptogram());
-//            receipt.getCryptogramInformationData();
-//            receipt.getCurrencyCode();
-//            receipt.getCvmResult();
-//            receipt.getIfdSerialNumber();
-//            receipt.getInvoiceNumber();
-//            receipt.getIssuerApplicationData();
+            //            receipt.getCryptogramInformationData();
+            //            receipt.getCurrencyCode();
+            //            receipt.getCvmResult();
+            //            receipt.getIfdSerialNumber();
+            //            receipt.getInvoiceNumber();
+            //            receipt.getIssuerApplicationData();
             response.setMaskedCardNumber(receipt.getMaskedPan());
-//            receipt.getPanSequenceNumber();
-//            receipt.getPinStatement();
+            //            receipt.getPanSequenceNumber();
+            //            receipt.getPinStatement();
             response.setEntryMode(EntryMode.fromCardDataSourceType(receipt.getPosEntryMode()));
-//            receipt.getTerminalCountryCode();
-//            receipt.getTerminalType();
+            //            receipt.getTerminalCountryCode();
+            //            receipt.getTerminalType();
             response.setTerminalVerificationResult(receipt.getTerminalVerificationResult());
             if (receipt.getTransactionAmount() != null) {
                 response.setTransactionAmount((new BigDecimal(receipt.getTransactionAmount())).movePointLeft(2));
             }
-//            receipt.getTransactionDateTime();
-            response.setTransactionId(receipt.getTransactionId());
+            //            receipt.getTransactionDateTime();
+            if (receipt.getTransactionId() != null && !receipt.getTransactionId().isEmpty()) {
+                response.setTransactionId(receipt.getTransactionId());
+            }
             if (receipt.getTransactionType() != null) {
                 response.setTransactionType(receipt.getTransactionType().toString());
             }
-//            receipt.getUnpredictableNumber();
+            //            receipt.getUnpredictableNumber();
             response.setIssuerAuthenticationData(receipt.getIssuerAuthenticationData());
         }
 
@@ -254,6 +279,14 @@ public class TerminalResponse implements IDeviceResponse {
 
     public void setEntryMethod(String entryMethod) {
         this.entryMethod = entryMethod;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
     public String getMaskedCardNumber() {
@@ -432,6 +465,14 @@ public class TerminalResponse implements IDeviceResponse {
         this.applicationName = applicationName;
     }
 
+    public Date getRspDT() {
+        return rspDT;
+    }
+
+    public void setRspDT(Date date) {
+        rspDT = date;
+    }
+
     public String getApplicationId() {
         return applicationId;
     }
@@ -582,6 +623,14 @@ public class TerminalResponse implements IDeviceResponse {
 
     public void setOriginalCardNbrLast4(String originalCardNbrLast4) {
         mOriginalCardNbrLast4 = originalCardNbrLast4;
+    }
+
+    public void setSvaPan(String pan) {
+        svaPan = pan;
+    }
+
+    public String getSvaPan(){
+        return svaPan;
     }
 
     @Override

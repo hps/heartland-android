@@ -1,7 +1,8 @@
-package com.heartlandpaymentsystems.library.terminals.c2x;
+package com.heartlandpaymentsystems.library.terminals.transactions;
 
 import java.math.BigDecimal;
 
+import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.enums.TransactionType;
 
@@ -15,8 +16,12 @@ public class CreditAdjustBuilder extends BaseBuilder {
     private BigDecimal gratuity;
     private String transactionId;
 
-    public CreditAdjustBuilder(C2XDevice device) {
+   /* public CreditAdjustBuilder(C2XDevice device) {
         super((IDevice) device);
+    }*/
+
+    public CreditAdjustBuilder(IDevice device){
+        super(device);
     }
 
     @Override

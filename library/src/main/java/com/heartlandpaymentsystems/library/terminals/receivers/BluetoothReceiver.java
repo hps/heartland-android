@@ -24,6 +24,7 @@ public class BluetoothReceiver extends BroadcastReceiver {
 
         if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             listener.onDiscoveryFinished();
+            listener = null;
             return;
         }
 
