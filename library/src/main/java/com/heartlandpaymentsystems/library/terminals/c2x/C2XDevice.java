@@ -1,22 +1,19 @@
 package com.heartlandpaymentsystems.library.terminals.c2x;
 
-import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.heartlandpaymentsystems.library.BuildConfig;
-import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
+import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
@@ -39,19 +36,15 @@ import com.tsys.payments.library.enums.TerminalOperatingEnvironment;
 import com.tsys.payments.library.enums.TerminalOutputCapability;
 import com.tsys.payments.library.enums.TerminalType;
 import com.tsys.payments.library.enums.TransactionStatus;
-import com.tsys.payments.library.exceptions.InitializationException;
 import com.tsys.payments.library.exceptions.Error;
+import com.tsys.payments.library.exceptions.InitializationException;
 import com.tsys.payments.library.gateway.enums.GatewayType;
-import com.tsys.payments.library.terminal.AvailableVersionsListener;
 import com.tsys.payments.library.terminal.TerminalInfoListener;
-import com.tsys.payments.library.terminal.UpdateListener;
 import com.tsys.payments.library.utils.LibraryConfigHelper;
 import com.tsys.payments.transaction.TransactionManager;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * C2X Device Implementation
@@ -92,7 +85,8 @@ public class C2XDevice implements IDevice {
         this.transactionListener = transactionListener;
     }
 
-    public void setAvailableTerminalVersionsListener(AvailableTerminalVersionsListener availableTerminalVersionsListener) {
+    public void setAvailableTerminalVersionsListener(
+            AvailableTerminalVersionsListener availableTerminalVersionsListener) {
         this.availableTerminalVersionsListener = availableTerminalVersionsListener;
     }
 
@@ -210,7 +204,7 @@ public class C2XDevice implements IDevice {
         }
     }
 
-    public void cancelScan(){
+    public void cancelScan() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if (bluetoothAdapter != null && bluetoothAdapter.isDiscovering()) {
@@ -242,7 +236,7 @@ public class C2XDevice implements IDevice {
         terminalConfig.setTimeout(timeout != 0 ? timeout : 60000L);
 
         HashMap<String, String> credentials = new HashMap<>();
-//        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
+        //        credentials.put("secret_api_key", connectionConfig.getSecretApiKey());
         credentials.put("version_number", "3409");
         credentials.put("developer_id", "002914");
         credentials.put("user_name", connectionConfig.getUsername());
@@ -281,7 +275,8 @@ public class C2XDevice implements IDevice {
             return;
         }
 
-        com.tsys.payments.library.enums.TerminalUpdateType updateType = com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
+        com.tsys.payments.library.enums.TerminalUpdateType updateType =
+                com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
         if (terminalUpdateType == TerminalUpdateType.CONFIG) {
             updateType = com.tsys.payments.library.enums.TerminalUpdateType.KERNEL;
         }
@@ -289,8 +284,15 @@ public class C2XDevice implements IDevice {
         transactionManager.getAvailableTerminalVersions(updateType, null, new AvailableTerminalVersionsListenerImpl());
     }
 
+    /**
+     * Remote Key Injection
+     */
+    public void remoteKeyInjection() {
+        updateTerminal(TerminalUpdateType.RKI, "");
+    }
+
     public void updateTerminal(@NonNull TerminalUpdateType terminalUpdateType,
-                               @Nullable String version) {
+            @Nullable String version) {
         if (!transactionManager.isInitialized()) {
             Log.e(TAG, "TransactionManager not initialized, please connect to device first.");
             return;
@@ -300,12 +302,54 @@ public class C2XDevice implements IDevice {
             return;
         }
 
-        com.tsys.payments.library.enums.TerminalUpdateType updateType = com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
+        com.tsys.payments.library.enums.TerminalUpdateType updateType =
+                com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
         if (terminalUpdateType == TerminalUpdateType.CONFIG) {
             updateType = com.tsys.payments.library.enums.TerminalUpdateType.KERNEL;
+        } else if (terminalUpdateType == TerminalUpdateType.RKI) {
+            updateType = com.tsys.payments.library.enums.TerminalUpdateType.RKI;
         }
 
         transactionManager.updateTerminal(updateType, null, version, new UpdateTerminalListenerImpl());
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo map(TerminalInfo info) {
+        final com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo ti =
+                new com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo();
+        ti.setAppName(info.getAppName());
+        ti.setAppVersion(info.getAppVersion());
+        ti.setBatteryLevel(info.getBatteryLevel());
+        ti.setFirmwareVersion(info.getFirmwareVersion());
+        ti.setSerialNumber(info.getSerialNumber());
+        ti.setTerminalType(info.getTerminalType());
+        return ti;
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.enums.ErrorType map(
+            com.tsys.payments.library.enums.ErrorType errorType) {
+        com.heartlandpaymentsystems.library.terminals.enums.ErrorType result =
+                com.heartlandpaymentsystems.library.terminals.enums.ErrorType.values()[errorType.ordinal()];
+        return result;
+    }
+
+    private com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest map(
+            CardholderInteractionRequest info) {
+        final com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest cr =
+                new com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest();
+        cr.setCardholderInteractionType(info.getCardholderInteractionType());
+        cr.setCommercialCardDataFields(info.getCommercialCardDataFields());
+        cr.setFinalTransactionAmount(info.getFinalTransactionAmount());
+        cr.setSupportedApplications(info.getSupportedApplications());
+        return cr;
+    }
+
+    private com.tsys.payments.library.domain.CardholderInteractionResult map(CardholderInteractionResult info) {
+        final com.tsys.payments.library.domain.CardholderInteractionResult result =
+                new com.tsys.payments.library.domain.CardholderInteractionResult(info.getCardholderInteractionType());
+        result.setCommercialCardData(info.getCommercialCardData());
+        result.setFinalAmountConfirmed(info.getFinalAmountConfirmed());
+        result.setSelectedAidIndex(info.getSelectedAidIndex());
+        return result;
     }
 
     protected class ConnectionListenerImpl implements ConnectionListener {
@@ -355,12 +399,20 @@ public class C2XDevice implements IDevice {
                 return;
             }
 
-            if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC &&
-                    foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_DUAL) {
-                return;
+            if (foundDevice.getName() != null && foundDevice.getName().startsWith("CHB3")) {
+                if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC &&
+                        foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_LE &&
+                        foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_DUAL) {
+                    return;
+                }
+            } else {
+                if (foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_CLASSIC &&
+                        foundDevice.getType() != BluetoothDevice.DEVICE_TYPE_DUAL) {
+                    return;
+                }
             }
 
-            if(foundDevice.getName() != null && foundDevice.getName().startsWith("CHB")) {
+            if (foundDevice.getName() != null && foundDevice.getName().startsWith("CHB")) {
                 bluetoothDevices.add(foundDevice);
                 if (deviceListener != null) {
                     deviceListener.onBluetoothDeviceFound(foundDevice);
@@ -397,7 +449,8 @@ public class C2XDevice implements IDevice {
         public void onStatusUpdate(TransactionStatus transactionStatus) {
             if (transactionListener != null) {
                 transactionListener.onStatusUpdate(
-                        com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus.fromVitalSdk(transactionStatus)
+                        com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus.fromVitalSdk(
+                                transactionStatus)
                 );
             }
         }
@@ -412,9 +465,9 @@ public class C2XDevice implements IDevice {
         @Override
         public void onTransactionComplete(TransactionResponse transactionResponse) {
             if (transactionListener != null) {
-                transactionListener.onTransactionComplete(TerminalResponse.fromTransactionResponse(transactionResponse));
+                transactionListener.onTransactionComplete(
+                        TerminalResponse.fromTransactionResponse(transactionResponse));
             }
-
         }
 
         @Override
@@ -427,10 +480,12 @@ public class C2XDevice implements IDevice {
         }
     }
 
-    protected class AvailableTerminalVersionsListenerImpl implements com.tsys.payments.library.terminal.AvailableTerminalVersionsListener {
+    protected class AvailableTerminalVersionsListenerImpl
+            implements com.tsys.payments.library.terminal.AvailableTerminalVersionsListener {
 
         @Override
-        public void onAvailableTerminalVersionsReceived(com.tsys.payments.library.enums.TerminalUpdateType type, List<String> versions) {
+        public void onAvailableTerminalVersionsReceived(com.tsys.payments.library.enums.TerminalUpdateType type,
+                List<String> versions) {
             if (availableTerminalVersionsListener != null) {
                 TerminalUpdateType updateType = TerminalUpdateType.FIRMWARE;
                 if (type == com.tsys.payments.library.enums.TerminalUpdateType.KERNEL) {
@@ -472,42 +527,5 @@ public class C2XDevice implements IDevice {
                 updateTerminalListener.onTerminalUpdateError(err);
             }
         }
-    }
-
-    private com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo map(TerminalInfo info) {
-        final com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo ti =
-                new com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo();
-        ti.setAppName(info.getAppName());
-        ti.setAppVersion(info.getAppVersion());
-        ti.setBatteryLevel(info.getBatteryLevel());
-        ti.setFirmwareVersion(info.getFirmwareVersion());
-        ti.setSerialNumber(info.getSerialNumber());
-        ti.setTerminalType(info.getTerminalType());
-        return ti;
-    }
-
-    private com.heartlandpaymentsystems.library.terminals.enums.ErrorType map(com.tsys.payments.library.enums.ErrorType errorType) {
-        com.heartlandpaymentsystems.library.terminals.enums.ErrorType result =
-                com.heartlandpaymentsystems.library.terminals.enums.ErrorType.values()[errorType.ordinal()];
-        return result;
-    }
-
-    private com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest map(CardholderInteractionRequest info) {
-        final com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest cr =
-                new com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest();
-        cr.setCardholderInteractionType(info.getCardholderInteractionType());
-        cr.setCommercialCardDataFields(info.getCommercialCardDataFields());
-        cr.setFinalTransactionAmount(info.getFinalTransactionAmount());
-        cr.setSupportedApplications(info.getSupportedApplications());
-        return cr;
-    }
-
-    private com.tsys.payments.library.domain.CardholderInteractionResult map(CardholderInteractionResult info) {
-        final com.tsys.payments.library.domain.CardholderInteractionResult result =
-                new com.tsys.payments.library.domain.CardholderInteractionResult(info.getCardholderInteractionType());
-        result.setCommercialCardData(info.getCommercialCardData());
-        result.setFinalAmountConfirmed(info.getFinalAmountConfirmed());
-        result.setSelectedAidIndex(info.getSelectedAidIndex());
-        return result;
     }
 }

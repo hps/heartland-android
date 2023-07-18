@@ -2,12 +2,12 @@
 # Heartland Mobile Android SDK 
 =======================
 
-This Android SDK lets you connect to a C2X or Moby 5500 device and process credit card payments. Included is an example application which shows the basics of using the SDK.
+This Android SDK lets you connect to a C2X, C3X, or Moby 5500 device and process credit card payments. Included is an example application which shows the basics of using the SDK.
 
 Maven
 -------------
 ```java
-implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.3.0'
+implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.3.1'
 ```
 
 Example App

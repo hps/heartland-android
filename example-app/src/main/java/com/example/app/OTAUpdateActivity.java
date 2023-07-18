@@ -24,6 +24,7 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
         AvailableTerminalVersionsListener, UpdateTerminalListener {
 
     private static final String TAG = OTAUpdateActivity.class.getSimpleName();
+    boolean isRKI = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
 
         findViewById(R.id.check_firmware_button).setOnClickListener(this);
         findViewById(R.id.check_kernel_button).setOnClickListener(this);
+        findViewById(R.id.rki_button).setOnClickListener(this);
 
         MainActivity.c2XDevice.setAvailableTerminalVersionsListener(this);
         MainActivity.c2XDevice.setUpdateTerminalListener(this);
@@ -55,6 +57,15 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
                 }
                 MainActivity.c2XDevice.getAvailableTerminalVersions(TerminalUpdateType.CONFIG);
                 showProgress(this, getString(R.string.checking), getString(R.string.checking_kernel), null);
+                break;
+            case R.id.rki_button:
+                if(!MainActivity.c2XDevice.isConnected()){
+                    showAlertDialog(getString(R.string.error), getString(R.string.error_device_not_connected_ota));
+                    return;
+                }
+                isRKI = true;
+                showProgress(this, getString(R.string.checking), getString(R.string.checking_kernel), null);
+                MainActivity.c2XDevice.remoteKeyInjection();
                 break;
         }
     }
@@ -94,14 +105,23 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onProgress(@Nullable Double completionPercentage, @Nullable String progressMessage) {
         Log.d(TAG, "onProgress - " + completionPercentage + ", " + progressMessage);
+        if(isRKI && completionPercentage <= 1) {
+            showProgress(OTAUpdateActivity.this, "Injecting", "Injecting Keys...", 0);
+        }
         updateProgress(completionPercentage);
     }
 
     @Override
     public void onTerminalUpdateSuccess() {
+        String msg = "";
         hideProgress();
-        MainActivity.c2XDevice.disconnect();
-        showAlertDialog("Update Success", "Terminal successfully updated. The device has been disconnected so please reconnect.");
+        if(!isRKI) {
+            MainActivity.c2XDevice.disconnect();
+            msg = "Terminal successfully updated. The device has been disconnected so please reconnect.";
+        } else {
+            msg = "Terminal successfully updated.";
+        }
+        showAlertDialog("Update Success", msg);
     }
 
     @Override

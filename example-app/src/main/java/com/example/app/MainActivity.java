@@ -52,6 +52,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static String DEVICE_ID;
     public static String LICENSE_ID;
 
+
     @Override
     public void permissionsGranted() {
         Toast.makeText(this, "Permissions granted!", Toast.LENGTH_SHORT).show();

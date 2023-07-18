@@ -80,6 +80,7 @@
     <string name="checking">Checking</string>
     <string name="check_firmware">Check for firmware updates</string>
     <string name="check_kernel">Check for kernel updates</string>
+    <string name="rki">Remote Key Injection</string>
     <string name="checking_firmware">Checking for available firmware updates</string>
     <string name="checking_kernel">Checking for available kernel updates</string>
 

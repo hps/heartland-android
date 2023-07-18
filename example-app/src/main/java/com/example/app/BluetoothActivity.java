@@ -1,28 +1,12 @@
 package com.example.app;
 
-import static com.example.app.Dialogs.hideProgress;
-import static com.example.app.Dialogs.showProgress;
-
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothDevice;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.heartlandpaymentsystems.library.terminals.DeviceListener;
-import com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo;
 import com.heartlandpaymentsystems.library.terminals.enums.ConnectionMode;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import static com.example.app.Dialogs.showProgress;
 
 public class BluetoothActivity extends BaseActivity implements View.OnClickListener {
 
