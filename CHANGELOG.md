@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2023-08-29
+ 
+### Added
+
+### Changed
+ 
+### Fixed
+- Fixed maven issue with out-of-date dependency library.
+
 ## [1.3.1] - 2023-07-18
  
 ### Added

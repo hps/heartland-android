@@ -4,7 +4,7 @@ apply plugin: 'signing'
 // Artifact parameters
 def sdkGroupId = 'com.heartlandpaymentsystems'
 def sdkArtifactId = 'heartland-android-sdk'
-def sdkVersion = '1.3.1'
+def sdkVersion = '1.3.3'
 
 // publish.properties should contain signing properties and maven central credentials
 File publishPropertiesFile = file('../publish.properties')
