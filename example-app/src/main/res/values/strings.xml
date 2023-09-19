@@ -5,7 +5,7 @@
     <string name="description_credentials">Select this button to set your Portico credentials.</string>
     <string name="enter_credentials">Enter Credentials</string>
     <string name="description_bluetooth">These options allow you to connect to a C2X or Moby5500 device.</string>
-    <string name="connect_to_device">Connect to C2X (Bluetooth)</string>
+    <string name="connect_to_device">Connect to C2X/C3X (Bluetooth)</string>
     <string name="connect_to_moby_device">Connect to Moby5500 (Bluetooth)</string>
     <string name="connect_to_usbmoby_device">Connect to Moby5500 (USB)</string>
     <string name="description_card">This option is for testing manual card entry and performing a simple CreditSale transaction with it.</string>
@@ -14,6 +14,9 @@
     <string name="c2x_transactions">Transactions</string>
     <string name="description_ota_update">Check for and update firmware and kernel for the C2X device (Moby5500 not yet supported).</string>
     <string name="ota_update">OTA Update</string>
+    <string name="about">Provision Version</string>
+    <string name="environment">Environment TEST/PROD</string>
+    <string name="disconnect">Disconnect</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

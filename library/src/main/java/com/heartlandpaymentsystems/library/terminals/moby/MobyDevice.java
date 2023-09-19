@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.heartlandpaymentsystems.library.BuildConfig;
@@ -73,6 +74,8 @@ public class MobyDevice implements IDevice {
     private PairingLedView pairingLedView;
     private AlertDialog dialog;
     private boolean isDeviceSelected;
+    private boolean isScanned;
+    private static boolean timberPlanted;
 
     /**
      * Instantiates a new Moby device.
@@ -104,8 +107,9 @@ public class MobyDevice implements IDevice {
 
         LibraryConfigHelper.setDebugMode(connectionConfig.getEnvironment().equals(Environment.TEST));
         LibraryConfigHelper.setSdkNameVersion("android;version=" + BuildConfig.VERSION_NAME);
-        if(connectionConfig.getEnvironment().equals(Environment.TEST)){
+        if (connectionConfig.getEnvironment().equals(Environment.TEST) && !timberPlanted) {
             Timber.plant(new Timber.DebugTree());
+            timberPlanted = true;
         }
 
         transactionConfig = new TransactionConfiguration();
@@ -210,6 +214,7 @@ public class MobyDevice implements IDevice {
     }
 
     private void scan() {
+        isScanned = true;
         if (!isDeviceSelected) {
             if (bluetoothReceiver == null) {
                 bluetoothReceiver = new BluetoothReceiver();
@@ -255,6 +260,7 @@ public class MobyDevice implements IDevice {
         if (isTransactionManagerConnected()) {
             transactionManager.disconnect();
         }
+        isScanned = false;
     }
 
     /**
@@ -276,11 +282,15 @@ public class MobyDevice implements IDevice {
     }
 
     private void startConnect() {
+        Timber.d("startConnect() called.");
         if (isTransactionManagerConnected()) {
             return;
         }
 
-        transactionManager = TransactionManager.getInstance();
+        if (transactionManager == null) {
+            transactionManager = TransactionManager.getInstance();
+        }
+
         if (transactionManager != null && terminalConfig != null) {
             ConnectionType[] connectionTypes =
                     transactionManager.getSupportedTerminalConnectionTypes(terminalConfig.getTerminalType());
@@ -295,11 +305,16 @@ public class MobyDevice implements IDevice {
                 terminalConfig.setConnectionType(connectionTypes[0]);
             }
 
-            if (!transactionManager.isInitialized()) {
+            if (!transactionManager.isInitialized() || isScanned) {
+                if(isScanned) {
+                    terminalConfig.setHost(null);
+                    isScanned = false;
+                }
                 initializeTransactionManager();
             }
 
             if (transactionManager.isInitialized()) {
+                Timber.d("TransactionManager isInitialized() called");
                 transactionManager.connect(new ConnectionListenerImpl());
                 transactionManager.updateTransactionListener(new TransactionListenerImpl());
             }
@@ -335,7 +350,7 @@ public class MobyDevice implements IDevice {
      * Start an SVA (gift card) transaction. This will return the gift card data by way of the
      * TransactionListener function onTransactionComplete().
      */
-    public void doSvaStartCard(){
+    public void doSvaStartCard() {
         if (transactionManager == null) {
             transactionManager = TransactionManager.getInstance();
         }
@@ -346,7 +361,6 @@ public class MobyDevice implements IDevice {
         TransactionRequest transactionRequest = new TransactionRequest();
         transactionRequest.setTransactionType(TransactionType.SVA);
         transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl());
-
     }
 
     /**

@@ -26,7 +26,7 @@ public class Dialogs {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
-        builder.setCancelable(true);
+        builder.setCancelable(false);
         builder.setItems(list, onClickListener);
         return builder.show();
     }

@@ -279,6 +279,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public void onTerminalInfoReceived(TerminalInfo terminalInfo) {
             Log.d(TAG, "onTerminalInfoReceived - " + terminalInfo.toString());
+            if (MainActivity.isShowAbout()) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Provision Version: " + terminalInfo.getAppVersion(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 
@@ -382,7 +391,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 public void run() {
                     Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
                     updateConnectionStatus("Disconnected", false);
-                    //finish();
+                   // finish();
                 }
             });
         }

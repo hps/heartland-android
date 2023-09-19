@@ -11,6 +11,7 @@ import com.heartlandpaymentsystems.library.terminals.TransactionListener;
 import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
+import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
 import com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus;
 import com.heartlandpaymentsystems.library.terminals.transactions.BaseBuilder;
 import com.heartlandpaymentsystems.library.terminals.transactions.CreditAuthBuilder;
@@ -140,7 +141,7 @@ public class CreditTest {
             }
 
             @Override
-            public void onError(Error error) {
+            public void onError(Error error, ErrorType errorType) {
                 assertTrue(error.getMessage(), false);
                 synchronized (syncObject){
                     syncObject.notify();

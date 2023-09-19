@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 2023-09-19
+ 
+### Added
+
+### Changed
+- Updated provision loading to allow environment switching at runtime.
+- Updated version of global payments java SDK.
+### Fixed
+- Fixed bug that caused an automatic reconnect when attempting to scan after disconnecting.
+
 ## [1.3.3] - 2023-08-29
  
 ### Added

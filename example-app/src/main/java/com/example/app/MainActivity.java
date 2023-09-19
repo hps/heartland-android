@@ -7,10 +7,10 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.c2x.C2XDevice;
 import com.heartlandpaymentsystems.library.terminals.enums.ConnectionMode;
@@ -44,6 +44,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static TransactionState transactionState = TransactionState.None;
     public static String cardReaderStatus;
     public static String transactionResult;
+    private static boolean isAboutClick = false;
+    private int startCounter = 0;
+    Switch simpleSwitch;
+    Button about;
+    Button disconnect;
+
 
     public static String PUBLIC_KEY;
     public static String USERNAME;
@@ -51,6 +57,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static String SITE_ID;
     public static String DEVICE_ID;
     public static String LICENSE_ID;
+
+    public static boolean isShowAbout() {
+        return isAboutClick;
+    }
 
 
     @Override
@@ -69,6 +79,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Complete
     }
 
+    enum DeviceType{
+        C2X_C3X,
+        MOBY
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +123,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         findViewById(R.id.manual_card_button).setOnClickListener(this);
         findViewById(R.id.transaction_button).setOnClickListener(this);
         findViewById(R.id.ota_update_button).setOnClickListener(this);
-
+        simpleSwitch = (Switch)findViewById(R.id.simpleSwitch);
+        simpleSwitch.setOnClickListener(this);
+        about = (Button)findViewById(R.id.about_button);
+        disconnect = (Button)findViewById(R.id.disconnect_button);
+        disconnect.setOnClickListener(this);
         //check location permission
         boolean permissionGranted = checkLocationPermission();
         if (permissionGranted) {
@@ -121,8 +139,55 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 SharedPreferences.Editor editor = getSharedPreferences(MainActivity.SAVED_PREFS, MODE_PRIVATE).edit();
                 editor.putBoolean(MainActivity.BLUETOOTH_MESSAGE_SHOWN, true);
                 editor.commit();
-                showAlertDialog(getString(R.string.bluetooth_improved_accuracy), getString(R.string.bluetooth_accuracy_message));
+                showAlertDialog(getString(R.string.bluetooth_improved_accuracy),
+                        getString(R.string.bluetooth_accuracy_message));
             }
+        }
+    }
+
+
+    private void showHideButtonDisplay(boolean isVisible){
+        if(mobyDevice != null && mobyDevice.isConnected()){
+            showHideButtonDisplay(isVisible, DeviceType.MOBY);
+        }
+
+        if (c2XDevice != null && c2XDevice.isConnected()){
+            showHideButtonDisplay(isVisible, DeviceType.C2X_C3X);
+        }
+    }
+
+    private void showHideButtonDisplay(boolean isVisible, DeviceType type){
+        findViewById(R.id.connect_to_moby_button).setEnabled(!isVisible);
+        findViewById(R.id.connect_to_mobyUSB_button).setEnabled(!isVisible);
+        findViewById(R.id.connect_to_device_button).setEnabled(!isVisible);
+        disconnect.setEnabled(isVisible);
+
+        switch (type){
+            case MOBY:
+                if(isVisible) {
+                    about.setEnabled(true);
+                    about.setOnClickListener(this);
+                } else {
+                    about.setEnabled(false);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startCounter ++;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(startCounter > 1) {
+            showHideButtonDisplay(true);
         }
     }
 
@@ -191,6 +256,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Intent updateIntent = new Intent(this, OTAUpdateActivity.class);
                 startActivity(updateIntent);
                 break;
+            case R.id.simpleSwitch:
+                if (simpleSwitch.isChecked()) {
+                    Toast.makeText(this, "Prod is Selected", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Test is Selected", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case R.id.about_button:
+                if (mobyDevice != null && mobyDevice.isConnected()) {
+                    isAboutClick = true;
+                    mobyDevice.getDeviceInfo();
+                }
+                break;
+            case R.id.disconnect_button:
+                if(mobyDevice != null && mobyDevice.isConnected()){
+                    mobyDevice.disconnect();
+                    startCounter = 1;
+                    showHideButtonDisplay(false, DeviceType.MOBY);
+                } else if(c2XDevice != null && c2XDevice.isConnected()){
+                    c2XDevice.disconnect();
+                    startCounter = 1;
+                    showHideButtonDisplay(false, DeviceType.C2X_C3X);
+                }
+                break;
         }
     }
 
@@ -202,7 +291,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         connectionConfig.setDeviceId(DEVICE_ID);
         connectionConfig.setLicenseId(LICENSE_ID);
         connectionConfig.setConnectionMode(connType);
-        connectionConfig.setEnvironment(Environment.TEST);
+        connectionConfig.setEnvironment(simpleSwitch.isChecked() ? Environment.PRODUCTION : Environment.TEST);
         return connectionConfig;
     }
 
@@ -235,8 +324,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onRequestPermissionsResult(final int requestCode,
-                                           @NonNull final String[] permissions,
-                                           @NonNull final int[] grantResults) {
+            @NonNull final String[] permissions,
+            @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PermissionHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults, this);
         if (requestCode == PERMISSION_REQUEST_CODE) {
