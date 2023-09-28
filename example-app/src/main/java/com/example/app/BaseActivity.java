@@ -133,6 +133,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         mAlertDialog.show();
     }
 
+    protected void disconnectEvent() {
+        //let children activities override if needed
+    }
+
     protected void hideAlertDialog() {
         if (mAlertDialog != null && mAlertDialog.isShowing()) {
             mAlertDialog.hide();
@@ -255,12 +259,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public void onDisconnected() {
             Log.d(TAG, "onDisconnected");
+            MainActivity.mobyDevice = null;
             //update connection status
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
                     updateConnectionStatus("Disconnected", false);
+                    disconnectEvent();
                 }
             });
         }
@@ -385,13 +391,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public void onDisconnected() {
             Log.d(TAG, "onDisconnected");
+            MainActivity.c2XDevice = null;
             //update connection status
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(), "Disconnected", Toast.LENGTH_LONG).show();
                     updateConnectionStatus("Disconnected", false);
-                   // finish();
+                    disconnectEvent();
                 }
             });
         }

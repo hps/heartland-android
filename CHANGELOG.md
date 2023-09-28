@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.5] - 2023-09-28
+ 
+### Added
+
+### Changed
+- Made updates to sample app: Adding disconnect button, firmware check, and other UI updates.
+- Updated MobyDevice to reset TransactionManager after disconnect.
+### Fixed
+
+
 ## [1.3.4] - 2023-09-19
  
 ### Added

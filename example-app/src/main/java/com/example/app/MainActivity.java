@@ -21,8 +21,6 @@ import com.heartlandpaymentsystems.library.utilities.PermissionHelper.Permission
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, PermissionsCallBack {
 
-    private static final String TAG = "MainActivity";
-
     public static final String SAVED_PREFS = "GPAPP_SAVED_PREFS";
     public static final String BLUETOOTH_NAME = "BLUETOOTH_NAME";
     public static final String BLUETOOTH_ADDRESS = "BLUETOOTH_ADDRESS";
@@ -33,7 +31,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static final String SAVED_SITE_ID = "SAVED_SITE_ID";
     public static final String SAVED_DEVICE_ID = "SAVED_DEVICE_ID";
     public static final String SAVED_LICENSE_ID = "SAVED_LICENSE_ID";
-
+    private static final String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_CODE = 1;
 
     public static C2XDevice c2XDevice;
@@ -44,12 +42,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static TransactionState transactionState = TransactionState.None;
     public static String cardReaderStatus;
     public static String transactionResult;
-    private static boolean isAboutClick = false;
-    private int startCounter = 0;
-    Switch simpleSwitch;
-    Button about;
-    Button disconnect;
-
 
     public static String PUBLIC_KEY;
     public static String USERNAME;
@@ -58,10 +50,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static String DEVICE_ID;
     public static String LICENSE_ID;
 
+    private static boolean isAboutClick = false;
+    Switch simpleSwitch;
+    Button about;
+    Button disconnect;
+    private int startCounter = 0;
+
     public static boolean isShowAbout() {
         return isAboutClick;
     }
-
 
     @Override
     public void permissionsGranted() {
@@ -71,17 +68,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void permissionsDenied() {
         Toast.makeText(this, "Permissions Denied!", Toast.LENGTH_SHORT).show();
-    }
-
-    public enum TransactionState {
-        None,
-        Processing,
-        Complete
-    }
-
-    enum DeviceType{
-        C2X_C3X,
-        MOBY
     }
 
     @Override
@@ -145,26 +131,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-
-    private void showHideButtonDisplay(boolean isVisible){
-        if(mobyDevice != null && mobyDevice.isConnected()){
+    private void showHideButtonDisplay(boolean isVisible) {
+        if (mobyDevice != null && mobyDevice.isConnected()) {
             showHideButtonDisplay(isVisible, DeviceType.MOBY);
         }
 
-        if (c2XDevice != null && c2XDevice.isConnected()){
+        if (c2XDevice != null && c2XDevice.isConnected()) {
             showHideButtonDisplay(isVisible, DeviceType.C2X_C3X);
         }
     }
 
-    private void showHideButtonDisplay(boolean isVisible, DeviceType type){
+    @Override
+    protected void disconnectEvent() {
+        super.disconnectEvent();
+        startCounter = 1;
+        showHideButtonDisplay(false, DeviceType.MOBY);
+    }
+
+    private void showHideButtonDisplay(boolean isVisible, DeviceType type) {
         findViewById(R.id.connect_to_moby_button).setEnabled(!isVisible);
         findViewById(R.id.connect_to_mobyUSB_button).setEnabled(!isVisible);
         findViewById(R.id.connect_to_device_button).setEnabled(!isVisible);
         disconnect.setEnabled(isVisible);
 
-        switch (type){
+        switch (type) {
             case MOBY:
-                if(isVisible) {
+                if (isVisible) {
                     about.setEnabled(true);
                     about.setOnClickListener(this);
                 } else {
@@ -179,14 +171,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onStart() {
         super.onStart();
-        startCounter ++;
+        startCounter++;
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(startCounter > 1) {
+        if (startCounter > 1) {
             showHideButtonDisplay(true);
         }
     }
@@ -201,7 +192,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private boolean areCredentialsNull() {
         if (USERNAME == null || PASSWORD == null || SITE_ID == null || DEVICE_ID == null ||
-            LICENSE_ID == null) {
+                LICENSE_ID == null) {
             return true;
         }
         return false;
@@ -219,7 +210,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     showAlertDialog(getString(R.string.error), getString(R.string.error_credentials_null));
                     return;
                 }
-                c2XDevice = new C2XDevice(getApplicationContext(), getConnectionConfig(ConnectionMode.BLUETOOTH));
+                if (c2XDevice == null) {
+                    c2XDevice = new C2XDevice(getApplicationContext(), getConnectionConfig(ConnectionMode.BLUETOOTH));
+                }
                 Intent connectIntent = new Intent(this, BluetoothActivity.class);
                 connectIntent.putExtra(BluetoothActivity.EXTRA_CONNECTION_MODE, ConnectionMode.BLUETOOTH);
                 startActivity(connectIntent);
@@ -229,7 +222,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     showAlertDialog(getString(R.string.error), getString(R.string.error_credentials_null));
                     return;
                 }
-                mobyDevice = new MobyDevice(getApplicationContext(), getConnectionConfig(ConnectionMode.BLUETOOTH));
+                if (mobyDevice == null) {
+                    mobyDevice = new MobyDevice(getApplicationContext(), getConnectionConfig(ConnectionMode.BLUETOOTH));
+                }
                 Intent mobyIntent = new Intent(this, BluetoothActivity.class);
                 mobyIntent.putExtra(BluetoothActivity.EXTRA_CONNECTION_MODE, ConnectionMode.BLUETOOTH);
                 startActivity(mobyIntent);
@@ -239,7 +234,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     showAlertDialog(getString(R.string.error), getString(R.string.error_credentials_null));
                     return;
                 }
-                mobyDevice = new MobyDevice(getApplicationContext(), getConnectionConfig(ConnectionMode.USB));
+                if (mobyDevice == null) {
+                    mobyDevice = new MobyDevice(getApplicationContext(), getConnectionConfig(ConnectionMode.USB));
+                }
                 Intent mobyUsbIntent = new Intent(this, BluetoothActivity.class);
                 mobyUsbIntent.putExtra(BluetoothActivity.EXTRA_CONNECTION_MODE, ConnectionMode.USB);
                 startActivity(mobyUsbIntent);
@@ -270,12 +267,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 break;
             case R.id.disconnect_button:
-                if(mobyDevice != null && mobyDevice.isConnected()){
+                if (mobyDevice != null && mobyDevice.isConnected()) {
                     mobyDevice.disconnect();
+                    mobyDevice = null;
                     startCounter = 1;
                     showHideButtonDisplay(false, DeviceType.MOBY);
-                } else if(c2XDevice != null && c2XDevice.isConnected()){
+                } else if (c2XDevice != null && c2XDevice.isConnected()) {
                     c2XDevice.disconnect();
+                    c2XDevice = null;
                     startCounter = 1;
                     showHideButtonDisplay(false, DeviceType.C2X_C3X);
                 }
@@ -283,7 +282,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    private ConnectionConfig getConnectionConfig(ConnectionMode connType){
+    private ConnectionConfig getConnectionConfig(ConnectionMode connType) {
         ConnectionConfig connectionConfig = new ConnectionConfig();
         connectionConfig.setUsername(USERNAME);
         connectionConfig.setPassword(PASSWORD);
@@ -295,14 +294,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         return connectionConfig;
     }
 
-    //permission methods
     /**
      * Check the read location permission
      *
      * @return true if request permission is granted else return false
      */
     private boolean checkLocationPermission() {
-       // final String permissionsRequired = Manifest.permission.ACCESS_FINE_LOCATION;
+        // final String permissionsRequired = Manifest.permission.ACCESS_FINE_LOCATION;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             PermissionHelper.checkAndRequestPermissions(
                     this,
@@ -335,6 +333,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
+    //permission methods
+
     private void checkPermissionResult(String permission, int grantResult) {
         if (permission.equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION)) {
             if (grantResult != PackageManager.PERMISSION_GRANTED) {
@@ -342,5 +342,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Toast.makeText(this, getString(R.string.location_permission_necessary), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public enum TransactionState {
+        None,
+        Processing,
+        Complete
+    }
+
+    enum DeviceType {
+        C2X_C3X,
+        MOBY
     }
 }
