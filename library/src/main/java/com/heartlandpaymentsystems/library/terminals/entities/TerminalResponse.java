@@ -130,6 +130,8 @@ public class TerminalResponse implements IDeviceResponse {
 
         if (transactionResponse.getReceipt() != null) {
             Receipt receipt = transactionResponse.getReceipt();
+            response.setTerminalSerialNumber(receipt.getTerminalSerialNumber());
+            response.setTerminalRefNumber(receipt.getPosReferenceNumber());
             response.setCardType(receipt.getCardType().toString());
             response.setRspDT(receipt.getTransactionDateTime());
             response.setApplicationId(receipt.getAid());
@@ -173,6 +175,16 @@ public class TerminalResponse implements IDeviceResponse {
             response.setIssuerAuthenticationData(receipt.getIssuerAuthenticationData());
         }
 
+        response.setEntryMethod(response.getEntryMode().toString());
+        switch (response.getEntryMode()){
+            case NONE:
+            case MANUAL:
+                response.setCardPresent(false);
+                break;
+            default:
+                response.setCardPresent(true);
+                break;
+        }
         response.setOriginalGatewayTxnId(transactionResponse.getOriginalGatewayTxnId());
         response.setOriginalRspDT(transactionResponse.getOriginalRspDT());
         response.setOriginalClientTxnId(transactionResponse.getOriginalClientTxnId());
@@ -649,37 +661,37 @@ public class TerminalResponse implements IDeviceResponse {
                 ", transactionType='" + transactionType + '\'' +
                 ", entryMethod='" + entryMethod + '\'' +
                 ", maskedCardNumber='" + maskedCardNumber + '\'' +
-                ", entryMode=" + entryMode +
+                ", entryMode='" + entryMode + '\''+
                 ", approvalCode='" + approvalCode + '\'' +
-                ", transactionAmount=" + transactionAmount +
-                ", amountDue=" + amountDue +
-                ", balanceAmount=" + balanceAmount +
+                ", transactionAmount='" + transactionAmount + '\'' +
+                ", amountDue='" + amountDue + '\'' +
+                ", balanceAmount='" + balanceAmount + '\'' +
                 ", cardholderName='" + cardholderName + '\'' +
                 ", cardBin='" + cardBin + '\'' +
-                ", cardPresent=" + cardPresent +
+                ", cardPresent='" + cardPresent + '\'' +
                 ", expirationDate='" + expirationDate + '\'' +
-                ", tipAmount=" + tipAmount +
-                ", cashBackAmount=" + cashBackAmount +
+                ", tipAmount='" + tipAmount + '\'' +
+                ", cashBackAmount='" + cashBackAmount + '\'' +
                 ", avsResultCode='" + avsResultCode + '\'' +
                 ", avsResultText='" + avsResultText + '\'' +
                 ", cvvResponseCode='" + cvvResponseCode + '\'' +
                 ", cvvResponseText='" + cvvResponseText + '\'' +
-                ", taxExempt=" + taxExempt +
+                ", taxExempt='" + taxExempt + '\'' +
                 ", taxExemptId='" + taxExemptId + '\'' +
                 ", paymentType='" + paymentType + '\'' +
-                ", approvedAmount=" + approvedAmount +
+                ", approvedAmount='" + approvedAmount +
                 ", applicationPreferredName='" + applicationPreferredName + '\'' +
                 ", applicationName='" + applicationName + '\'' +
                 ", applicationId='" + applicationId + '\'' +
                 ", applicationCryptogram='" + applicationCryptogram + '\'' +
-                ", applicationCryptogramType=" + applicationCryptogramType +
+                ", applicationCryptogramType='" + applicationCryptogramType +
                 ", applicationCryptogramTypeS='" + applicationCryptogramTypeS + '\'' +
                 ", cardHolderVerificationMethod='" + cardHolderVerificationMethod + '\'' +
                 ", terminalVerificationResult='" + terminalVerificationResult + '\'' +
                 ", authorizationResponse='" + authorizationResponse + '\'' +
                 ", issuerAuthenticationData='" + issuerAuthenticationData + '\'' +
                 ", terminalSerialNumber='" + terminalSerialNumber + '\'' +
-                ", storedResponse=" + storedResponse +
+                ", storedResponse='" + storedResponse + '\'' +
                 ", lastResponseTransactionId='" + lastResponseTransactionId + '\'' +
                 '}';
     }

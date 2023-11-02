@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.6] - 2023-11-02
+ 
+### Added
+
+### Changed
+- Updated the Ingenico SDK to the latest version.
+### Fixed
+- Setup work-around for incorrect KSN by limiting it to the proper length.
+
 ## [1.3.5] - 2023-09-28
  
 ### Added
