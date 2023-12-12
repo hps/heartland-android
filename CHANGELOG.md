@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.7] - 2023-12-12
+ 
+### Added
+- Over-the-air firmware updates for Moby 5500.
+### Changed
+
+### Fixed
+- Fixed issue for ACC on mastercard.
+
 ## [1.3.6] - 2023-11-02
  
 ### Added
