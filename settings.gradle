@@ -1,2 +1,3 @@
 include ':example-app', ':library', ':vital-sdk:bbpos', ':vital-sdk:core', ':vital-sdk:ingenico',
-        ':vital-sdk:portico', ':vital-sdk:roamreader', ':vital-sdk:transaction-manager'
+        ':vital-sdk:portico', ':vital-sdk:roamreader', ':vital-sdk:temlibrary', ':vital-sdk:ruadeviceservice',
+        ':vital-sdk:transaction-manager'

@@ -33,7 +33,8 @@
     <string name="error_enter_valid_expiration">Make sure to enter a valid number for the expiration month and year.</string>
     <string name="error_enter_valid_card">Make sure to enter valid credit card information.</string>
     <string name="error_device_not_connected">You must connect to your device before using this transaction.</string>
-    <string name="error_device_not_connected_ota">You must connect to your C2X device before using OTA updates.</string>
+    <string name="error_device_not_connected_ota">You must connect to your device before using OTA updates.</string>
+    <string name="error_device_not_supported_rki">Current device does not support RKI.</string>
     <string name="error_no_transaction_id">You must have a valid transaction ID (from CreditSale) to perform this transaction.</string>
     <string name="error_no_amount">You must enter a valid Transaction Amount.</string>
     <string name="error_no_gratuity">You must enter a valid Gratuity Amount.</string>

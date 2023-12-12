@@ -6,19 +6,25 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.heartlandpaymentsystems.library.BuildConfig;
 import com.heartlandpaymentsystems.library.R;
+import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
+import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.ConnectionMode;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
 import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
+import com.heartlandpaymentsystems.library.terminals.enums.TerminalUpdateType;
 import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothDiscoveryListener;
 import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothReceiver;
 import com.roam.roamreaderunifiedapi.callback.LedPairingConfirmationCallback;
@@ -58,6 +64,8 @@ import timber.log.Timber;
  * Moby Device Implementation. Device: Ingenico Moby5500
  */
 public class MobyDevice implements IDevice {
+    private static final String TAG = MobyDevice.class.getSimpleName();
+
     private static boolean timberPlanted;
     private TransactionManager transactionManager;
     private Context applicationContext;
@@ -70,6 +78,8 @@ public class MobyDevice implements IDevice {
     private GatewayConfiguration gatewayConfig;
     private DeviceListener deviceListener;
     private TransactionListener transactionListener;
+    private AvailableTerminalVersionsListener availableTerminalVersionsListener;
+    private UpdateTerminalListener updateTerminalListener;
     private PairingLedView pairingLedView;
     private AlertDialog dialog;
     private boolean isDeviceSelected;
@@ -133,6 +143,10 @@ public class MobyDevice implements IDevice {
         final Long timeout = connectionConfig.getTimeout();
         terminalConfig.setTimeout(timeout != 0 ? timeout : 60000L);
 
+        if (connectionConfig.getPort() != null && !connectionConfig.getPort().isEmpty()) {
+            terminalConfig.setPort(Integer.parseInt(connectionConfig.getPort()));
+        }
+
         HashMap<String, String> credentials = new HashMap<>();
         credentials.put("version_number", "3409");
         credentials.put("developer_id", "002914");
@@ -195,6 +209,15 @@ public class MobyDevice implements IDevice {
      */
     public void setTransactionListener(TransactionListener transactionListener) {
         this.transactionListener = transactionListener;
+    }
+
+    public void setAvailableTerminalVersionsListener(
+            AvailableTerminalVersionsListener availableTerminalVersionsListener) {
+        this.availableTerminalVersionsListener = availableTerminalVersionsListener;
+    }
+
+    public void setUpdateTerminalListener(UpdateTerminalListener updateTerminalListener) {
+        this.updateTerminalListener = updateTerminalListener;
     }
 
     /**
@@ -363,6 +386,48 @@ public class MobyDevice implements IDevice {
             transactionManager = TransactionManager.getInstance();
         }
         transactionManager.cancel();
+    }
+
+    //OTA methods
+    public void getAvailableTerminalVersions(TerminalUpdateType terminalUpdateType) {
+        if (!transactionManager.isInitialized()) {
+            Log.e(TAG, "TransactionManager not initialized, please connect to device first.");
+            return;
+        }
+        if (availableTerminalVersionsListener == null) {
+            Log.e(TAG, "AvailableTerminalVersionsListener is null, please set a valid listener.");
+            return;
+        }
+
+        com.tsys.payments.library.enums.TerminalUpdateType updateType =
+                com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
+        if (terminalUpdateType == TerminalUpdateType.CONFIG) {
+            updateType = com.tsys.payments.library.enums.TerminalUpdateType.KERNEL;
+        }
+
+        transactionManager.getAvailableTerminalVersions(updateType, null, new AvailableTerminalVersionsListenerImpl());
+    }
+
+    public void updateTerminal(@NonNull TerminalUpdateType terminalUpdateType,
+            @Nullable String version) {
+        if (!transactionManager.isInitialized()) {
+            Log.e(TAG, "TransactionManager not initialized, please connect to device first.");
+            return;
+        }
+        if (updateTerminalListener == null) {
+            Log.e(TAG, "UpdateTerminalListener is null, please set a valid listener.");
+            return;
+        }
+
+        com.tsys.payments.library.enums.TerminalUpdateType updateType =
+                com.tsys.payments.library.enums.TerminalUpdateType.FIRMWARE;
+        if (terminalUpdateType == TerminalUpdateType.CONFIG) {
+            updateType = com.tsys.payments.library.enums.TerminalUpdateType.KERNEL;
+        } else if (terminalUpdateType == TerminalUpdateType.RKI) {
+            updateType = com.tsys.payments.library.enums.TerminalUpdateType.RKI;
+        }
+
+        transactionManager.updateTerminal(updateType, null, version, new UpdateTerminalListenerImpl());
     }
 
     public void sendCardholderInteractionResult(CardholderInteractionResult cardholderInteractionResult) {
@@ -636,6 +701,55 @@ public class MobyDevice implements IDevice {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
                 com.heartlandpaymentsystems.library.terminals.enums.ErrorType errorType = map(error.getType());
                 transactionListener.onError(err, errorType);
+            }
+        }
+    }
+
+    protected class AvailableTerminalVersionsListenerImpl
+            implements com.tsys.payments.library.terminal.AvailableTerminalVersionsListener {
+
+        @Override
+        public void onAvailableTerminalVersionsReceived(com.tsys.payments.library.enums.TerminalUpdateType type,
+                List<String> versions) {
+            if (availableTerminalVersionsListener != null) {
+                TerminalUpdateType updateType = TerminalUpdateType.FIRMWARE;
+                if (type == com.tsys.payments.library.enums.TerminalUpdateType.KERNEL) {
+                    updateType = TerminalUpdateType.CONFIG;
+                }
+                availableTerminalVersionsListener.onAvailableTerminalVersionsReceived(updateType, versions);
+            }
+        }
+
+        @Override
+        public void onTerminalVersionInfoError(Error error) {
+            if (availableTerminalVersionsListener != null) {
+                java.lang.Error err = new java.lang.Error(error.getMessage());
+                availableTerminalVersionsListener.onTerminalVersionInfoError(err);
+            }
+        }
+    }
+
+    protected class UpdateTerminalListenerImpl implements com.tsys.payments.library.terminal.UpdateTerminalListener {
+
+        @Override
+        public void onProgress(@Nullable Double completionPercentage, @Nullable String progressMessage) {
+            if (updateTerminalListener != null) {
+                updateTerminalListener.onProgress(completionPercentage, progressMessage);
+            }
+        }
+
+        @Override
+        public void onTerminalUpdateSuccess() {
+            if (updateTerminalListener != null) {
+                updateTerminalListener.onTerminalUpdateSuccess();
+            }
+        }
+
+        @Override
+        public void onTerminalUpdateError(Error error) {
+            if (updateTerminalListener != null) {
+                java.lang.Error err = new java.lang.Error(error.getMessage());
+                updateTerminalListener.onTerminalUpdateError(err);
             }
         }
     }

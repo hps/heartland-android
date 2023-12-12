@@ -2,12 +2,12 @@ apply plugin: "maven-publish"
 apply plugin: 'signing'
 
 configurations.maybeCreate("default")
-def publishArtifact = artifacts.add("default", file('core-release.aar'))
+def publishArtifact = artifacts.add("default", file('ruaDeviceService-2.4.11.2-debug.aar'))
 
 // Artifact parameters
 def sdkGroupId = 'com.heartlandpaymentsystems'
-def sdkArtifactId = 'heartland-core'
-def sdkVersion = '1.0.7'
+def sdkArtifactId = 'heartland-ruadeviceservice'
+def sdkVersion = '1.0.0'
 
 // publish.properties should contain signing properties and maven central credentials
 File publishPropertiesFile = file('../../publish.properties')
@@ -33,7 +33,7 @@ afterEvaluate {
 
                 pom {
                     name = sdkArtifactId
-                    description = 'Core library for supporting the Heartland Android SDK.'
+                    description = 'RUA Device Service library for supporting the Heartland Android SDK.'
                     url = 'https://developer.heartlandpaymentsystems.com/'
 
                     licenses {
