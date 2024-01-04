@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.8] - 2024-01-04
+ 
+### Added
+
+### Changed
+
+### Fixed
+- Added missing apostrophe for TerminalResponse toString().
+- Fixed crash on transaction caused by config parsing changes introduced in 1.3.6.
+
 ## [1.3.7] - 2023-12-12
  
 ### Added

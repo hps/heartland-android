@@ -679,7 +679,7 @@ public class TerminalResponse implements IDeviceResponse {
                 ", taxExempt='" + taxExempt + '\'' +
                 ", taxExemptId='" + taxExemptId + '\'' +
                 ", paymentType='" + paymentType + '\'' +
-                ", approvedAmount='" + approvedAmount +
+                ", approvedAmount='" + approvedAmount + '\'' +
                 ", applicationPreferredName='" + applicationPreferredName + '\'' +
                 ", applicationName='" + applicationName + '\'' +
                 ", applicationId='" + applicationId + '\'' +
