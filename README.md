@@ -7,7 +7,7 @@ This Android SDK lets you connect to a C2X, C3X, or Moby 5500 device and process
 Maven
 -------------
 ```java
-implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.3.8'
+implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.3.9'
 ```
 
 Example App
@@ -33,4 +33,3 @@ SDK Classes
 - **TransactionListener** - Listener interface for transaction callbacks.
 - **Card** - Used for manual card entry (C2X/Moby connection is not required for manual card entry).
 - **CreditAuthBuilder**, **CreditCaptureBuilder**, **CreditSaleBuilder**, **CreditAdjustBuilder**, **CreditReturnBuilder**, **CreditVoidBuilder** - Builder classes for constructing different types of transactions.
-

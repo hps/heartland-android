@@ -25,6 +25,10 @@ public class ConnectionConfig {
     private String password;
     private String deviceId;
 
+    // saf options
+    private boolean safEnabled;
+    private int safExpirationInDays;
+
     private Environment environment;
 
     public ConnectionConfig() {
@@ -152,4 +156,20 @@ public class ConnectionConfig {
     public Environment getEnvironment() { return environment; }
 
     public void setEnvironment(Environment environment) { this.environment = environment; }
+
+    public boolean isSafEnabled() {
+        return safEnabled;
+    }
+
+    public void setSafEnabled(boolean safEnabled) {
+        this.safEnabled = safEnabled;
+    }
+
+    public int getSafExpirationInDays() {
+        return safExpirationInDays;
+    }
+
+    public void setSafExpirationInDays(int safExpirationInDays) {
+        this.safExpirationInDays = safExpirationInDays;
+    }
 }

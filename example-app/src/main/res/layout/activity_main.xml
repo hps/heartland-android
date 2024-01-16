@@ -120,13 +120,19 @@
             android:enabled="false"
             android:text="@string/about" />
 
-
         <Switch
             android:id="@+id/simpleSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="@string/environment" />
+
+        <Switch
+            android:id="@+id/saf_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/saf_switch" />
 
     </LinearLayout>
 

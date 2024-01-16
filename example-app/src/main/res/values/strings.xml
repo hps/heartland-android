@@ -17,6 +17,7 @@
     <string name="about">Provision Version</string>
     <string name="environment">Environment TEST/PROD</string>
     <string name="disconnect">Disconnect</string>
+    <string name="saf_switch">SAF Toggle</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -64,6 +65,7 @@
 
     <string name="transaction_error">Transaction Error</string>
     <string name="transaction_complete">Transaction Complete</string>
+    <string name="saf_transactions_complete">SAF Transactions Complete</string>
     <string name="transaction_status_label">Transaction Status:</string>
     <string name="transaction_status_none">None</string>
     <string name="transaction_amount_label">Total Transaction Amount:</string>
@@ -80,6 +82,9 @@
     <string name="creditcapture">Credit Capture</string>
     <string name="batchclose">Batch Close</string>
     <string name="giftcard">Gift Card</string>
+    <string name="uploadsaf">Upload SAF</string>
+    <string name="forcesaf_off">Force SAF: Off</string>
+    <string name="forcesaf_on">Force SAF: On</string>
 
     <string name="checking">Checking</string>
     <string name="check_firmware">Check for firmware updates</string>

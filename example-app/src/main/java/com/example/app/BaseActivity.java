@@ -12,13 +12,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+import com.example.app.MainActivity.TransactionState;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
+import com.heartlandpaymentsystems.library.terminals.IDevice;
+import com.heartlandpaymentsystems.library.terminals.SafListener;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalInfo;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.ConnectionMode;
 import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
 import com.heartlandpaymentsystems.library.utilities.ReceiptHelper;
+import com.tsys.payments.library.db.entity.SafTransaction;
+import com.tsys.payments.library.domain.TransactionResponse;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +43,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected BluetoothDevice previousSelected;
     protected ConnectionMode connectionMode;
     protected static boolean connectButtonEnabled;
+
+    protected Button executeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,15 +63,46 @@ public abstract class BaseActivity extends AppCompatActivity {
         if(MainActivity.mobyDevice != null) {
             MainActivity.mobyDevice.setMobyPairingContext(this);
             MainActivity.mobyDevice.setDeviceListener(mobyDeviceListener);
+            MainActivity.mobyDevice.setSafListener(safListener);
         }
 
         if(MainActivity.c2XDevice != null) {
             MainActivity.c2XDevice.setDeviceListener(c2xDeviceListener);
+            MainActivity.c2XDevice.setSafListener(safListener);
         }
 
         if (!(this instanceof BluetoothActivity)) {
             updateConnectionStatus(connectionStatus, connectButtonEnabled);
         }
+    }
+
+    protected void updateTransactionStatus() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView transactionStatus = findViewById(R.id.transaction_status);
+                if (transactionStatus != null) {
+                    switch (MainActivity.transactionState) {
+                        case None:
+                            transactionStatus.setText(MainActivity.transactionState.toString());
+                            break;
+                        case Processing:
+                            transactionStatus.setText(
+                                    MainActivity.transactionState + " - " + MainActivity.cardReaderStatus + " - " +
+                                            MainActivity.transactionId);
+                            break;
+                        case Complete:
+                            transactionStatus.setText(
+                                    MainActivity.transactionState + " - " + MainActivity.transactionResult + " - " +
+                                            MainActivity.transactionId);
+                            break;
+                    }
+                }
+                if (executeButton != null) {
+                    executeButton.setEnabled(MainActivity.transactionState != MainActivity.TransactionState.Processing);
+                }
+            }
+        });
     }
 
     protected void updateConnectionStatus(String status, boolean connectButtonEnabled) {
@@ -417,6 +458,63 @@ public abstract class BaseActivity extends AppCompatActivity {
         @Override
         public void onTerminalInfoReceived(TerminalInfo terminalInfo) {
             Log.d(TAG, "onTerminalInfoReceived - " + terminalInfo.toString());
+        }
+    };
+
+    protected SafListener safListener = new SafListener() {
+        @Override
+        public void onProcessingComplete(List<TransactionResponse> responses) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showAlertDialog(getString(R.string.saf_transactions_complete),
+                            Dialogs.constructSAFTransactionMessage(responses));
+                }
+            });
+        }
+
+        @Override
+        public void onAllSafTransactionsRetrieved(List<SafTransaction> obfuscatedSafTransactions) {
+
+        }
+
+        @Override
+        public void onError(Error error) {
+
+        }
+
+        @Override
+        public void onTransactionStored(String id, int totalCount, BigDecimal totalAmount) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    CharSequence message = "Transaction Stored: " + id + ", Total Count/Amount: " +
+                            totalCount + " / $" + totalAmount.divide(BigDecimal.valueOf(100));
+                    Toast.makeText(BaseActivity.this, message, Toast.LENGTH_LONG).show();
+
+                    MainActivity.transactionId = id;
+                    MainActivity.transactionResult = "SAF";
+                    MainActivity.transactionState = TransactionState.Complete;
+                    updateTransactionStatus();
+                }
+            });
+        }
+
+        @Override
+        public void onStoredTransactionComplete(String id, TransactionResponse transactionResponse) {
+            //acknowledge the transaction so it can be deleted
+            IDevice device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
+            device.acknowledgeSAFTransaction(id);
+
+            //show toast
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    CharSequence message = "SAF Transaction Complete: " + id + ", Response: " +
+                            transactionResponse.getTransactionResult();
+                    Toast.makeText(BaseActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            });
         }
     };
 }

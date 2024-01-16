@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application>
-    <activity android:name="com.heartlandpaymentsystems.library.CardActivity"
-        android:theme="@style/Theme.AppCompat.Light"></activity>
+        <activity android:name="com.heartlandpaymentsystems.library.CardActivity"
+            android:theme="@style/Theme.AppCompat.Light"></activity>
     </application>
 </manifest>

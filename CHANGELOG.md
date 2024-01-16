@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.9] - 2024-01-16
+ 
+### Added
+- Store and forward (SAF) support added for C2X, C3X, and Moby 5500 devices.
+### Changed
+
+### Fixed
+- Fixed issue with bad state caused by cancel call when no transaction is running.
+
 ## [1.3.8] - 2024-01-04
  
 ### Added

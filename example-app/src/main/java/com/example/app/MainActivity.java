@@ -51,9 +51,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static String LICENSE_ID;
 
     private static boolean isAboutClick = false;
-    Switch simpleSwitch;
-    Button about;
-    Button disconnect;
+    private Switch environmentSwitch;
+    private Button about;
+    private Button disconnect;
+    private Switch safSwitch;
     private int startCounter = 0;
 
     public static boolean isShowAbout() {
@@ -109,8 +110,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         findViewById(R.id.manual_card_button).setOnClickListener(this);
         findViewById(R.id.transaction_button).setOnClickListener(this);
         findViewById(R.id.ota_update_button).setOnClickListener(this);
-        simpleSwitch = (Switch)findViewById(R.id.simpleSwitch);
-        simpleSwitch.setOnClickListener(this);
+        environmentSwitch = (Switch)findViewById(R.id.simpleSwitch);
+        environmentSwitch.setOnClickListener(this);
+        safSwitch = (Switch)findViewById(R.id.saf_switch);
+        safSwitch.setOnClickListener(this);
         about = (Button)findViewById(R.id.about_button);
         disconnect = (Button)findViewById(R.id.disconnect_button);
         disconnect.setOnClickListener(this);
@@ -254,7 +257,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(updateIntent);
                 break;
             case R.id.simpleSwitch:
-                if (simpleSwitch.isChecked()) {
+                if (environmentSwitch.isChecked()) {
                     Toast.makeText(this, "Prod is Selected", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Test is Selected", Toast.LENGTH_LONG).show();
@@ -279,6 +282,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     showHideButtonDisplay(false, DeviceType.C2X_C3X);
                 }
                 break;
+            case R.id.saf_switch:
+                if (safSwitch.isChecked()) {
+                    Toast.makeText(this, "SAF is enabled", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "SAF is disabled", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -290,7 +300,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         connectionConfig.setDeviceId(DEVICE_ID);
         connectionConfig.setLicenseId(LICENSE_ID);
         connectionConfig.setConnectionMode(connType);
-        connectionConfig.setEnvironment(simpleSwitch.isChecked() ? Environment.PRODUCTION : Environment.TEST);
+        connectionConfig.setSafEnabled(safSwitch.isChecked());
+        connectionConfig.setSafExpirationInDays(5);
+        connectionConfig.setEnvironment(environmentSwitch.isChecked() ? Environment.PRODUCTION : Environment.TEST);
         return connectionConfig;
     }
 

@@ -27,14 +27,12 @@ public abstract class BaseTransactionActivity extends BaseActivity {
 
     private static final String TAG = "BaseTransactionActivity";
 
-    protected Button executeButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    protected void updateTransactionStatus() {
+    /*protected void updateTransactionStatus() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -53,7 +51,7 @@ public abstract class BaseTransactionActivity extends BaseActivity {
                 executeButton.setEnabled(MainActivity.transactionState != MainActivity.TransactionState.Processing);
             }
         });
-    }
+    }*/
 
     protected TransactionListener transactionListener = new TransactionListener() {
         @Override
@@ -144,10 +142,12 @@ public abstract class BaseTransactionActivity extends BaseActivity {
         public void onTransactionComplete(TerminalResponse transaction) {
             Log.d(TAG, "onTransactionComplete - " + transaction.toString());
             hideProgress();
-            MainActivity.transactionId = transaction.getTransactionId();
-            MainActivity.transactionResult = transaction.getDeviceResponseCode();
-            MainActivity.transactionState = MainActivity.TransactionState.Complete;
-            updateTransactionStatus();
+            if (!transaction.getDeviceResponseCode().equals("SAF")) {
+                MainActivity.transactionId = transaction.getTransactionId();
+                MainActivity.transactionResult = transaction.getDeviceResponseCode();
+                MainActivity.transactionState = MainActivity.TransactionState.Complete;
+                updateTransactionStatus();
+            }
 
             boolean showReceiptOption = (transaction.getAuthorizationResponse() != null &&
                     transaction.getAuthorizationResponse().equals("00")) &&

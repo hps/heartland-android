@@ -81,6 +81,27 @@
             android:layout_gravity="center_horizontal"
             android:text="@string/giftcard" />
 
+        <Button
+            android:id="@+id/uploadsaf_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/uploadsaf" />
+
+        <Button
+            android:id="@+id/forcesaf_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/forcesaf_off" />
+
+        <Button
+            android:id="@+id/test_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/cancel" />
+
     </LinearLayout>
 
 </RelativeLayout>

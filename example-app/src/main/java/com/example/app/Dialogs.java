@@ -5,14 +5,14 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
+import com.tsys.payments.library.domain.TransactionResponse;
+import java.util.List;
 
 public class Dialogs {
 
@@ -144,6 +144,20 @@ public class Dialogs {
         if(terminalResponse.getTransactionType() == "SVA"){
             message += "\nSVA PAN: " + terminalResponse.getSvaPan();
             message += "\nExpiration: " + terminalResponse.getExpirationDate();
+        }
+
+        return message.replace("_", " ");
+    }
+
+    public static String constructSAFTransactionMessage(List<TransactionResponse> responses) {
+        String message = "";
+
+        for (int i = 0; i < responses.size(); i++) {
+            message += "SAF Item " + (i + 1) + "\n";
+            message += "Device Response Code: " + responses.get(i).getTransactionResult() + "\n";
+            message += "Transaction ID: " + responses.get(i).getGatewayTransactionId() + "\n";
+            message += "Transaction Type: " + responses.get(i).getTransactionType() + "\n";
+            message += "Amount: " + (responses.get(i).getApprovedAmount() / 100f) + "\n\n";
         }
 
         return message.replace("_", " ");

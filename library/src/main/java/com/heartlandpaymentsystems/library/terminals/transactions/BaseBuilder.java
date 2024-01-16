@@ -24,9 +24,6 @@ public abstract class BaseBuilder {
             throw new Exception("Missing configured device");
         }
 
-        //set the value for allowing duplicates
-        LibraryConfigHelper.setAllowDuplicates(allowDuplicates);
-
         device.doTransaction(buildRequest());
     }
 
@@ -43,6 +40,8 @@ public abstract class BaseBuilder {
             autoSubstantiation.setPrescriptionSubTotal(getPrescriptionSubTotal());
             request.setAutoSubstantiation(autoSubstantiation);
         }
+
+        request.setAllowDuplicates(allowDuplicates);
 
         return request;
     }

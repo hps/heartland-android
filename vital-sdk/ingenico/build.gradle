@@ -7,7 +7,7 @@ def publishArtifact = artifacts.add("default", file('ingenico-release.aar'))
 // Artifact parameters
 def sdkGroupId = 'com.heartlandpaymentsystems'
 def sdkArtifactId = 'heartland-ingenico'
-def sdkVersion = '1.0.8'
+def sdkVersion = '1.0.9'
 
 // publish.properties should contain signing properties and maven central credentials
 File publishPropertiesFile = file('../../publish.properties')

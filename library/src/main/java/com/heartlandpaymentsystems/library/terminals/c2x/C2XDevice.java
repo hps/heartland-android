@@ -8,6 +8,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.heartlandpaymentsystems.library.BuildConfig;
+import com.heartlandpaymentsystems.library.terminals.SafListener;
+import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
@@ -17,10 +19,14 @@ import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.Environment;
+import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
 import com.heartlandpaymentsystems.library.terminals.enums.TerminalUpdateType;
 import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothDiscoveryListener;
 import com.heartlandpaymentsystems.library.terminals.receivers.BluetoothReceiver;
 import com.tsys.payments.library.connection.ConnectionListener;
+import com.tsys.payments.library.db.DatabaseConfig;
+import com.tsys.payments.library.db.SafDatabaseConfig;
+import com.tsys.payments.library.db.entity.SafTransaction;
 import com.tsys.payments.library.domain.CardholderInteractionRequest;
 import com.tsys.payments.library.domain.GatewayConfiguration;
 import com.tsys.payments.library.domain.TerminalConfiguration;
@@ -35,6 +41,7 @@ import com.tsys.payments.library.enums.TerminalInputCapability;
 import com.tsys.payments.library.enums.TerminalOperatingEnvironment;
 import com.tsys.payments.library.enums.TerminalOutputCapability;
 import com.tsys.payments.library.enums.TerminalType;
+import com.tsys.payments.library.enums.TransactionResultType;
 import com.tsys.payments.library.enums.TransactionStatus;
 import com.tsys.payments.library.exceptions.Error;
 import com.tsys.payments.library.exceptions.InitializationException;
@@ -42,9 +49,16 @@ import com.tsys.payments.library.gateway.enums.GatewayType;
 import com.tsys.payments.library.terminal.TerminalInfoListener;
 import com.tsys.payments.library.utils.LibraryConfigHelper;
 import com.tsys.payments.transaction.TransactionManager;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import timber.log.Timber;
 
 /**
  * C2X Device Implementation
@@ -59,14 +73,18 @@ public class C2XDevice implements IDevice {
     private TransactionConfiguration transactionConfig;
     private TerminalConfiguration terminalConfig;
     private GatewayConfiguration gatewayConfig;
+    private DatabaseConfig databaseConfig;
     private TransactionManager transactionManager;
     private TerminalInfo connectedTerminalInfo;
     private DeviceListener deviceListener;
     private TransactionListener transactionListener;
+    private SafListener safListener;
     private AvailableTerminalVersionsListener availableTerminalVersionsListener;
     private UpdateTerminalListener updateTerminalListener;
     private HashSet<BluetoothDevice> bluetoothDevices;
     private BluetoothReceiver bluetoothReceiver;
+
+    private List<Long> safIDs;
 
     public C2XDevice(Context applicationContext) {
         this.applicationContext = applicationContext;
@@ -85,8 +103,11 @@ public class C2XDevice implements IDevice {
         this.transactionListener = transactionListener;
     }
 
-    public void setAvailableTerminalVersionsListener(
-            AvailableTerminalVersionsListener availableTerminalVersionsListener) {
+    public void setSafListener(SafListener safListener) {
+        this.safListener = safListener;
+    }
+
+    public void setAvailableTerminalVersionsListener(AvailableTerminalVersionsListener availableTerminalVersionsListener) {
         this.availableTerminalVersionsListener = availableTerminalVersionsListener;
     }
 
@@ -156,7 +177,8 @@ public class C2XDevice implements IDevice {
             initializeTransactionManager();
         }
 
-        transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl());
+        transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl(),
+                new SafListenerImpl());
     }
 
     public void sendCardholderInteractionResult(CardholderInteractionResult cardholderInteractionResult) {
@@ -171,10 +193,50 @@ public class C2XDevice implements IDevice {
                     applicationContext,
                     terminalConfig,
                     transactionConfig,
-                    gatewayConfig
+                    gatewayConfig,
+                    databaseConfig
             );
         } catch (InitializationException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void uploadSAF() {
+        if (transactionManager == null) {
+            transactionManager = TransactionManager.getInstance();
+        }
+        transactionManager.processAllSafTransactions(new SafListenerImpl());
+    }
+
+    /**
+     * Check if force SAF is currently enabled.
+     * @return True if force SAF is properly enabled, false otherwise.
+     */
+    @Override
+    public boolean isForcedSafEnabled() {
+        if (transactionManager != null) {
+            return transactionManager.isForceSafEnabled();
+        }
+        return false;
+    }
+
+    /**
+     * Sets force SAF enabled. This will have no effect if SAF is not enabled.
+     * @param forcedSaf
+     */
+    @Override
+    public void setForcedSafEnabled(boolean forcedSaf) {
+        if (transactionManager == null) {
+            transactionManager = TransactionManager.getInstance();
+        }
+        transactionManager.setForceSafEnabled(forcedSaf);
+    }
+
+    @Override
+    public void acknowledgeSAFTransaction(String uniqueSafId) {
+        if (transactionManager != null) {
+            transactionManager.acknowledgeSAFTransaction(uniqueSafId);
         }
     }
 
@@ -248,6 +310,12 @@ public class C2XDevice implements IDevice {
         gatewayConfig = new GatewayConfiguration();
         gatewayConfig.setGatewayType(GatewayType.PORTICO);
         gatewayConfig.setCredentials(credentials);
+
+        SafDatabaseConfig safDatabaseConfig = new SafDatabaseConfig(connectionConfig.isSafEnabled(),
+                connectionConfig.getSafExpirationInDays(), TimeUnit.DAYS);
+        databaseConfig = new DatabaseConfig(applicationContext, "c2xDB", null,
+                safDatabaseConfig, GatewayType.PORTICO);
+        safIDs = new ArrayList<Long>();
     }
 
     protected boolean isTransactionManagerConnected() {
@@ -464,6 +532,9 @@ public class C2XDevice implements IDevice {
 
         @Override
         public void onTransactionComplete(TransactionResponse transactionResponse) {
+            if (transactionResponse.getTransactionResult() == TransactionResultType.SAF) {
+                safIDs.add(Long.valueOf(transactionResponse.getPosReferenceNumber()));
+            }
             if (transactionListener != null) {
                 transactionListener.onTransactionComplete(
                         TerminalResponse.fromTransactionResponse(transactionResponse));
@@ -528,4 +599,49 @@ public class C2XDevice implements IDevice {
             }
         }
     }
+
+    protected class SafListenerImpl implements com.tsys.payments.library.db.SafListener {
+        @Override
+        public void onProcessingComplete(List<TransactionResponse> responses) {
+            Timber.d("onProcessingComplete - count - " + responses.size());
+            for (TransactionResponse transactionResponse : responses) {
+                Timber.d("response: " + transactionResponse);
+            }
+            if (safListener != null) {
+                safListener.onProcessingComplete(responses);
+            }
+        }
+
+        @Override
+        public void onAllSafTransactionsRetrieved(List<SafTransaction> obfuscatedSafTransactions) {
+            Timber.d("onAllSafTransactionsRetrieved - count - " + obfuscatedSafTransactions.size());
+            if (safListener != null) {
+                safListener.onAllSafTransactionsRetrieved(obfuscatedSafTransactions);
+            }
+        }
+
+        @Override
+        public void onError(Error error) {
+            Timber.d("onError - " + error);
+            if (safListener != null) {
+                safListener.onError(new java.lang.Error(error.getMessage()));
+            }
+        }
+
+        @Override
+        public void onTransactionStored(String id, int totalCount, BigDecimal totalAmount) {
+            Timber.d("onTransactionStored - id - " + id + ", count - " + totalCount + ", amount - " + totalAmount);
+            if (safListener != null) {
+                safListener.onTransactionStored(id, totalCount, totalAmount);
+            }
+        }
+
+        @Override
+        public void onStoredTransactionComplete(String id, TransactionResponse transactionResponse) {
+            Timber.d("onStoredTransactionComplete - id - " + id + ", response - " + transactionResponse);
+            if (safListener != null) {
+                safListener.onStoredTransactionComplete(id, transactionResponse);
+            }
+        }
+    };
 }

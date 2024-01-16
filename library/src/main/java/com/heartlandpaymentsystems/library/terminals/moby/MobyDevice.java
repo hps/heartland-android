@@ -17,6 +17,7 @@ import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsLi
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
 import com.heartlandpaymentsystems.library.terminals.IDevice;
+import com.heartlandpaymentsystems.library.terminals.SafListener;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
 import com.heartlandpaymentsystems.library.terminals.UpdateTerminalListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionResult;
@@ -32,6 +33,9 @@ import com.roam.roamreaderunifiedapi.data.LedSequence;
 import com.roam.roamreaderunifiedapi.view.PairingLedView;
 import com.tsys.payments.library.connection.ConnectionListener;
 import com.tsys.payments.library.connection.LedMobyPairingListener;
+import com.tsys.payments.library.db.DatabaseConfig;
+import com.tsys.payments.library.db.SafDatabaseConfig;
+import com.tsys.payments.library.db.entity.SafTransaction;
 import com.tsys.payments.library.domain.CardholderInteractionRequest;
 import com.tsys.payments.library.domain.GatewayConfiguration;
 import com.tsys.payments.library.domain.TerminalConfiguration;
@@ -46,6 +50,7 @@ import com.tsys.payments.library.enums.TerminalInputCapability;
 import com.tsys.payments.library.enums.TerminalOperatingEnvironment;
 import com.tsys.payments.library.enums.TerminalOutputCapability;
 import com.tsys.payments.library.enums.TerminalType;
+import com.tsys.payments.library.enums.TransactionResultType;
 import com.tsys.payments.library.enums.TransactionStatus;
 import com.tsys.payments.library.enums.TransactionType;
 import com.tsys.payments.library.exceptions.Error;
@@ -54,9 +59,12 @@ import com.tsys.payments.library.gateway.enums.GatewayType;
 import com.tsys.payments.library.terminal.TerminalInfoListener;
 import com.tsys.payments.library.utils.LibraryConfigHelper;
 import com.tsys.payments.transaction.TransactionManager;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import timber.log.Timber;
 
@@ -76,14 +84,18 @@ public class MobyDevice implements IDevice {
     private TransactionConfiguration transactionConfig;
     private TerminalConfiguration terminalConfig;
     private GatewayConfiguration gatewayConfig;
+    private DatabaseConfig databaseConfig;
     private DeviceListener deviceListener;
     private TransactionListener transactionListener;
+    private SafListener safListener;
     private AvailableTerminalVersionsListener availableTerminalVersionsListener;
     private UpdateTerminalListener updateTerminalListener;
     private PairingLedView pairingLedView;
     private AlertDialog dialog;
     private boolean isDeviceSelected;
     private boolean isScanned;
+
+    private List<Long> safIDs;
 
     /**
      * Instantiates a new Moby device.
@@ -159,6 +171,12 @@ public class MobyDevice implements IDevice {
         gatewayConfig = new GatewayConfiguration();
         gatewayConfig.setGatewayType(GatewayType.PORTICO);
         gatewayConfig.setCredentials(credentials);
+
+        SafDatabaseConfig safDatabaseConfig = new SafDatabaseConfig(connectionConfig.isSafEnabled(),
+                connectionConfig.getSafExpirationInDays(), TimeUnit.DAYS);
+        databaseConfig = new DatabaseConfig(applicationContext, "mobyDB", null,
+                safDatabaseConfig, GatewayType.PORTICO);
+        safIDs = new ArrayList<Long>();
     }
 
     /**
@@ -170,7 +188,8 @@ public class MobyDevice implements IDevice {
                     applicationContext,
                     terminalConfig,
                     transactionConfig,
-                    gatewayConfig
+                    gatewayConfig,
+                    databaseConfig
             );
         } catch (InitializationException ex) {
             ex.printStackTrace();
@@ -182,6 +201,45 @@ public class MobyDevice implements IDevice {
             return applicationContext;
         }
         return mobyPairingContext;
+    }
+
+    @Override
+    public void uploadSAF() {
+        if (transactionManager == null) {
+            transactionManager = TransactionManager.getInstance();
+        }
+        transactionManager.processAllSafTransactions(new SafListenerImpl());
+    }
+
+    /**
+     * Check if force SAF is currently enabled.
+     * @return True if force SAF is properly enabled, false otherwise.
+     */
+    @Override
+    public boolean isForcedSafEnabled() {
+        if (transactionManager != null) {
+            return transactionManager.isForceSafEnabled();
+        }
+        return false;
+    }
+
+    /**
+     * Sets force SAF enabled. This will have no effect if SAF is not enabled.
+     * @param forcedSaf
+     */
+    @Override
+    public void setForcedSafEnabled(boolean forcedSaf) {
+        if (transactionManager == null) {
+            transactionManager = TransactionManager.getInstance();
+        }
+        transactionManager.setForceSafEnabled(forcedSaf);
+    }
+
+    @Override
+    public void acknowledgeSAFTransaction(String uniqueSafId) {
+        if (transactionManager != null) {
+            transactionManager.acknowledgeSAFTransaction(uniqueSafId);
+        }
     }
 
     /**
@@ -209,6 +267,10 @@ public class MobyDevice implements IDevice {
      */
     public void setTransactionListener(TransactionListener transactionListener) {
         this.transactionListener = transactionListener;
+    }
+
+    public void setSafListener(SafListener safListener) {
+        this.safListener = safListener;
     }
 
     public void setAvailableTerminalVersionsListener(
@@ -358,7 +420,8 @@ public class MobyDevice implements IDevice {
             initializeTransactionManager();
         }
 
-        transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl());
+        transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl(),
+                new SafListenerImpl());
     }
 
     /**
@@ -375,7 +438,7 @@ public class MobyDevice implements IDevice {
         }
         TransactionRequest transactionRequest = new TransactionRequest();
         transactionRequest.setTransactionType(TransactionType.SVA);
-        transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl());
+        transactionManager.startTransaction(transactionRequest, new TransactionListenerImpl(), null);
     }
 
     /**
@@ -663,6 +726,11 @@ public class MobyDevice implements IDevice {
 
         @Override
         public void onTransactionComplete(TransactionResponse transactionResponse) {
+            Timber.d("onTransactionComplete - " + transactionResponse);
+            Timber.d("onTransactionComplete id - " + transactionResponse.getPosReferenceNumber());
+            if (transactionResponse.getTransactionResult() == TransactionResultType.SAF) {
+                safIDs.add(Long.valueOf(transactionResponse.getPosReferenceNumber()));
+            }
             if (transactionListener != null) {
                 transactionListener.onTransactionComplete(
                         TerminalResponse.fromTransactionResponse(transactionResponse));
@@ -705,6 +773,51 @@ public class MobyDevice implements IDevice {
         }
     }
 
+    protected class SafListenerImpl implements com.tsys.payments.library.db.SafListener {
+        @Override
+        public void onProcessingComplete(List<TransactionResponse> responses) {
+            Timber.d("onProcessingComplete - count - " + responses.size());
+            for (TransactionResponse transactionResponse : responses) {
+                Timber.d("response: " + transactionResponse);
+            }
+            if (safListener != null) {
+                safListener.onProcessingComplete(responses);
+            }
+        }
+
+        @Override
+        public void onAllSafTransactionsRetrieved(List<SafTransaction> obfuscatedSafTransactions) {
+            Timber.d("onAllSafTransactionsRetrieved - count - " + obfuscatedSafTransactions.size());
+            if (safListener != null) {
+                safListener.onAllSafTransactionsRetrieved(obfuscatedSafTransactions);
+            }
+        }
+
+        @Override
+        public void onError(Error error) {
+            Timber.d("onError - " + error);
+            if (safListener != null) {
+                safListener.onError(new java.lang.Error(error.getMessage()));
+            }
+        }
+
+        @Override
+        public void onTransactionStored(String id, int totalCount, BigDecimal totalAmount) {
+            Timber.d("onTransactionStored - id - " + id + ", count - " + totalCount + ", amount - " + totalAmount);
+            if (safListener != null) {
+                safListener.onTransactionStored(id, totalCount, totalAmount);
+            }
+        }
+
+        @Override
+        public void onStoredTransactionComplete(String id, TransactionResponse transactionResponse) {
+            Timber.d("onStoredTransactionComplete - id - " + id + ", response - " + transactionResponse);
+            if (safListener != null) {
+                safListener.onStoredTransactionComplete(id, transactionResponse);
+            }
+        }
+    };
+
     protected class AvailableTerminalVersionsListenerImpl
             implements com.tsys.payments.library.terminal.AvailableTerminalVersionsListener {
 
@@ -720,14 +833,13 @@ public class MobyDevice implements IDevice {
             }
         }
 
-        @Override
         public void onTerminalVersionInfoError(Error error) {
             if (availableTerminalVersionsListener != null) {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
                 availableTerminalVersionsListener.onTerminalVersionInfoError(err);
             }
         }
-    }
+    };
 
     protected class UpdateTerminalListenerImpl implements com.tsys.payments.library.terminal.UpdateTerminalListener {
 
@@ -738,19 +850,17 @@ public class MobyDevice implements IDevice {
             }
         }
 
-        @Override
         public void onTerminalUpdateSuccess() {
             if (updateTerminalListener != null) {
                 updateTerminalListener.onTerminalUpdateSuccess();
             }
         }
 
-        @Override
         public void onTerminalUpdateError(Error error) {
             if (updateTerminalListener != null) {
                 java.lang.Error err = new java.lang.Error(error.getMessage());
                 updateTerminalListener.onTerminalUpdateError(err);
             }
         }
-    }
+    };
 }

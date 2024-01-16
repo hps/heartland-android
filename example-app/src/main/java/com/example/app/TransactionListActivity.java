@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import com.heartlandpaymentsystems.library.terminals.IDevice;
 
-public class TransactionListActivity extends BaseActivity implements OnClickListener {
+public class TransactionListActivity extends BaseTransactionActivity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +23,15 @@ public class TransactionListActivity extends BaseActivity implements OnClickList
         findViewById(R.id.creditvoid_button).setOnClickListener(this);
         findViewById(R.id.batchclose_button).setOnClickListener(this);
         findViewById(R.id.giftcard_button).setOnClickListener(this);
+        findViewById(R.id.uploadsaf_button).setOnClickListener(this);
+        findViewById(R.id.forcesaf_button).setOnClickListener(this);
+        findViewById(R.id.test_cancel_button).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         Intent intent;
+        IDevice device;
         switch (view.getId()) {
             case R.id.creditsale_button:
                 intent = new Intent(this, CreditSaleActivity.class);
@@ -58,6 +64,25 @@ public class TransactionListActivity extends BaseActivity implements OnClickList
             case R.id.giftcard_button:
                 intent = new Intent(this, GiftCardActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.uploadsaf_button:
+                device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
+                if (device != null) {
+                    device.uploadSAF();
+                }
+                break;
+            case R.id.forcesaf_button:
+                device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
+                if (device != null) {
+                    boolean currentSetting = device.isForcedSafEnabled();
+                    device.setForcedSafEnabled(!currentSetting);
+
+                    boolean newSetting = device.isForcedSafEnabled();
+                    ((Button)view).setText(
+                            newSetting ? getString(R.string.forcesaf_on) : getString(R.string.forcesaf_off));
+                }
+            case R.id.test_cancel_button:
+                MainActivity.mobyDevice.cancelTransaction();
                 break;
         }
     }

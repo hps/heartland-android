@@ -114,7 +114,7 @@ public class CardEntryActivity extends BaseActivity implements CardFragmentInter
         }
     }
 
-    private void updateTransactionStatus() {
+    protected void updateTransactionStatus() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
