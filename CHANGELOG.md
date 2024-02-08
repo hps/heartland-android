@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.10] - 2024-02-08
+ 
+### Added
+
+### Changed
+
+### Fixed
+- Updated bbpos library to resolve connection issue for C3X.
+- Fixed issue with onProgress callback for Moby firmware updates.
+
 ## [1.3.9] - 2024-01-16
  
 ### Added

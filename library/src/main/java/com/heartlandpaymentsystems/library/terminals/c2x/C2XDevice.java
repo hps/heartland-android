@@ -68,6 +68,7 @@ public class C2XDevice implements IDevice {
 
     private static final String TAG = C2XDevice.class.getSimpleName();
 
+    private static boolean timberPlanted;
     private Context applicationContext;
     private ConnectionConfig connectionConfig;
     private TransactionConfiguration transactionConfig;
@@ -279,6 +280,10 @@ public class C2XDevice implements IDevice {
 
         LibraryConfigHelper.setDebugMode(connectionConfig.getEnvironment().equals(Environment.TEST));
         LibraryConfigHelper.setSdkNameVersion("android;version=" + BuildConfig.VERSION_NAME);
+        if (connectionConfig.getEnvironment().equals(Environment.TEST) && !timberPlanted) {
+            Timber.plant(new Timber.DebugTree());
+            timberPlanted = true;
+        }
 
         transactionConfig = new TransactionConfiguration();
         transactionConfig.setChipEnabled(true);

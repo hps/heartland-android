@@ -81,8 +81,12 @@ public class TransactionListActivity extends BaseTransactionActivity implements 
                     ((Button)view).setText(
                             newSetting ? getString(R.string.forcesaf_on) : getString(R.string.forcesaf_off));
                 }
+                break;
             case R.id.test_cancel_button:
-                MainActivity.mobyDevice.cancelTransaction();
+                device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
+                if (device != null) {
+                    device.cancelTransaction();
+                }
                 break;
         }
     }
