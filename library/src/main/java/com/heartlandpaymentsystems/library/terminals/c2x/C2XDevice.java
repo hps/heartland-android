@@ -139,9 +139,7 @@ public class C2XDevice implements IDevice {
 
             terminalConfig.setConnectionType(connectionTypes[0]);
 
-            if (!transactionManager.isInitialized()) {
-                initializeTransactionManager();
-            }
+            initializeTransactionManager();
 
             if (transactionManager.isInitialized()) {
                 transactionManager.connect(new ConnectionListenerImpl());

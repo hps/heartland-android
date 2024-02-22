@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.11] - 2024-02-22
+ 
+### Added
+
+### Changed
+
+### Fixed
+- Fixed issue for C2X/C3X which caused the previous device to connect instead of the newly selected device.
+
 ## [1.3.10] - 2024-02-08
  
 ### Added
