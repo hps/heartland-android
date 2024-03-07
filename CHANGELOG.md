@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.12] - 2024-03-07
+ 
+### Added
+- Added config/provision over-the-air updating for Moby 5500.
+### Changed
+
+### Fixed
+
+
 ## [1.3.11] - 2024-02-22
  
 ### Added

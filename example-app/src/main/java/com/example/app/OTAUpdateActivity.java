@@ -26,7 +26,7 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
         AvailableTerminalVersionsListener, UpdateTerminalListener {
 
     private static final String TAG = OTAUpdateActivity.class.getSimpleName();
-    boolean isRKI = false;
+    TerminalUpdateType terminalUpdateType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +91,7 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
                     return;
                 }
 
-                isRKI = true;
+                terminalUpdateType = TerminalUpdateType.RKI;
                 showProgress(this, getString(R.string.checking), getString(R.string.checking_kernel), null);
                 MainActivity.c2XDevice.remoteKeyInjection();
                 break;
@@ -110,6 +110,7 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(final DialogInterface dialogInterface, int i) {
+                                    terminalUpdateType = TerminalUpdateType.FIRMWARE;
                                     showProgress(OTAUpdateActivity.this, "Updating", "Updating firmware...", 0);
                                     if (MainActivity.mobyDevice != null) {
                                         MainActivity.mobyDevice.updateTerminal(TerminalUpdateType.FIRMWARE, null);
@@ -124,8 +125,13 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(final DialogInterface dialogInterface, int i) {
+                                    terminalUpdateType = TerminalUpdateType.CONFIG;
                                     showProgress(OTAUpdateActivity.this, "Updating", "Updating kernel...", 0);
-                                    MainActivity.c2XDevice.updateTerminal(TerminalUpdateType.CONFIG, versions.get(i));
+                                    if (MainActivity.mobyDevice != null) {
+                                        MainActivity.mobyDevice.updateTerminal(TerminalUpdateType.CONFIG, versions.get(i));
+                                    } else {
+                                        MainActivity.c2XDevice.updateTerminal(TerminalUpdateType.CONFIG, versions.get(i));
+                                    }
                                 }
                             });
                 }
@@ -148,7 +154,7 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onProgress(@Nullable Double completionPercentage, @Nullable String progressMessage) {
         Log.d(TAG, "onProgress - " + completionPercentage + ", " + progressMessage);
-        if(isRKI && completionPercentage <= 1) {
+        if(terminalUpdateType == TerminalUpdateType.RKI && completionPercentage <= 1) {
             showProgress(OTAUpdateActivity.this, "Injecting", "Injecting Keys...", 0);
         }
         updateProgress(completionPercentage);
@@ -158,7 +164,8 @@ public class OTAUpdateActivity extends BaseActivity implements View.OnClickListe
     public void onTerminalUpdateSuccess() {
         String msg = "";
         hideProgress();
-        if(!isRKI) {
+        if(terminalUpdateType != TerminalUpdateType.RKI &&
+                (terminalUpdateType != TerminalUpdateType.CONFIG && MainActivity.mobyDevice != null)) {
             if (MainActivity.mobyDevice != null) {
                 MainActivity.mobyDevice.disconnect();
             } else {

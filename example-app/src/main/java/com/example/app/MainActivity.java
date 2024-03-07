@@ -280,6 +280,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     c2XDevice = null;
                     startCounter = 1;
                     showHideButtonDisplay(false, DeviceType.C2X_C3X);
+                } else {
+                    showHideButtonDisplay(false, DeviceType.MOBY);
                 }
                 break;
             case R.id.saf_switch:
