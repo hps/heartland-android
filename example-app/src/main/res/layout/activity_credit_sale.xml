@@ -132,11 +132,39 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/token" />
+
+            <EditText
+                android:id="@+id/token"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/optional"/>
+
+        </LinearLayout>
+
         <CheckBox
             android:id="@+id/creditsale_allowduplicates"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/allow_duplicates"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/layout_margin_small"/>
+
+        <CheckBox
+            android:id="@+id/creditsale_requesttoken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/request_token"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/layout_margin_small"/>
 

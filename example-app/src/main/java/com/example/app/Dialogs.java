@@ -145,6 +145,9 @@ public class Dialogs {
             message += "\nSVA PAN: " + terminalResponse.getSvaPan();
             message += "\nExpiration: " + terminalResponse.getExpirationDate();
         }
+        if (terminalResponse.getToken() != null) {
+            message += "\nToken: " + terminalResponse.getToken();
+        }
 
         return message.replace("_", " ");
     }

@@ -61,7 +61,9 @@ public class CreditSaleActivity extends BaseTransactionActivity {
                 String gratuity = ((EditText) findViewById(R.id.gratuity_amount)).getText().toString();
                 String clientTransactionId = ((EditText) findViewById(R.id.client_transaction_id)).getText().toString();
                 String invoiceNumber = ((EditText) findViewById(R.id.invoice_number)).getText().toString();
+                String token = ((EditText) findViewById(R.id.token)).getText().toString();
                 boolean allowDuplicates = ((CheckBox) findViewById(R.id.creditsale_allowduplicates)).isChecked();
+                boolean requestToken = ((CheckBox) findViewById(R.id.creditsale_requesttoken)).isChecked();
 
                 IDevice device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
                 CreditSaleBuilder creditSaleBuilder = new CreditSaleBuilder(device);
@@ -77,7 +79,11 @@ public class CreditSaleActivity extends BaseTransactionActivity {
                     transactionDetails.setInvoiceNumber(invoiceNumber);
                     creditSaleBuilder.setDetails(transactionDetails);
                 }
+                if (token != null && !token.isEmpty()) {
+                    creditSaleBuilder.setToken(token);
+                }
                 creditSaleBuilder.setAllowDuplicates(allowDuplicates);
+                creditSaleBuilder.setRequestToken(requestToken);
                 try {
                     creditSaleBuilder.execute();
                 } catch (Throwable e) {

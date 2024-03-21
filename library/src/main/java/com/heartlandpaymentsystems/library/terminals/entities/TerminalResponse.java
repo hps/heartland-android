@@ -194,6 +194,8 @@ public class TerminalResponse implements IDeviceResponse {
         response.setOriginalCardType(transactionResponse.getOriginalCardType());
         response.setOriginalCardNbrLast4(transactionResponse.getOriginalCardNbrLast4());
 
+        response.setToken(transactionResponse.getToken());
+
         return response;
     }
 

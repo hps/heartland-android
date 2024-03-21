@@ -95,9 +95,11 @@
 
     <string name="execute">Execute</string>
     <string name="allow_duplicates">Allow Duplicates</string>
+    <string name="request_token">Request Token</string>
     <string name="client_transaction_id">Client Transaction ID:</string>
     <string name="invoice_number">Invoice Number:</string>
     <string name="optional">Optional</string>
     <string name="required">Required</string>
     <string name="transaction_id">Transaction ID:</string>
+    <string name="token">Token:</string>
 </resources>

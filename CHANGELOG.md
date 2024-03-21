@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.13] - 2024-03-21
+ 
+### Added
+- Added support for requesting a multi-use token to CreditSaleBuilder and also added support for using a multi-use token.
+### Changed
+
+### Fixed
+
+
 ## [1.3.12] - 2024-03-07
  
 ### Added

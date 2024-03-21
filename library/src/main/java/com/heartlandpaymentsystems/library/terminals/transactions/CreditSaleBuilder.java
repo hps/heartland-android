@@ -23,6 +23,8 @@ public class CreditSaleBuilder extends BaseBuilder {
     private TransactionDetails details;
     private BigDecimal gratuity;
     private String cardHolderName;
+    private boolean requestToken;
+    private String token;
 
    /* public CreditSaleBuilder(C2XDevice device) {
         super((IDevice) device);
@@ -67,6 +69,12 @@ public class CreditSaleBuilder extends BaseBuilder {
 
         if (details != null) {
             request.setInvoiceNumber(details.getInvoiceNumber());
+        }
+
+        request.setGenerateToken(requestToken);
+
+        if (token != null && !token.isEmpty()) {
+            request.setToken(token);
         }
 
         if (creditCard != null) {
@@ -162,5 +170,21 @@ public class CreditSaleBuilder extends BaseBuilder {
 
     public void setCardHolderName(String cardHolderName) {
         this.cardHolderName = cardHolderName;
+    }
+
+    public boolean isRequestToken() {
+        return requestToken;
+    }
+
+    public void setRequestToken(boolean requestToken) {
+        this.requestToken = requestToken;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
