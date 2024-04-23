@@ -152,6 +152,26 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/card_brand_txn_id" />
+
+            <EditText
+                android:id="@+id/card_brand_txn_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="@string/optional_token"/>
+
+        </LinearLayout>
+
         <CheckBox
             android:id="@+id/creditsale_allowduplicates"
             android:layout_width="wrap_content"

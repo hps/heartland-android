@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.14] - 2024-04-23
+ 
+### Added
+- Added support for cardBrandTxnId which is used for multi-use token requests.
+### Changed
+
+### Fixed
+- Fixed issue with clientTxnId not being included in requests for multiple transaction types.
+
+
 ## [1.3.13] - 2024-03-21
  
 ### Added

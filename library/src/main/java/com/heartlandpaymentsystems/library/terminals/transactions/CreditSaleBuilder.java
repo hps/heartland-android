@@ -25,6 +25,7 @@ public class CreditSaleBuilder extends BaseBuilder {
     private String cardHolderName;
     private boolean requestToken;
     private String token;
+    private String cardBrandTxnId;
 
    /* public CreditSaleBuilder(C2XDevice device) {
         super((IDevice) device);
@@ -75,6 +76,7 @@ public class CreditSaleBuilder extends BaseBuilder {
 
         if (token != null && !token.isEmpty()) {
             request.setToken(token);
+            request.setCardBrandTxnId(cardBrandTxnId);
         }
 
         if (creditCard != null) {
@@ -186,5 +188,13 @@ public class CreditSaleBuilder extends BaseBuilder {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getCardBrandTxnId() {
+        return cardBrandTxnId;
+    }
+
+    public void setCardBrandTxnId(String cardBrandTxnId) {
+        this.cardBrandTxnId = cardBrandTxnId;
     }
 }

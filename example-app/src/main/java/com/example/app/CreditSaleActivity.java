@@ -62,8 +62,17 @@ public class CreditSaleActivity extends BaseTransactionActivity {
                 String clientTransactionId = ((EditText) findViewById(R.id.client_transaction_id)).getText().toString();
                 String invoiceNumber = ((EditText) findViewById(R.id.invoice_number)).getText().toString();
                 String token = ((EditText) findViewById(R.id.token)).getText().toString();
+                String cardBrandTxnId = ((EditText) findViewById(R.id.card_brand_txn_id)).getText().toString();
                 boolean allowDuplicates = ((CheckBox) findViewById(R.id.creditsale_allowduplicates)).isChecked();
                 boolean requestToken = ((CheckBox) findViewById(R.id.creditsale_requesttoken)).isChecked();
+                boolean useToken = false;
+
+                if (token != null && !token.isEmpty() && cardBrandTxnId != null && !cardBrandTxnId.isEmpty()) {
+                    useToken = true;
+                } else if ((token != null && !token.isEmpty()) || (cardBrandTxnId != null && !cardBrandTxnId.isEmpty())) {
+                    showAlertDialog(getString(R.string.error), getString(R.string.error_token_and_id));
+                    return;
+                }
 
                 IDevice device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
                 CreditSaleBuilder creditSaleBuilder = new CreditSaleBuilder(device);
@@ -79,8 +88,9 @@ public class CreditSaleActivity extends BaseTransactionActivity {
                     transactionDetails.setInvoiceNumber(invoiceNumber);
                     creditSaleBuilder.setDetails(transactionDetails);
                 }
-                if (token != null && !token.isEmpty()) {
+                if (useToken) {
                     creditSaleBuilder.setToken(token);
+                    creditSaleBuilder.setCardBrandTxnId(cardBrandTxnId);
                 }
                 creditSaleBuilder.setAllowDuplicates(allowDuplicates);
                 creditSaleBuilder.setRequestToken(requestToken);

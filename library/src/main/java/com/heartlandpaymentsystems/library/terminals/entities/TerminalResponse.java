@@ -23,6 +23,7 @@ public class TerminalResponse implements IDeviceResponse {
     private String transactionId;
     private String terminalRefNumber;
     private String token;
+    private String cardBrandTxnId;
     private String signatureStatus;
 
     // - TRANSACTIONAL
@@ -195,6 +196,7 @@ public class TerminalResponse implements IDeviceResponse {
         response.setOriginalCardNbrLast4(transactionResponse.getOriginalCardNbrLast4());
 
         response.setToken(transactionResponse.getToken());
+        response.setCardBrandTxnId(transactionResponse.getCardBrandTxnId());
 
         return response;
     }
@@ -269,6 +271,14 @@ public class TerminalResponse implements IDeviceResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getCardBrandTxnId() {
+        return cardBrandTxnId;
+    }
+
+    public void setCardBrandTxnId(String cardBrandTxnId) {
+        this.cardBrandTxnId = cardBrandTxnId;
     }
 
     public String getSignatureStatus() {

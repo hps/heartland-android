@@ -40,6 +40,7 @@
     <string name="error_no_amount">You must enter a valid Transaction Amount.</string>
     <string name="error_no_gratuity">You must enter a valid Gratuity Amount.</string>
     <string name="error_credentials_null">You need to enter in your credentials before connecting to a device.</string>
+    <string name="error_token_and_id">If using a token, you must include both token and card brand transaction ID.</string>
 
     <string name="loading_msg">Please wait</string>
     <string name="tokenizing">Tokenizing&#8230;</string>
@@ -100,6 +101,8 @@
     <string name="invoice_number">Invoice Number:</string>
     <string name="optional">Optional</string>
     <string name="required">Required</string>
+    <string name="optional_token">Optional (Required w/ Token)</string>
     <string name="transaction_id">Transaction ID:</string>
     <string name="token">Token:</string>
+    <string name="card_brand_txn_id">Card Brand Txn ID: </string>
 </resources>
