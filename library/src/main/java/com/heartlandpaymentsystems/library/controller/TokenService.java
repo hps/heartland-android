@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.heartlandpaymentsystems.library.entities.Card;
 import com.heartlandpaymentsystems.library.entities.Token;
-import com.heartlandpaymentsystems.library.utilities.TLSSocketFactory;
 import com.google.gson.Gson;
 
 import java.io.DataOutputStream;
@@ -60,9 +59,7 @@ public class TokenService {
             this.taskInput = inputParams[0];
             Token tokenObject = null;
             try {
-                TLSSocketFactory sf = new TLSSocketFactory();
                 HttpsURLConnection conn = (HttpsURLConnection) new URL(mApiUrl).openConnection();
-                conn.setSSLSocketFactory(sf);
 
                 //converting the publickey to base64 format and adding as Basic Authorization.
                 byte[] creds = String.format("%s:", mPublicKey).getBytes();

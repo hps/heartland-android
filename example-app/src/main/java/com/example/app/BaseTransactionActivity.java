@@ -1,15 +1,9 @@
 package com.example.app;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.heartlandpaymentsystems.library.entities.Card;
 import com.heartlandpaymentsystems.library.terminals.IDevice;
 import com.heartlandpaymentsystems.library.terminals.TransactionListener;
 import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteractionRequest;
@@ -17,9 +11,6 @@ import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteract
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
 import com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus;
-import com.heartlandpaymentsystems.library.utilities.ReceiptHelper;
-import com.tsys.payments.library.enums.CardholderInteractionType;
-import java.text.NumberFormat;
 import static com.example.app.Dialogs.hideProgress;
 import static com.example.app.Dialogs.showProgress;
 

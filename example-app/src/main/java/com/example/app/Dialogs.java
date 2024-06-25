@@ -149,6 +149,9 @@ public class Dialogs {
             message += "\nToken: " + terminalResponse.getToken();
             message += "\nCardBrandTxnId: " + terminalResponse.getCardBrandTxnId();
         }
+        if (terminalResponse.getTerminalStatusIndicator() != null) {
+            message += "\nTerminal Status Indicator: " + terminalResponse.getTerminalStatusIndicator();
+        }
 
         return message.replace("_", " ");
     }

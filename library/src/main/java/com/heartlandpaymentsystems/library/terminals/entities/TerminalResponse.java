@@ -1,5 +1,6 @@
 package com.heartlandpaymentsystems.library.terminals.entities;
 
+import android.util.Log;
 import com.heartlandpaymentsystems.library.terminals.IDeviceResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.ApplicationCryptogramType;
 import com.heartlandpaymentsystems.library.terminals.enums.EntryMode;
@@ -72,6 +73,7 @@ public class TerminalResponse implements IDeviceResponse {
     private String terminalSerialNumber;
     private boolean storedResponse;
     private String lastResponseTransactionId;
+    private String terminalStatusIndicator;
 
     // - DUPLICATE DATA
     private String mOriginalGatewayTxnId;
@@ -133,6 +135,7 @@ public class TerminalResponse implements IDeviceResponse {
             Receipt receipt = transactionResponse.getReceipt();
             response.setTerminalSerialNumber(receipt.getTerminalSerialNumber());
             response.setTerminalRefNumber(receipt.getPosReferenceNumber());
+            response.setTerminalStatusIndicator(receipt.getTerminalStatusIndicator());
             response.setCardType(receipt.getCardType().toString());
             response.setRspDT(receipt.getTransactionDateTime());
             response.setApplicationId(receipt.getAid());
@@ -569,6 +572,14 @@ public class TerminalResponse implements IDeviceResponse {
         this.issuerAuthenticationData = issuerAuthenticationData;
     }
 
+    public String getTerminalStatusIndicator() {
+        return terminalStatusIndicator;
+    }
+
+    public void setTerminalStatusIndicator(String terminalStatusIndicator) {
+        this.terminalStatusIndicator = terminalStatusIndicator;
+    }
+
     public boolean isStoredResponse() {
         return storedResponse;
     }
@@ -703,6 +714,7 @@ public class TerminalResponse implements IDeviceResponse {
                 ", authorizationResponse='" + authorizationResponse + '\'' +
                 ", issuerAuthenticationData='" + issuerAuthenticationData + '\'' +
                 ", terminalSerialNumber='" + terminalSerialNumber + '\'' +
+                ", terminalStatusIndicator='" + terminalStatusIndicator + '\'' +
                 ", storedResponse='" + storedResponse + '\'' +
                 ", lastResponseTransactionId='" + lastResponseTransactionId + '\'' +
                 '}';

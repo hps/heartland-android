@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.15] - 2024-06-25
+ 
+### Added
+- Added terminal status indicator to TerminalResponse.
+### Changed
+- Removed unused code that was giving warnings in macroscope.
+### Fixed
+- Fixed NullPointerException that occurred when attempting to uploadSAF.
+
+
 ## [1.3.14] - 2024-04-23
  
 ### Added
