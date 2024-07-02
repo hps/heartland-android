@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.16] - 2024-07-02
+ 
+### Added
+
+### Changed
+- Updated gradle plugin version to resolve macroscope issues.
+### Fixed
+- Fixed issue with void and refund transactions caused by previous update for client Txn ID (1.3.14).
+
+
 ## [1.3.15] - 2024-06-25
  
 ### Added
