@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 21
-        versionName "1.3.16"
+        versionCode 22
+        versionName "1.3.17"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,7 +39,7 @@ dependencies {
     //implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     // Global payments SDK
-    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:11.1.10'
+    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:11.2.25'
 
     /** Vital SDK dependencies - Start **/
     //switch out commented code to change between local and hosted vital libs
@@ -53,14 +53,14 @@ dependencies {
     api project(path: ':vital-sdk:temlibrary')
     api project(path: ':vital-sdk:ruadeviceservice')*/
     api 'com.heartlandpaymentsystems:heartland-bbpos:1.0.7'
-    api 'com.heartlandpaymentsystems:heartland-core:1.0.10'
+    api 'com.heartlandpaymentsystems:heartland-core:1.0.11'
     api 'com.heartlandpaymentsystems:heartland-ingenico:1.0.12'
-    api 'com.heartlandpaymentsystems:heartland-portico:1.0.10'
+    api 'com.heartlandpaymentsystems:heartland-portico:1.0.11'
     api 'com.heartlandpaymentsystems:heartland-roamreader:1.0.4'
     api 'com.heartlandpaymentsystems:heartland-ruadeviceservice:1.0.0'
     api 'com.heartlandpaymentsystems:heartland-temlibrary:1.0.0'
     api 'com.heartlandpaymentsystems:heartland-database-portico:1.0.1'
-    api 'com.heartlandpaymentsystems:heartland-transaction-manager:1.0.9'
+    api 'com.heartlandpaymentsystems:heartland-transaction-manager:1.0.10'
 
     // Apache Commons
     //implementation 'commons-codec:commons-codec:1.13'

@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.17] - 2024-07-25
+ 
+### Added
+- Updated transactions to autofill the UniqueDeviceId header value with the last 4 digits of the connected terminal.
+### Changed
+
+### Fixed
+
+
 ## [1.3.16] - 2024-07-02
  
 ### Added
