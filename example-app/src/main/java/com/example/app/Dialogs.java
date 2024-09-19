@@ -141,6 +141,18 @@ public class Dialogs {
         message += "Entry Mode: " + terminalResponse.getEntryMode() + "\n";
         message += "Card Number: " + terminalResponse.getMaskedCardNumber() + "\n";
         message += "Cardholder Name: " + terminalResponse.getCardholderName();
+        if (terminalResponse.getOrigTotal() != null && terminalResponse.getOrigTotal().floatValue() > 0) {
+            message += "\nOrig Total: " + terminalResponse.getOrigTotal();
+        }
+        if (terminalResponse.getApprovedAmount() != null) {
+            message += "\nAuth Amount: " + terminalResponse.getApprovedAmount();
+        }
+        if (terminalResponse.getSurchargeEligibility() != null) {
+            message += "\nSurcharge Eligibility: " + terminalResponse.getSurchargeEligibility();
+        }
+        if (terminalResponse.getSurchargeAmount() != null && terminalResponse.getSurchargeAmount().floatValue() > 0) {
+            message += "\nSurcharge Amount: " + terminalResponse.getSurchargeAmount();
+        }
         if(terminalResponse.getTransactionType() == "SVA"){
             message += "\nSVA PAN: " + terminalResponse.getSvaPan();
             message += "\nExpiration: " + terminalResponse.getExpirationDate();

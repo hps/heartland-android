@@ -3,7 +3,6 @@ apply plugin: 'signing'
 
 configurations.maybeCreate("default")
 def publishArtifact = artifacts.add("default", file('bbpos-release.aar'))
-
 // Artifact parameters
 def sdkGroupId = 'com.heartlandpaymentsystems'
 def sdkArtifactId = 'heartland-bbpos'

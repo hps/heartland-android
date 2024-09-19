@@ -57,6 +57,9 @@ public class TerminalResponse implements IDeviceResponse {
     private String paymentType;
 
     private BigDecimal approvedAmount;
+    private BigDecimal origTotal;
+    private BigDecimal surchargeAmount;
+    private String surchargeEligibility;
 
     // - EMV
     private String applicationPreferredName;
@@ -102,7 +105,18 @@ public class TerminalResponse implements IDeviceResponse {
         if (approvedAmount == null) {
             approvedAmount = 0L;
         }
+        Long origTotal = transactionResponse.getOrigTotal();
+        if (origTotal == null) {
+            origTotal = 0L;
+        }
+        Long surchargeAmount = transactionResponse.getSurchargeAmount();
+        if (surchargeAmount == null) {
+            surchargeAmount = 0L;
+        }
         response.setApprovedAmount((new BigDecimal(approvedAmount)).movePointLeft(2));
+        response.setOrigTotal((new BigDecimal(origTotal)).movePointLeft(2));
+        response.setSurchargeAmount((new BigDecimal(surchargeAmount)).movePointLeft(2));
+        response.setSurchargeEligibility(transactionResponse.getSurchargeEligibility());
         response.setEntryMode(EntryMode.fromCardDataSourceType(transactionResponse.getCardDataSourceType()));
         //        transactionResponse.getCardType();
         response.setApprovalCode(transactionResponse.getGatewayAuthCode());
@@ -476,6 +490,30 @@ public class TerminalResponse implements IDeviceResponse {
         this.approvedAmount = approvedAmount;
     }
 
+    public BigDecimal getOrigTotal() {
+        return origTotal;
+    }
+
+    public void setOrigTotal(BigDecimal origTotal) {
+        this.origTotal = origTotal;
+    }
+
+    public BigDecimal getSurchargeAmount() {
+        return surchargeAmount;
+    }
+
+    public void setSurchargeAmount(BigDecimal surchargeAmount) {
+        this.surchargeAmount = surchargeAmount;
+    }
+
+    public String getSurchargeEligibility() {
+        return surchargeEligibility;
+    }
+
+    public void setSurchargeEligibility(String surchargeEligibility) {
+        this.surchargeEligibility = surchargeEligibility;
+    }
+
     public String getApplicationPreferredName() {
         return applicationPreferredName;
     }
@@ -703,6 +741,9 @@ public class TerminalResponse implements IDeviceResponse {
                 ", taxExemptId='" + taxExemptId + '\'' +
                 ", paymentType='" + paymentType + '\'' +
                 ", approvedAmount='" + approvedAmount + '\'' +
+                ", origTotal='" + origTotal + '\'' +
+                ", surchargeEligibility='" + surchargeEligibility + '\'' +
+                ", surchargeAmount='" + surchargeAmount + '\'' +
                 ", applicationPreferredName='" + applicationPreferredName + '\'' +
                 ", applicationName='" + applicationName + '\'' +
                 ", applicationId='" + applicationId + '\'' +

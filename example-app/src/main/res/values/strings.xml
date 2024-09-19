@@ -18,6 +18,7 @@
     <string name="environment">Environment TEST/PROD</string>
     <string name="disconnect">Disconnect</string>
     <string name="saf_switch">SAF Toggle</string>
+    <string name="surcharge_switch">Surcharge</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

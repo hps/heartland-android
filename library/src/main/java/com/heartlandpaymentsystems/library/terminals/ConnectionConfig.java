@@ -25,6 +25,9 @@ public class ConnectionConfig {
     private String password;
     private String deviceId;
 
+    // Surcharge
+    private boolean surchargeEnabled;
+
     // saf options
     private boolean safEnabled;
     private int safExpirationInDays;
@@ -172,4 +175,13 @@ public class ConnectionConfig {
     public void setSafExpirationInDays(int safExpirationInDays) {
         this.safExpirationInDays = safExpirationInDays;
     }
+
+    public boolean isSurchargeEnabled() {
+        return surchargeEnabled;
+    }
+
+    public void setSurchargeEnabled(boolean surchargeEnabled) {
+        this.surchargeEnabled = surchargeEnabled;
+    }
+
 }

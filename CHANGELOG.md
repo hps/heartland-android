@@ -2,6 +2,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2024-09-17
+ 
+### Added
+- Added surcharge functionality which can be enabled/disabled with ConnectionConfig.setSurchargeEnabled(boolean).
+### Changed
+- Changed the return value for onCardholderInteractionRequested from void to boolean. You should return true if the interaction was handled and false if it wasn't.
+### Fixed
+
+
 ## [1.3.17] - 2024-07-25
  
 ### Added

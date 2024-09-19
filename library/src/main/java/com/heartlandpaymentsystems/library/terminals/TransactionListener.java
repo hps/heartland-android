@@ -7,7 +7,7 @@ import com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus;
 
 public interface TransactionListener {
     void onStatusUpdate(TransactionStatus transactionStatus);
-    void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest);
+    boolean onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest);
     void onTransactionComplete(TerminalResponse transaction);
     void onError(Error error, ErrorType errorType);
 }

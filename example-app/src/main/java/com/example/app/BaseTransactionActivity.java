@@ -1,5 +1,6 @@
 package com.example.app;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,8 @@ import com.heartlandpaymentsystems.library.terminals.entities.CardholderInteract
 import com.heartlandpaymentsystems.library.terminals.entities.TerminalResponse;
 import com.heartlandpaymentsystems.library.terminals.enums.ErrorType;
 import com.heartlandpaymentsystems.library.terminals.enums.TransactionStatus;
+import com.tsys.payments.library.enums.CardholderInteractionType;
+import java.text.NumberFormat;
 import static com.example.app.Dialogs.hideProgress;
 import static com.example.app.Dialogs.showProgress;
 
@@ -63,7 +66,7 @@ public abstract class BaseTransactionActivity extends BaseActivity {
         }
 
         @Override
-        public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
+        public boolean onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
             Log.d(TAG, "onCardholderInteractionRequested - " + cardholderInteractionRequest.getCardholderInteractionType());
             // prompt user for action
             CardholderInteractionResult result;
@@ -81,21 +84,26 @@ public abstract class BaseTransactionActivity extends BaseActivity {
                     } else {
                         MainActivity.mobyDevice.sendCardholderInteractionResult(result);
                     }
-                    // prompt user to select desired application
-                    /*Dialogs.showListDialog("Select", BaseTransactionActivity.this, applications, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // send result
-                            result.setSelectedAidIndex(i);
-                            if(MainActivity.c2XDevice != null) {
-                                MainActivity.c2XDevice.sendCardholderInteractionResult(result);
-                            } else {
-                                MainActivity.mobyDevice.sendCardholderInteractionResult(result);
-                            }
-                        }
-                    });*/
 
-                    break;
+                    return true;
+                case SURCHARGE_REQUESTED:
+                    result = new CardholderInteractionResult(
+                            CardholderInteractionType.CARDHOLDER_SURCHARGE_CONFIRMATION);
+                    String surchargeAmount = NumberFormat.getCurrencyInstance().format((float)cardholderInteractionRequest.getFinalSurchargeAmount()/100);
+                    Dialogs.showListDialog("Confirm Surcharge amount of " + surchargeAmount,
+                            BaseTransactionActivity.this, new String[] {"Accept", "Decline"},
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    result.setFinalAmountConfirmed(i == 0);
+                                    if(MainActivity.c2XDevice != null) {
+                                        MainActivity.c2XDevice.sendCardholderInteractionResult(result);
+                                    } else {
+                                        MainActivity.mobyDevice.sendCardholderInteractionResult(result);
+                                    }
+                                }
+                            });
+                    return true;
                 case FINAL_AMOUNT_CONFIRMATION:
                     // prompt user to confirm final amount
                     result = new CardholderInteractionResult(
@@ -107,26 +115,11 @@ public abstract class BaseTransactionActivity extends BaseActivity {
                     } else {
                         MainActivity.mobyDevice.sendCardholderInteractionResult(result);
                     }
-                    /*String finalAmount = NumberFormat.getCurrencyInstance().format((float)cardholderInteractionRequest.getFinalTransactionAmount()/100);
-                    Dialogs.showListDialog("Confirm final amount of " + finalAmount,
-                            BaseTransactionActivity.this, new String[] {"Yes", "No"},
-                            new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            result.setFinalAmountConfirmed(i == 0);
-                            if(MainActivity.c2XDevice != null) {
-                                MainActivity.c2XDevice.sendCardholderInteractionResult(result);
-                            } else {
-                                MainActivity.mobyDevice.sendCardholderInteractionResult(result);
-                            }
-                        }
-                    });*/
-
-                    break;
+                    return true;
                 default:
                     break;
             }
-
+            return false;
         }
 
         @Override

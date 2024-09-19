@@ -3,11 +3,10 @@ apply plugin: 'signing'
 
 configurations.maybeCreate("default")
 def publishArtifact = artifacts.add("default", file('core-release.aar'))
-
 // Artifact parameters
 def sdkGroupId = 'com.heartlandpaymentsystems'
 def sdkArtifactId = 'heartland-core'
-def sdkVersion = '1.0.11'
+def sdkVersion = '1.0.12'
 
 // publish.properties should contain signing properties and maven central credentials
 File publishPropertiesFile = file('../../publish.properties')

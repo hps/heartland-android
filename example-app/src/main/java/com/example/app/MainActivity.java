@@ -49,12 +49,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public static String SITE_ID;
     public static String DEVICE_ID;
     public static String LICENSE_ID;
+   
 
     private static boolean isAboutClick = false;
     private Switch environmentSwitch;
     private Button about;
     private Button disconnect;
     private Switch safSwitch;
+    private Switch surchargeSwitch;
     private int startCounter = 0;
 
     public static boolean isShowAbout() {
@@ -110,12 +112,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         findViewById(R.id.manual_card_button).setOnClickListener(this);
         findViewById(R.id.transaction_button).setOnClickListener(this);
         findViewById(R.id.ota_update_button).setOnClickListener(this);
-        environmentSwitch = (Switch)findViewById(R.id.simpleSwitch);
+        environmentSwitch = findViewById(R.id.simpleSwitch);
         environmentSwitch.setOnClickListener(this);
-        safSwitch = (Switch)findViewById(R.id.saf_switch);
+        safSwitch = findViewById(R.id.saf_switch);
         safSwitch.setOnClickListener(this);
-        about = (Button)findViewById(R.id.about_button);
-        disconnect = (Button)findViewById(R.id.disconnect_button);
+        surchargeSwitch = findViewById(R.id.surcharge_switch);
+        surchargeSwitch.setOnClickListener(this);
+        about = findViewById(R.id.about_button);
+        disconnect = findViewById(R.id.disconnect_button);
         disconnect.setOnClickListener(this);
         //check location permission
         boolean permissionGranted = checkLocationPermission();
@@ -291,6 +295,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     Toast.makeText(this, "SAF is disabled", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.surcharge_switch:
+                if (surchargeSwitch.isChecked()) {
+                    Toast.makeText(this, "Surcharge is enabled", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Surcharge is disabled", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -304,6 +315,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         connectionConfig.setConnectionMode(connType);
         connectionConfig.setSafEnabled(safSwitch.isChecked());
         connectionConfig.setSafExpirationInDays(5);
+        connectionConfig.setSurchargeEnabled(surchargeSwitch.isChecked());
         connectionConfig.setEnvironment(environmentSwitch.isChecked() ? Environment.PRODUCTION : Environment.TEST);
         return connectionConfig;
     }

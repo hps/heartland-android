@@ -5,135 +5,148 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="@dimen/layout_margin_small"
-        android:layout_marginTop="@dimen/layout_margin_small"
-        android:layout_marginEnd="@dimen/layout_margin_small"
-        android:layout_marginBottom="@dimen/layout_margin_small"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/description_credentials" />
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/layout_margin_small"
+            android:layout_marginTop="@dimen/layout_margin_small"
+            android:layout_marginEnd="@dimen/layout_margin_small"
+            android:layout_marginBottom="@dimen/layout_margin_small"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/credentials_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/enter_credentials" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/layout_margin"
+                android:gravity="center_horizontal"
+                android:text="@string/description_credentials" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/description_bluetooth" />
+            <Button
+                android:id="@+id/credentials_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/enter_credentials" />
 
-        <Button
-            android:id="@+id/connect_to_device_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/connect_to_device" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/layout_margin"
+                android:gravity="center_horizontal"
+                android:text="@string/description_bluetooth" />
 
-        <Button
-            android:id="@+id/connect_to_moby_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/connect_to_moby_device" />
+            <Button
+                android:id="@+id/connect_to_device_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/connect_to_device" />
 
-        <Button
-            android:id="@+id/connect_to_mobyUSB_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/connect_to_usbmoby_device" />
+            <Button
+                android:id="@+id/connect_to_moby_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/connect_to_moby_device" />
 
-        <Button
-            android:id="@+id/disconnect_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:text="@string/disconnect" />
+            <Button
+                android:id="@+id/connect_to_mobyUSB_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/connect_to_usbmoby_device" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/description_card" />
+            <Button
+                android:id="@+id/disconnect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:enabled="false"
+                android:text="@string/disconnect" />
 
-        <Button
-            android:id="@+id/manual_card_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/card_entry" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/layout_margin"
+                android:gravity="center_horizontal"
+                android:text="@string/description_card" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/description_transactions" />
+            <Button
+                android:id="@+id/manual_card_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/card_entry" />
 
-        <Button
-            android:id="@+id/transaction_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/c2x_transactions" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/layout_margin"
+                android:gravity="center_horizontal"
+                android:text="@string/description_transactions" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/description_ota_update" />
+            <Button
+                android:id="@+id/transaction_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/c2x_transactions" />
 
-        <Button
-            android:id="@+id/ota_update_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/ota_update" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/layout_margin"
+                android:gravity="center_horizontal"
+                android:text="@string/description_ota_update" />
 
-        <Button
-            android:id="@+id/about_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:enabled="false"
-            android:text="@string/about" />
+            <Button
+                android:id="@+id/ota_update_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/ota_update" />
 
-        <Switch
-            android:id="@+id/simpleSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/environment" />
+            <Button
+                android:id="@+id/about_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:enabled="false"
+                android:text="@string/about" />
 
-        <Switch
-            android:id="@+id/saf_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/saf_switch" />
+            <Switch
+                android:id="@+id/simpleSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/environment" />
 
-    </LinearLayout>
+            <Switch
+                android:id="@+id/saf_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/saf_switch" />
+
+            <Switch
+                android:id="@+id/surcharge_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/surcharge_switch" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

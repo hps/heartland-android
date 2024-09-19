@@ -7,7 +7,7 @@ This Android SDK lets you connect to a C2X, C3X, or Moby 5500 device and process
 Maven
 -------------
 ```java
-implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.3.17'
+implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.4.0'
 ```
 
 Example App
@@ -26,7 +26,7 @@ Simply update the placeholder values with your own credentials and then run the 
 SDK Classes
 -------------
 
-- **C2XDevice** - This is the class used for scanning and connecting to C2X devices. It also used for transactions once connected.
+- **C2XDevice** - This is the class used for scanning and connecting to C2X or C3X devices. It also used for transactions once connected.
 - **MobyDevice** - This is the class used for scanning and connecting to Moby 5500 devices. It is also used for transactions once connected.
 - **ConnectionConfig** - Used for initializing the C2XDevice or MobyDevice object with your credentials.
 - **DeviceListener** - Listener interface for scanning/connecting callbacks.

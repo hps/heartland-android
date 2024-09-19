@@ -234,7 +234,7 @@ public class CardEntryActivity extends BaseActivity implements CardFragmentInter
         }
 
         @Override
-        public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
+        public boolean onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
             showProgress(CardEntryActivity.this, "Status", "Processing...", null);
             Log.d(TAG, "onCardholderInteractionRequested");
             // prompt user for action
@@ -254,7 +254,7 @@ public class CardEntryActivity extends BaseActivity implements CardFragmentInter
                     } else if (MainActivity.mobyDevice != null) {
                         MainActivity.mobyDevice.sendCardholderInteractionResult(result);
                     }
-                    break;
+                    return true;
                 case FINAL_AMOUNT_CONFIRMATION:
                     // prompt user to confirm final amount
                     result = new CardholderInteractionResult(
@@ -266,11 +266,11 @@ public class CardEntryActivity extends BaseActivity implements CardFragmentInter
                     } else if (MainActivity.mobyDevice != null) {
                         MainActivity.mobyDevice.sendCardholderInteractionResult(result);
                     }
-                    break;
+                    return true;
                 default:
                     break;
             }
-
+            return false;
         }
 
         @Override

@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.heartlandpaymentsystems.library.BuildConfig;
 import com.heartlandpaymentsystems.library.R;
+import com.heartlandpaymentsystems.library.entities.SurchargeCalculation;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
@@ -43,6 +44,7 @@ import com.tsys.payments.library.domain.TerminalInfo;
 import com.tsys.payments.library.domain.TransactionConfiguration;
 import com.tsys.payments.library.domain.TransactionRequest;
 import com.tsys.payments.library.domain.TransactionResponse;
+import com.tsys.payments.library.enums.CardholderInteractionType;
 import com.tsys.payments.library.enums.ConnectionType;
 import com.tsys.payments.library.enums.CurrencyCode;
 import com.tsys.payments.library.enums.TerminalAuthenticationCapability;
@@ -130,6 +132,10 @@ public class MobyDevice implements IDevice {
         if (connectionConfig.getEnvironment().equals(Environment.TEST) && !timberPlanted) {
             Timber.plant(new Timber.DebugTree());
             timberPlanted = true;
+        }
+
+        if(connectionConfig.isSurchargeEnabled()){
+            LibraryConfigHelper.setSurchargeEnabled(connectionConfig.isSurchargeEnabled());
         }
 
         transactionConfig = new TransactionConfiguration();
@@ -528,6 +534,7 @@ public class MobyDevice implements IDevice {
         cr.setCardholderInteractionType(info.getCardholderInteractionType());
         cr.setCommercialCardDataFields(info.getCommercialCardDataFields());
         cr.setFinalTransactionAmount(info.getFinalTransactionAmount());
+        cr.setSurchargeAmount(info.getFinalSurchargeAmount());
         cr.setSupportedApplications(info.getSupportedApplications());
         return cr;
     }
@@ -719,8 +726,48 @@ public class MobyDevice implements IDevice {
 
         @Override
         public void onCardholderInteractionRequested(CardholderInteractionRequest cardholderInteractionRequest) {
+
             if (transactionListener != null) {
-                transactionListener.onCardholderInteractionRequested(map(cardholderInteractionRequest));
+                if(cardholderInteractionRequest.getCardholderInteractionType() ==
+                        CardholderInteractionType.SURCHARGE_REQUESTED){
+                    Long amountBefore = cardholderInteractionRequest.getFinalTransactionAmount();
+                    float surcharge = amountBefore * 0.03f;
+                    Long finalAmount = (long)(amountBefore + surcharge);
+                    cardholderInteractionRequest.setSurchargeAmount((long)surcharge);
+                    cardholderInteractionRequest.setFinalTransactionAmount(finalAmount);
+                }
+                boolean interactionHandled = transactionListener.onCardholderInteractionRequested(map(cardholderInteractionRequest));
+                if (!interactionHandled) {
+                    CardholderInteractionResult result;
+                    switch (cardholderInteractionRequest.getCardholderInteractionType()) {
+                        case EMV_APPLICATION_SELECTION:
+                            String[] applications =
+                                    cardholderInteractionRequest.getSupportedApplications();
+                            // send result
+                            result = new CardholderInteractionResult(
+                                    cardholderInteractionRequest.getCardholderInteractionType()
+                            );
+                            result.setSelectedAidIndex(0);
+                            sendCardholderInteractionResult(result);
+                            break;
+                        case SURCHARGE_REQUESTED:
+                            result = new CardholderInteractionResult(
+                                    CardholderInteractionType.CARDHOLDER_SURCHARGE_CONFIRMATION);
+                            result.setFinalAmountConfirmed(false);
+                            sendCardholderInteractionResult(result);
+                            Timber.e("Surcharge confirmation was not handled by client application, cancelling transaction");
+                            break;
+                        case FINAL_AMOUNT_CONFIRMATION:
+                            result = new CardholderInteractionResult(
+                                    cardholderInteractionRequest.getCardholderInteractionType()
+                            );
+                            result.setFinalAmountConfirmed(true);
+                            sendCardholderInteractionResult(result);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }
 
