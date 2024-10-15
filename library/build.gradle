@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 24
-        versionName "1.4.0"
+        versionCode 25
+        versionName "1.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -56,12 +56,12 @@ dependencies {
     api 'com.heartlandpaymentsystems:heartland-bbpos:1.0.7'
     api 'com.heartlandpaymentsystems:heartland-core:1.0.12'
     api 'com.heartlandpaymentsystems:heartland-ingenico:1.0.13'
-    api 'com.heartlandpaymentsystems:heartland-portico:1.0.12'
+    api 'com.heartlandpaymentsystems:heartland-portico:1.0.13'
     api 'com.heartlandpaymentsystems:heartland-roamreader:1.0.4'
     api 'com.heartlandpaymentsystems:heartland-ruadeviceservice:1.0.0'
     api 'com.heartlandpaymentsystems:heartland-temlibrary:1.0.0'
     api 'com.heartlandpaymentsystems:heartland-database-portico:1.0.2'
-    api 'com.heartlandpaymentsystems:heartland-transaction-manager:1.0.11'
+    api 'com.heartlandpaymentsystems:heartland-transaction-manager:1.0.12'
 
     // Apache Commons
     //implementation 'commons-codec:commons-codec:1.13'

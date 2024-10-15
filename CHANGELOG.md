@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2024-10-15
+ 
+### Added
+
+### Changed
+
+### Fixed
+- Fixed logic for uploadSAF so that SafListener.onError is called when there is still no connection.
+
+
 ## [1.4.0] - 2024-09-17
  
 ### Added
