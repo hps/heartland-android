@@ -42,7 +42,7 @@ dependencies {
 
     //switch out commented code to change between local and hosted SDK
     //implementation project(path: ':library')
-    implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.4.1'
+    implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.4.2'
 
     // Timber Logging: https://github.com/JakeWharton/timber
     implementation 'com.jakewharton.timber:timber:4.7.1'

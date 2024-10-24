@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2024-10-24
+ 
+### Added
+
+### Changed
+- Updated the onError callback for reader timeout to have the value of "ReaderTimeout" for error.getMessage().
+### Fixed
+- Fixed intermittent exception caused by a bad PAN value for fleet check.
+
+
 ## [1.4.1] - 2024-10-15
  
 ### Added
