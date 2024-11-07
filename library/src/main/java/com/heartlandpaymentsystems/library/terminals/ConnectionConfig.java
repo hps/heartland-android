@@ -27,6 +27,7 @@ public class ConnectionConfig {
 
     // Surcharge
     private boolean surchargeEnabled;
+    private boolean surchargePreTax;
 
     // saf options
     private boolean safEnabled;
@@ -184,4 +185,11 @@ public class ConnectionConfig {
         this.surchargeEnabled = surchargeEnabled;
     }
 
+    public boolean isSurchargePreTax() {
+        return surchargePreTax;
+    }
+
+    public void setSurchargePreTax(boolean surchargePreTax) {
+        this.surchargePreTax = surchargePreTax;
+    }
 }

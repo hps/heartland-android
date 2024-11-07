@@ -62,6 +62,7 @@ public class CreditAuthActivity extends BaseTransactionActivity {
                 String gratuity = ((EditText) findViewById(R.id.gratuity_amount)).getText().toString();
                 String clientTransactionId = ((EditText) findViewById(R.id.client_transaction_id)).getText().toString();
                 String invoiceNumber = ((EditText) findViewById(R.id.invoice_number)).getText().toString();
+                String taxAmount = ((EditText) findViewById(R.id.tax_amount)).getText().toString();
                 boolean allowDuplicates = ((CheckBox) findViewById(R.id.creditadjust_allowduplicates)).isChecked();
 
                 IDevice device = MainActivity.c2XDevice != null ? MainActivity.c2XDevice : MainActivity.mobyDevice;
@@ -77,6 +78,9 @@ public class CreditAuthActivity extends BaseTransactionActivity {
                     TransactionDetails transactionDetails = new TransactionDetails();
                     transactionDetails.setInvoiceNumber(invoiceNumber);
                     creditAuthBuilder.setDetails(transactionDetails);
+                }
+                if (taxAmount != null && !taxAmount.isEmpty()) {
+                    creditAuthBuilder.setTaxAmount(new BigDecimal(taxAmount));
                 }
                 creditAuthBuilder.setAllowDuplicates(allowDuplicates);
                 try {

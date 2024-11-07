@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.3] - 2024-11-07
+ 
+### Added
+- Added optional tax amount values for Sale and Auth. These values are considered part of the total, the same as gratuity.
+- Added pre-tax/post-tax toggle for surcharge inside ConnectionConfig. If pre-tax is enabled, then the tax amount is subtracted from the total before calculating the surcharge amount.
+### Changed
+
+### Fixed
+
+
 ## [1.4.2] - 2024-10-24
  
 ### Added

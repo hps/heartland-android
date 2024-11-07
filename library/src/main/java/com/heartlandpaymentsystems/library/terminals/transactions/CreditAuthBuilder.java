@@ -22,6 +22,7 @@ public class CreditAuthBuilder extends BaseBuilder {
     private TransactionDetails details;
     private BigDecimal gratuity;
     private String cardHolderName;
+    private BigDecimal taxAmount;
 
     /*public CreditAuthBuilder(C2XDevice device) {
         super((IDevice) device);
@@ -62,6 +63,10 @@ public class CreditAuthBuilder extends BaseBuilder {
 
         if (details != null) {
             request.setInvoiceNumber(details.getInvoiceNumber());
+        }
+
+        if (taxAmount != null) {
+            request.setTax(taxAmount.movePointRight(2).longValue());
         }
 
         if (creditCard != null) {
@@ -153,5 +158,13 @@ public class CreditAuthBuilder extends BaseBuilder {
 
     public void setCardHolderName(String cardHolderName) {
         this.cardHolderName = cardHolderName;
+    }
+
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
     }
 }

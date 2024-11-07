@@ -284,9 +284,8 @@ public class C2XDevice implements IDevice {
             timberPlanted = true;
         }
 
-        if(connectionConfig.isSurchargeEnabled()){
-            LibraryConfigHelper.setSurchargeEnabled(connectionConfig.isSurchargeEnabled());
-        }
+        LibraryConfigHelper.setSurchargeEnabled(connectionConfig.isSurchargeEnabled());
+        LibraryConfigHelper.setSurchargePreTax(connectionConfig.isSurchargePreTax());
 
         transactionConfig = new TransactionConfiguration();
         transactionConfig.setChipEnabled(true);
@@ -537,10 +536,9 @@ public class C2XDevice implements IDevice {
             if (transactionListener != null) {
                 if(cardholderInteractionRequest.getCardholderInteractionType() ==
                         CardholderInteractionType.SURCHARGE_REQUESTED){
-                    Long amountBefore = cardholderInteractionRequest.getFinalTransactionAmount();
-                    float surcharge = amountBefore * 0.03f;
-                    Long finalAmount = (long)(amountBefore + surcharge);
-                    cardholderInteractionRequest.setSurchargeAmount((long)surcharge);
+                    Long surcharge = cardholderInteractionRequest.getFinalSurchargeAmount();
+                    Long finalAmount = cardholderInteractionRequest.getFinalTransactionAmount();
+                    cardholderInteractionRequest.setSurchargeAmount(surcharge);
                     cardholderInteractionRequest.setFinalTransactionAmount(finalAmount);
                 }
                 boolean interactionHandled = transactionListener.onCardholderInteractionRequested(map(cardholderInteractionRequest));

@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.heartlandpaymentsystems.library.BuildConfig;
 import com.heartlandpaymentsystems.library.R;
-import com.heartlandpaymentsystems.library.entities.SurchargeCalculation;
 import com.heartlandpaymentsystems.library.terminals.AvailableTerminalVersionsListener;
 import com.heartlandpaymentsystems.library.terminals.ConnectionConfig;
 import com.heartlandpaymentsystems.library.terminals.DeviceListener;
@@ -134,9 +133,8 @@ public class MobyDevice implements IDevice {
             timberPlanted = true;
         }
 
-        if(connectionConfig.isSurchargeEnabled()){
-            LibraryConfigHelper.setSurchargeEnabled(connectionConfig.isSurchargeEnabled());
-        }
+        LibraryConfigHelper.setSurchargeEnabled(connectionConfig.isSurchargeEnabled());
+        LibraryConfigHelper.setSurchargePreTax(connectionConfig.isSurchargePreTax());
 
         transactionConfig = new TransactionConfiguration();
         transactionConfig.setQuickChipEnabled(true);
@@ -730,10 +728,9 @@ public class MobyDevice implements IDevice {
             if (transactionListener != null) {
                 if(cardholderInteractionRequest.getCardholderInteractionType() ==
                         CardholderInteractionType.SURCHARGE_REQUESTED){
-                    Long amountBefore = cardholderInteractionRequest.getFinalTransactionAmount();
-                    float surcharge = amountBefore * 0.03f;
-                    Long finalAmount = (long)(amountBefore + surcharge);
-                    cardholderInteractionRequest.setSurchargeAmount((long)surcharge);
+                    Long surcharge = cardholderInteractionRequest.getFinalSurchargeAmount();
+                    Long finalAmount = cardholderInteractionRequest.getFinalTransactionAmount();
+                    cardholderInteractionRequest.setSurchargeAmount(surcharge);
                     cardholderInteractionRequest.setFinalTransactionAmount(finalAmount);
                 }
                 boolean interactionHandled = transactionListener.onCardholderInteractionRequested(map(cardholderInteractionRequest));

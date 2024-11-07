@@ -126,7 +126,7 @@ public abstract class BaseTransactionActivity extends BaseActivity {
         public void onTransactionComplete(TerminalResponse transaction) {
             Log.d(TAG, "onTransactionComplete - " + transaction.toString());
             hideProgress();
-            if (!transaction.getDeviceResponseCode().equals("SAF")) {
+            if (transaction.getDeviceResponseCode() != null && !transaction.getDeviceResponseCode().equals("SAF")) {
                 MainActivity.transactionId = transaction.getTransactionId();
                 MainActivity.transactionResult = transaction.getDeviceResponseCode();
                 MainActivity.transactionState = MainActivity.TransactionState.Complete;

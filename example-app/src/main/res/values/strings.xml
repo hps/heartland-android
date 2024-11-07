@@ -19,6 +19,7 @@
     <string name="disconnect">Disconnect</string>
     <string name="saf_switch">SAF Toggle</string>
     <string name="surcharge_switch">Surcharge</string>
+    <string name="surcharge_pretax_switch">Surcharge Pre-Tax</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -73,6 +74,7 @@
     <string name="transaction_amount_label">Total Transaction Amount:</string>
     <string name="transaction_amount">Transaction amount (total including gratuity)</string>
     <string name="gratuity_amount">Gratuity amount</string>
+    <string name="tax_amount">Tax amount</string>
     <string name="creditsale_manual">CreditSale - $10 - Manual Entry</string>
     <string name="transaction_list_title">Select a transaction type:</string>
     <string name="creditsale">CreditSale</string>

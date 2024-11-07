@@ -7,7 +7,7 @@ def publishArtifact = artifacts.add("default", file('transaction-manager-portico
 // Artifact parameters
 def sdkGroupId = 'com.heartlandpaymentsystems'
 def sdkArtifactId = 'heartland-transaction-manager'
-def sdkVersion = '1.0.12'
+def sdkVersion = '1.0.13'
 
 // publish.properties should contain signing properties and maven central credentials
 File publishPropertiesFile = file('../../publish.properties')

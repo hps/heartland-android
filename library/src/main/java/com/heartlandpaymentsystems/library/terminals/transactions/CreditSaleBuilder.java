@@ -14,6 +14,7 @@ import com.heartlandpaymentsystems.library.entities.Address;
 import com.heartlandpaymentsystems.library.entities.TransactionDetails;
 import com.heartlandpaymentsystems.library.entities.Card;
 import com.heartlandpaymentsystems.library.terminals.IDevice;
+import com.tsys.payments.library.utils.LibraryConfigHelper;
 
 public class CreditSaleBuilder extends BaseBuilder {
     private String referenceNumber;
@@ -26,6 +27,7 @@ public class CreditSaleBuilder extends BaseBuilder {
     private boolean requestToken;
     private String token;
     private String cardBrandTxnId;
+    private BigDecimal taxAmount;
 
    /* public CreditSaleBuilder(C2XDevice device) {
         super((IDevice) device);
@@ -77,6 +79,10 @@ public class CreditSaleBuilder extends BaseBuilder {
         if (token != null && !token.isEmpty()) {
             request.setToken(token);
             request.setCardBrandTxnId(cardBrandTxnId);
+        }
+
+        if (taxAmount != null) {
+            request.setTax(taxAmount.movePointRight(2).longValue());
         }
 
         if (creditCard != null) {
@@ -196,5 +202,13 @@ public class CreditSaleBuilder extends BaseBuilder {
 
     public void setCardBrandTxnId(String cardBrandTxnId) {
         this.cardBrandTxnId = cardBrandTxnId;
+    }
+
+    public BigDecimal getTaxAmount() {
+        return taxAmount;
+    }
+
+    public void setTaxAmount(BigDecimal taxAmount) {
+        this.taxAmount = taxAmount;
     }
 }

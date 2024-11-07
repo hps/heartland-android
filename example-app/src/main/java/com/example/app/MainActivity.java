@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private Button disconnect;
     private Switch safSwitch;
     private Switch surchargeSwitch;
+    private Switch surchargePretaxSwitch;
     private int startCounter = 0;
 
     public static boolean isShowAbout() {
@@ -118,6 +119,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         safSwitch.setOnClickListener(this);
         surchargeSwitch = findViewById(R.id.surcharge_switch);
         surchargeSwitch.setOnClickListener(this);
+        surchargePretaxSwitch = findViewById(R.id.surcharge_pretax_switch);
+        surchargePretaxSwitch.setOnClickListener(this);
         about = findViewById(R.id.about_button);
         disconnect = findViewById(R.id.disconnect_button);
         disconnect.setOnClickListener(this);
@@ -302,6 +305,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                     Toast.makeText(this, "Surcharge is disabled", Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.surcharge_pretax_switch:
+                if (surchargePretaxSwitch.isChecked()) {
+                    Toast.makeText(this, "Surcharge Pre-Tax is enabled", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Surcharge Pre-Tax is disabled", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -316,6 +326,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         connectionConfig.setSafEnabled(safSwitch.isChecked());
         connectionConfig.setSafExpirationInDays(5);
         connectionConfig.setSurchargeEnabled(surchargeSwitch.isChecked());
+        connectionConfig.setSurchargePreTax(surchargePretaxSwitch.isChecked());
         connectionConfig.setEnvironment(environmentSwitch.isChecked() ? Environment.PRODUCTION : Environment.TEST);
         return connectionConfig;
     }

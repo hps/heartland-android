@@ -63,6 +63,7 @@ public class CreditSaleActivity extends BaseTransactionActivity {
                 String invoiceNumber = ((EditText) findViewById(R.id.invoice_number)).getText().toString();
                 String token = ((EditText) findViewById(R.id.token)).getText().toString();
                 String cardBrandTxnId = ((EditText) findViewById(R.id.card_brand_txn_id)).getText().toString();
+                String taxAmount = ((EditText) findViewById(R.id.tax_amount)).getText().toString();
                 boolean allowDuplicates = ((CheckBox) findViewById(R.id.creditsale_allowduplicates)).isChecked();
                 boolean requestToken = ((CheckBox) findViewById(R.id.creditsale_requesttoken)).isChecked();
                 boolean useToken = false;
@@ -91,6 +92,9 @@ public class CreditSaleActivity extends BaseTransactionActivity {
                 if (useToken) {
                     creditSaleBuilder.setToken(token);
                     creditSaleBuilder.setCardBrandTxnId(cardBrandTxnId);
+                }
+                if (taxAmount != null && !taxAmount.isEmpty()) {
+                    creditSaleBuilder.setTaxAmount(new BigDecimal(taxAmount));
                 }
                 creditSaleBuilder.setAllowDuplicates(allowDuplicates);
                 creditSaleBuilder.setRequestToken(requestToken);
