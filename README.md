@@ -7,7 +7,7 @@ This Android SDK lets you connect to a C2X, C3X, or Moby 5500 device and process
 Maven
 -------------
 ```java
-implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.4.3'
+implementation 'com.heartlandpaymentsystems:heartland-android-sdk:1.4.4'
 ```
 
 Example App

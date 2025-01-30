@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 27
-        versionName "1.4.3"
+        versionCode 28
+        versionName "1.4.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -39,7 +39,7 @@ dependencies {
     //implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     // Global payments SDK
-    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:13.0.1'
+    implementation 'com.heartlandpaymentsystems:globalpayments-sdk:14.2.8'
     //implementation files('libs/globalpayments-sdk.jar')
 
     /** Vital SDK dependencies - Start **/
@@ -56,7 +56,7 @@ dependencies {
     api 'com.heartlandpaymentsystems:heartland-bbpos:1.0.7'
     api 'com.heartlandpaymentsystems:heartland-core:1.0.13'
     api 'com.heartlandpaymentsystems:heartland-ingenico:1.0.14'
-    api 'com.heartlandpaymentsystems:heartland-portico:1.0.14'
+    api 'com.heartlandpaymentsystems:heartland-portico:1.0.15'
     api 'com.heartlandpaymentsystems:heartland-roamreader:1.0.4'
     api 'com.heartlandpaymentsystems:heartland-ruadeviceservice:1.0.0'
     api 'com.heartlandpaymentsystems:heartland-temlibrary:1.0.0'

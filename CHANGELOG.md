@@ -2,6 +2,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.4.4] - 2025-01-30
+ 
+### Added
+
+### Changed
+
+### Fixed
+- Added pan length check to isFleet() to prevent a StringIndexOutOfBoundsException from occurring.
+
+
 ## [1.4.3] - 2024-11-07
  
 ### Added
